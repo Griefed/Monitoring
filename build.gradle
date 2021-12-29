@@ -5,8 +5,10 @@ import org.siouan.frontendgradleplugin.infrastructure.gradle.RunNpm
 
 plugins {
     id 'org.springframework.boot' version '2.6.2'
+    id "com.github.ben-manes.versions" version '0.39.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.siouan.frontend-jdk8' version '6.0.0'
+    id 'jacoco'
     id 'java'
     id 'idea'
 }
@@ -37,6 +39,28 @@ sourceSets {
     }
 }
 
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+
+    checkForGradleUpdate = true
+    outputFormatter = "json"
+
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
+                    reject('Release candidate')
+                }
+            }
+        }
+    }
+}
+
 configurations {
     all {
         // Exclude logging from dependencies because we already have logging set up
@@ -57,7 +81,13 @@ dependencies {
     embed 'org.springframework.boot:spring-boot-starter-web:2.6.2'
     embed 'org.springframework.boot:spring-boot-starter-log4j2:2.6.2'
     embed 'commons-io:commons-io:2.11.0'
-    embed 'com.github.oshi:oshi-core:5.8.5'
+    embed 'com.github.oshi:oshi-core:5.8.6'
+
+    embed 'org.apache.logging.log4j:log4j-api:2.17.0'
+    embed 'org.apache.logging.log4j:log4j-core:2.17.0'
+    embed 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.0'
+    embed 'org.apache.logging.log4j:log4j-web:2.17.0'
+    embed 'org.apache.logging.log4j:log4j-jul:2.17.0'
 
     // Dev dependencies
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.2'
@@ -78,6 +108,23 @@ test {
                 "skipped",
                 "failed"
     }
+
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+
+    reports {
+        xml.required = true
+        //csv.required = false
+        //html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDirectory = layout.buildDirectory.dir('jacoco')
 }
 
 // Configure frontend plugin. See documentation at https://siouan.github.io/frontend-gradle-plugin/.
