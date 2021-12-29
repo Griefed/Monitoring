@@ -44,3 +44,4 @@ out/
 /logs
 /backend/main/resources/static/*
 !/backend/main/resources/static/
+/application.properties

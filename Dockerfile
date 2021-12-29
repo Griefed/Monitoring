@@ -1,12 +1,14 @@
 FROM griefed/baseimage-ubuntu-jdk-8:2.0.0 AS builder
 
+ARG BRANCH_OR_TAG=main
+
 RUN \
   apt-get update && apt-get upgrade -y && \
   apt-get install -y \
     libatomic1 && \
   git clone \
-    -b main \
-      https://github.com/SuK-IT/Monitoring.git \
+    -b $BRANCH_OR_TAG \
+      https://github.com/Griefed/Monitoring.git \
         /tmp/monitoring && \
   chmod +x /tmp/monitoring/gradlew* && \
   cd /tmp/monitoring && \
@@ -16,7 +18,7 @@ RUN \
 FROM griefed/baseimage-ubuntu-jdk-8:2.0.0
 
 LABEL maintainer="Griefed <griefed@griefed.de>"
-LABEL description="Simple monitoring app. Serves as monitor and agent."
+LABEL description="Simple monitoring app. Serves as monitor and agent, depending on how you configure it."
 
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
 

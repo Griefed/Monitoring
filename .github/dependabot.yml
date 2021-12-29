@@ -15,7 +15,9 @@ updates:
      - "dependencies"
      - "github-actions"
     target-branch: "dependabot"
-    
+    pull-request-branch-name:
+      separator: "-"
+
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
@@ -26,7 +28,9 @@ updates:
       - "dependencies"
       - "gradle"
     target-branch: "dependabot"
-    
+    pull-request-branch-name:
+      separator: "-"
+
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
@@ -37,7 +41,9 @@ updates:
       - "dependencies"
       - "npm"
     target-branch: "dependabot"
-    
+    pull-request-branch-name:
+      separator: "-"
+
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -48,3 +54,5 @@ updates:
       - "dependencies"
       - "docker"
     target-branch: "dependabot"
+    pull-request-branch-name:
+      separator: "-"

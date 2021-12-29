@@ -1,9 +1,9 @@
-name: Create GitHub Release after GitLab tag mirror
+name: Create GitHub Pre-Release after GitLab tag mirror
 
 on:
   push:
     tags:
-      - '!*.*.*-*.*'
+      - '*.*.*-*.*'
   workflow_dispatch:
 
 jobs:
@@ -24,10 +24,6 @@ jobs:
         run: echo ${{steps.tag.outputs.tag}}
 
       # GENERATE CHANGELOG, RELEASE
-      - id: conventional_changelog
-        uses: ardalanamini/auto-changelog@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
@@ -35,13 +31,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
+          release_name: Release ${{steps.tag.outputs.tag}}
           body: |
-            Automatic release of version: **${{ steps.tag.outputs.tag }}**
-            **Changes in this release:**
-            ${{ steps.conventional_changelog.outputs.changelog }}
+            Automatic pre-release of version: **${{steps.tag.outputs.tag}}**
+            **Changes in this pre-release:**
+            TO BE COPY'N'PASTED BY GRIEFED FROM GITLAB
           draft: false
-          prerelease: false
+          prerelease: true
 
       # BUILD PROJECT AND PUBLISH TO PACKAGES
       - name: Set up JDK 8
@@ -56,20 +52,34 @@ jobs:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NEW_VERSION=$(echo "${{ steps.tag.outputs.tag }}")
+          NEW_VERSION=$(echo "${{steps.tag.outputs.tag}}")
           echo "New version: ${NEW_VERSION}"
           echo "Github username: ${GITHUB_ACTOR}"
           ./gradlew about
-          ./gradlew installQuasar cleanFrontend assembleFrontend copyDist build --info -x test
+          ./gradlew installQuasar cleanFrontend assembleFrontend copyDist build createExe --info -x test
       - name: List files
         run: ls -ahl build/libs
 
       - name: Rename files
         run: |
           echo "**** Renaming files to please the eye ****"
-          mv build/libs/Monitoring.jar build/libs/Monitoring-${{ steps.tag.outputs.tag }}.jar
-          mv build/libs/Monitoring-javadoc.jar build/libs/Monitoring-${{ steps.tag.outputs.tag }}-javadoc.jar
-          mv build/libs/Monitoring-sources.jar build/libs/Monitoring-${{ steps.tag.outputs.tag }}-sources.jar
+          mv build/libs/Monitoring.jar build/libs/Monitoring-${{steps.tag.outputs.tag}}.jar
+          mv build/libs/Monitoring-javadoc.jar build/libs/Monitoring-${{steps.tag.outputs.tag}}-javadoc.jar
+          mv build/libs/Monitoring-sources.jar build/libs/Monitoring-${{steps.tag.outputs.tag}}-sources.jar
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts-gradle
+          path: |
+            build/libs/
+            frontend/dist/spa
+          if-no-files-found: warn # 'warn' or 'ignore' are also available, defaults to `warn`
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: report
+          path: build/reports/tests/test/
+          if-no-files-found: warn # 'warn' or 'ignore' are also available, defaults to `warn`
 
       # UPLOAD ASSETS TO RELEASE
       - name: Upload Release Asset Main Jar
@@ -79,8 +89,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/Monitoring-${{ steps.tag.outputs.tag }}.jar
-          asset_name: Monitoring-${{ steps.tag.outputs.tag }}.jar
+          asset_path: ./build/libs/Monitoring-${{steps.tag.outputs.tag}}.jar
+          asset_name: Monitoring-${{steps.tag.outputs.tag}}.jar
           asset_content_type: application/jar
 
       - name: Upload Release Asset Sources Jar
@@ -90,8 +100,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/Monitoring-${{ steps.tag.outputs.tag }}-sources.jar
-          asset_name: Monitoring-${{ steps.tag.outputs.tag }}-sources.jar
+          asset_path: ./build/libs/Monitoring-${{steps.tag.outputs.tag}}-sources.jar
+          asset_name: Monitoring-${{steps.tag.outputs.tag}}-sources.jar
           asset_content_type: application/jar
 
       - name: Upload Release Asset Javadoc Jar
@@ -101,6 +111,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/libs/Monitoring-${{ steps.tag.outputs.tag }}-javadoc.jar
-          asset_name: Monitoring-${{ steps.tag.outputs.tag }}-javadoc.jar
+          asset_path: ./build/libs/Monitoring-${{steps.tag.outputs.tag}}-javadoc.jar
+          asset_name: Monitoring-${{steps.tag.outputs.tag}}-javadoc.jar
           asset_content_type: application/jar
