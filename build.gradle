@@ -5,7 +5,7 @@ import org.siouan.frontendgradleplugin.infrastructure.gradle.RunNpm
 
 plugins {
     id 'org.springframework.boot' version '2.6.2'
-    id "com.github.ben-manes.versions" version '0.40.0'
+    id "com.github.ben-manes.versions" version '0.41.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.siouan.frontend-jdk8' version '6.0.0'
     id 'jacoco'
