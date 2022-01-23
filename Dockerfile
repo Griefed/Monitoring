@@ -1,4 +1,4 @@
-FROM griefed/baseimage-ubuntu-jdk-8:2.0.0 AS builder
+FROM griefed/baseimage-ubuntu-jdk-8:2.0.1 AS builder
 
 ARG BRANCH_OR_TAG=main
 
@@ -15,7 +15,7 @@ RUN \
   ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build --info -x test && \
   ls -ahl ./build/libs/
 
-FROM griefed/baseimage-ubuntu-jdk-8:2.0.0
+FROM griefed/baseimage-ubuntu-jdk-8:2.0.1
 
 LABEL maintainer="Griefed <griefed@griefed.de>"
 LABEL description="Simple monitoring app. Serves as monitor and agent, depending on how you configure it."
