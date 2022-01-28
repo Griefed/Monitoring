@@ -125,7 +125,7 @@ secret_detection:
     - rm "$CI_COMMIT_SHA"_commit_list.txt
 
 Gradle Test:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.1
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.2
   stage: Tests
   before_script:
     - echo "**** Running in $CI_JOB_ID ****"
@@ -180,7 +180,7 @@ Docker Test:
       --file Dockerfile .
 
 Gradle Dependency-Checks:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.1
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.2
   stage: Other
   allow_failure: true
   before_script:
@@ -253,7 +253,7 @@ PreRelease:
       - "$CI_COMMIT_TITLE =~ /^RELEASE:.+$/"
 
 Build Release:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.1
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.2
   stage: Build Release
   before_script:
     - echo "**** Running in $CI_JOB_ID ****"
@@ -377,7 +377,7 @@ coverage:
       cobertura: build/cobertura.xml
 
 pages:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.1
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.2
   stage: Documentation
   variables:
     project_name: $CI_PROJECT_NAME
