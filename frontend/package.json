@@ -1,7 +1,7 @@
 {
   "name": "monitoring",
-  "version": "0.0.1",
-  "description": "Simple monitoring app. Serves as monitor and agent",
+  "version": "1.0.0",
+  "description": "Simple monitoring app.",
   "productName": "Monitoring",
   "private": true,
   "author": {

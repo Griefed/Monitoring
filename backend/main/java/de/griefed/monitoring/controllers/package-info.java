@@ -21,7 +21,4 @@
  * SOFTWARE.
  */
 
-/**
- * All REST controllers providing endpoints for access.
- */
 package de.griefed.monitoring.controllers;

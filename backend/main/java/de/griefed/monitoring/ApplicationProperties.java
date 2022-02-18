@@ -22,6 +22,8 @@
  */
 package de.griefed.monitoring;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import de.griefed.monitoring.utilities.JsonUtilities;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,36 +47,36 @@ public class ApplicationProperties extends Properties {
 
     private static final Logger LOG = LogManager.getLogger(ApplicationProperties.class);
 
-    /**
-     * Whether this instance is a monitor or an agent.
-     */
-    @Value("${de.griefed.monitoring.agent}")
-    private boolean agent = false;
+    private final File HOSTS_FILE = new File("hosts.json");
+
+    private final JsonUtilities JSON_UTILITIES;
 
     /**
-     * The agents, with their access tokens, to gather information form. Format is <code>agent_ip1,access_token1;agent_ip2,access_token2;agent_ip3,access_token3</code> etc..
-     */
-    @Value("${de.griefed.monitoring.agents}")
-    private String agents = "127.0.0.1,123456789";
-
-    /**
-     * Seconds to wait until a connection timeout is triggered for getting information from agents.
+     * Seconds to wait until a connection timeout is triggered for getting information from hosts.
      */
     @Value("${de.griefed.monitoring.timeout.connect}")
     private int timeoutConnect = 5;
 
     /**
-     * Seconds to wait until a read timeout is triggered for getting information from agents.
+     * Seconds to wait until a read timeout is triggered for getting information from hosts.
      */
     @Value("${de.griefed.monitoring.timeout.read}")
     private int timeoutRead = 5;
 
     /**
+     * Number of threads used for updating host information.
+     */
+    @Value("${de.griefed.monitoring.thread.count}")
+    private int threadCount = 40;
+
+    /**
      * Constructor for our properties. Sets a couple of default values for use in Monitoring.
      * @author Griefed
+     * @param injectedJsonUtilities Instance of {@link JsonUtilities}.
      */
     @Autowired
-    public ApplicationProperties() {
+    public ApplicationProperties(JsonUtilities injectedJsonUtilities) {
+        this.JSON_UTILITIES = injectedJsonUtilities;
 
         if (!new File("application.properties").exists()) {
             try {
@@ -103,38 +105,18 @@ public class ApplicationProperties extends Properties {
         } catch (IOException ex) {
             LOG.error("Couldn't read properties file.", ex);
         }
+
+        this.threadCount = Integer.parseInt(getProperty("de.griefed.monitoring.thread.count","40"));
     }
 
     /**
-     * Getter for whether this instance is a monitor or an agent.
+     * Getter for a list of hosts to gather information from.
      * @author Griefed
-     * @return boolean. <code>true</code> = agent. <code>false</code> = monitor.
+     * @return List String. Each entry is a combination of ip and access token in the format <code>host_ip1,access_token1</code>.
+     * @throws IOException when hosts can not be read from the file.
      */
-    public boolean isAgent() {
-        return agent;
-    }
-
-    /**
-     * Getter for a list of agents to gather information from.
-     * @author Griefed
-     * @return List String. Each entry is a combination of ip and access token in the format <code>agent_ip1,access_token1</code>.
-     */
-    public List<String> getAgents() {
-
-        if (!isAgent()) {
-
-            if (
-                    new ArrayList<String>(Arrays.asList(agents.split(";"))).size() == 1 &&
-                    new ArrayList<String>(Arrays.asList(agents.split(";"))).get(0).equals("127.0.0.1,123456789")
-            ) {
-
-                LOG.warn("WARNING! Instance is configured as host, but agents aren't configured correctly!");
-                LOG.warn("Check your property de.griefed.monitoring.agents in your application.properties!");
-
-            }
-
-        }
-        return new ArrayList<String>(Arrays.asList(agents.split(";")));
+    public JsonNode getHosts() throws IOException {
+        return JSON_UTILITIES.getJson(HOSTS_FILE).get("hosts");
     }
 
     /**
@@ -164,7 +146,7 @@ public class ApplicationProperties extends Properties {
     }
 
     /**
-     * Getter for the number of seconds to wait until a connection timeout is triggered for getting information from agents.
+     * Getter for the number of seconds to wait until a connection timeout is triggered for getting information from hosts.
      * @author Griefed
      * @return Integer. Returns the number of seconds as an int.
      */
@@ -173,7 +155,7 @@ public class ApplicationProperties extends Properties {
     }
 
     /**
-     * Getter for the number of seconds to wait until a read timeout is triggered for getting information from agents.
+     * Getter for the number of seconds to wait until a read timeout is triggered for getting information from hosts.
      * @author Griefed
      * @return Integer. Returns the number of seconds as an int.
      */
@@ -181,6 +163,20 @@ public class ApplicationProperties extends Properties {
         return timeoutRead;
     }
 
+    /**
+     * Getter for the number of threads used for updating host information.
+     * @author Griefed
+     * @return {@link Integer} The number of threads used for updating host information.
+     */
+    public int getThreadCount() {
+        return threadCount;
+    }
+
+    /**
+     * The polling rate at which to update the webfrontend.
+     * @author Griefed
+     * @return {@link Integer} The polling rate at which to update the webfrontend.
+     */
     public int getPollingRate() {
         return Integer.parseInt(getProperty("de.griefed.monitoring.polling", "5000"));
     }

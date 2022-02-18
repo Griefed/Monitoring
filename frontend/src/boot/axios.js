@@ -7,21 +7,13 @@ import axios from 'axios';
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const host = axios.create(
-  {
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    baseURL: '/api/v1/host'
-  }
-);
 
-const agents = axios.create(
+const hosts = axios.create(
   {
     headers: {
       'Content-Type': 'application/json'
     },
-    baseURL: '/api/v1/agents'
+    baseURL: '/api/v1/hosts'
   }
 );
 
@@ -41,11 +33,7 @@ export default boot(({ app }) => {
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$host = host
-  // ^ ^ ^ this will allow you to use this.$host (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
-
-  app.config.globalProperties.$agents = agents
+  app.config.globalProperties.$agents = hosts
   // ^ ^ ^ this will allow you to use this.$agents (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 
@@ -54,4 +42,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { host, agents, api }
+export { hosts, api }

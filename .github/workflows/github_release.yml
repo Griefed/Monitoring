@@ -60,16 +60,23 @@ jobs:
           echo "New version: ${NEW_VERSION}"
           echo "Github username: ${GITHUB_ACTOR}"
           ./gradlew about
-          ./gradlew installQuasar cleanFrontend assembleFrontend copyDist build --info -x test
+          ./gradlew -Pversion=${{steps.tag.outputs.tag}} installQuasar cleanFrontend assembleFrontend copyDist build --info -x test
       - name: List files
         run: ls -ahl build/libs
 
-      - name: Rename files
-        run: |
-          echo "**** Renaming files to please the eye ****"
-          mv build/libs/Monitoring.jar build/libs/Monitoring-${{ steps.tag.outputs.tag }}.jar
-          mv build/libs/Monitoring-javadoc.jar build/libs/Monitoring-${{ steps.tag.outputs.tag }}-javadoc.jar
-          mv build/libs/Monitoring-sources.jar build/libs/Monitoring-${{ steps.tag.outputs.tag }}-sources.jar
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts-gradle
+          path: |
+            build/libs/
+            frontend/dist/spa
+          if-no-files-found: warn # 'warn' or 'ignore' are also available, defaults to `warn`
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: report
+          path: build/reports/tests/test/
+          if-no-files-found: warn # 'warn' or 'ignore' are also available, defaults to `warn`
 
       # UPLOAD ASSETS TO RELEASE
       - name: Upload Release Asset Main Jar

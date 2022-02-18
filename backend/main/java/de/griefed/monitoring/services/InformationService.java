@@ -22,26 +22,24 @@
  */
 package de.griefed.monitoring.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.ApplicationProperties;
-import de.griefed.monitoring.components.*;
 import de.griefed.monitoring.utilities.MailNotification;
+import de.griefed.monitoring.utilities.WebUtilities;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Class responsible for collecting information from all components and building a JSON string with them.
@@ -52,298 +50,192 @@ public class InformationService {
 
     private static final Logger LOG = LogManager.getLogger(InformationService.class);
 
-    private final CpuComponent CPU_COMPONENT;
-    private final DiskComponent DISK_COMPONENT;
-    private final HostComponent HOST_COMPONENT;
-    private final OsComponent OS_COMPONENT;
-    private final RamComponent RAM_COMPONENT;
-    private final ApplicationProperties PROPERTIES;
-    private final RestTemplate REST_TEMPLATE;
+    private final ApplicationProperties APPLICATION_PROPERTIES;
     private final MailNotification MAIL_NOTIFICATION;
-    private final String OK = "{\"status\": " + 0 + ",\"message\": \"Everything in order.\",";
-    private final String AGENT_OK = "{\"agent\": \"%s\",\"dialog\": false,";
-    private final String AGENT_DOWN = "{\"status\": " + 1 + ",\"message\": \"Host down or unreachable.\",\"agent\": \"%s\"}";
-    private final String AGENT_UNREACHABLE = "{\"status\": " + 2 + ",\"message\": \"Host up, but agent not reachable.\",\"agent\": \"%s\"}";
+    private final WebUtilities WEB_UTILITIES;
 
-    private String agentInformation = "";
-    private String hostInformation = "";
+    private String hostsInformation = "";
 
     /**
      * Constructor responsible for DI.
      * @author Griefed
-     * @param injectedCpuComponent Instance of {@link CpuComponent}.
-     * @param injectedDiskComponent Instance of {@link DiskComponent}.
-     * @param injectedHostComponent Instance of {@link HostComponent}.
-     * @param injectedOsComponent Instance of {@link OsComponent}.
-     * @param injectedRamComponent Instance of {@link RamComponent}.
      * @param injectedApplicationProperties Instance of {@link ApplicationProperties}.
      * @param injectedMailNotification Instance of {@link MailNotification}.
+     * @param injectedWebUtilities Instance of {@link WebUtilities}.
      */
     @Autowired
-    public InformationService(CpuComponent injectedCpuComponent, DiskComponent injectedDiskComponent, HostComponent injectedHostComponent,
-                              OsComponent injectedOsComponent, RamComponent injectedRamComponent, ApplicationProperties injectedApplicationProperties,
-                              MailNotification injectedMailNotification
-    ) {
-        this.CPU_COMPONENT = injectedCpuComponent;
-        this.DISK_COMPONENT = injectedDiskComponent;
-        this.HOST_COMPONENT = injectedHostComponent;
-        this.OS_COMPONENT = injectedOsComponent;
-        this.RAM_COMPONENT = injectedRamComponent;
-        this.PROPERTIES = injectedApplicationProperties;
-        this.REST_TEMPLATE = new RestTemplateBuilder()
-                .setConnectTimeout(Duration.ofSeconds(PROPERTIES.getTimeoutConnect()))
-                .setReadTimeout(Duration.ofSeconds(PROPERTIES.getTimeoutRead()))
-                .build();
+    public InformationService(ApplicationProperties injectedApplicationProperties,
+                              MailNotification injectedMailNotification,
+                              WebUtilities injectedWebUtilities) {
+
+        this.APPLICATION_PROPERTIES = injectedApplicationProperties;
         this.MAIL_NOTIFICATION = injectedMailNotification;
+        this.WEB_UTILITIES = injectedWebUtilities;
     }
 
     /**
-     * Retrieve all information about the host.
+     * Retrieve hosts information.
      * @author Griefed
+     * @return String in JSON format. Returns information about the configured host(s).
      */
-    public void setHostInformation() {
-        this.hostInformation = OK +
-                HOST_COMPONENT.toString() + "," +
-                OS_COMPONENT.toString() + "," +
-                CPU_COMPONENT.toString() + "," +
-                DISK_COMPONENT.toString() + "," +
-                RAM_COMPONENT.toString() + "}";
-    }
+    public String retrieveHostsInformation() {
 
-    /**
-     * Update host information.
-     * @author Griefed
-     */
-    @Scheduled(cron = "${de.griefed.monitoring.schedule.update}")
-    private void updateHostInformation() {
-        HOST_COMPONENT.updateValues();
-        OS_COMPONENT.updateValues();
-        CPU_COMPONENT.updateValues();
-        DISK_COMPONENT.updateValues();
-        RAM_COMPONENT.updateValues();
-
-        setHostInformation();
-    }
-
-    /**
-     * Retrieve all information about the host.
-     * @author Griefed
-     * @return String in JSON format. Returns all information about the host.
-     */
-    public String retrieveHostInformation() {
-
-        if (hostInformation == null || hostInformation.length() == 0) {
-            updateHostInformation();
+        if (hostsInformation == null || hostsInformation.length() == 0) {
+            poll();
         }
 
-        return hostInformation;
+        return hostsInformation;
     }
 
     /**
-     * Retrieve all information about the configured agent(s) and stores it in memory for retrieval by {@link #retrieveAgentsInformation()}.
+     * Retrieve all information about the configured host(s) and stores it in memory for retrieval by {@link #retrieveHostsInformation()}.
      * @author Griefed
      */
-    public void setAgentsInformation() {
-        StringBuilder stringBuilder = new StringBuilder();
+    public void poll() {
 
-        // If agent-configuration is default, do not retrieve anything.
-        if (PROPERTIES.getAgents().get(0).split(",")[0].equals("127.0.0.1") && PROPERTIES.getAgents().size() == 1) {
+        JsonNode hosts = null;
+        String info;
 
-            LOG.warn("WARNING! Agents are not configured! Not retrieving information.");
+        try {
+            hosts = APPLICATION_PROPERTIES.getHosts();
+        } catch (IOException ex) {
+            LOG.error("Error acquiring hosts JSON.",ex);
+        }
 
-            this.agentInformation = "{\"status\": " + 1 + ",\"message\": \"Agents are not configured! Not retrieving information.\"}";
+        // If host-configuration is default, do not retrieve anything.
+        if (hosts == null || hosts.size() == 0) {
+
+            LOG.warn("WARNING! Hosts are not configured! Not retrieving information.");
+
+            info = "{\"status\": " + 1 + ",\"message\": \"Hosts are not configured! Not retrieving information.\"}";
 
         } else {
 
-            stringBuilder.append("{\"agents").append("\": [");
+            StringBuilder stringBuilder = new StringBuilder();
 
-            // Retrieve all information for all agents if more than one is configured
-            if (PROPERTIES.getAgents().size() > 1) {
+            stringBuilder.append("{\"hosts\": [");
 
+            // Retrieve all information for all hosts if more than one is configured
+            if (hosts.size() > 1) {
 
+                LOG.debug("Thread count: " + APPLICATION_PROPERTIES.getThreadCount());
 
-                stringBuilder.append(getResponse(PROPERTIES.getAgents().get(0).split(",")[0])).append(",");
+                List<CompletableFuture<String>> completableFuturesList = new ArrayList<>(1000);
 
-                for (int i = 1; i < PROPERTIES.getAgents().size() - 1; i++) {
+                ForkJoinPool forkJoinPool = new ForkJoinPool(APPLICATION_PROPERTIES.getThreadCount());
 
-                    stringBuilder.append(getResponse(PROPERTIES.getAgents().get(i).split(",")[0])).append(",");
+                String firstName = hosts.get(0).get("name").asText();
+                String firstAddress = hosts.get(0).get("address").asText();
 
+                String lastName = hosts.get(hosts.size() - 1).get("name").asText();
+                String lastAddress = hosts.get(hosts.size() - 1).get("address").asText();
+
+                completableFuturesList.add(
+                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(firstName, firstAddress), forkJoinPool)
+                );
+
+                completableFuturesList.add(
+                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(lastName, lastAddress), forkJoinPool)
+                );
+
+                //stringBuilder.append(getHostInformationAsJson(hosts.get(0).get("name").asText(), hosts.get(0).get("address").asText())).append(",");
+
+                for (int i = 1; i < hosts.size() - 1; i++) {
+
+                    //stringBuilder.append(getHostInformationAsJson(hosts.get(i).get("name").asText(), hosts.get(i).get("address").asText())).append(",");
+
+                    String nameI = hosts.get(i).get("name").asText();
+                    String addressI = hosts.get(i).get("address").asText();
+
+                    completableFuturesList.add(
+                            CompletableFuture.supplyAsync(() -> getHostInformationAsJson(nameI, addressI), forkJoinPool)
+                    );
                 }
 
-                stringBuilder.append(getResponse(PROPERTIES.getAgents().get(PROPERTIES.getAgents().size() - 1).split(",")[0]));
+                try {
+                    //combinedFuture.get();
 
+                    stringBuilder.append(
+                            completableFuturesList
+                                    .stream()
+                                    .map(
+                                            CompletableFuture::join
+                                    )
+                                    .collect(
+                                            Collectors.joining(",")
+                                    )
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+                //stringBuilder.append(",").append(getHostInformationAsJson(hosts.get(hosts.size() - 1).get("name").asText(), hosts.get(hosts.size() - 1).get("address").asText()));
 
-                // Retrieve information for agent if only one is configured
+                // Retrieve information for host if only one is configured
             } else {
 
-                stringBuilder.append(getResponse(PROPERTIES.getAgents().get(0).split(",")[0]));
+                stringBuilder.append(getHostInformationAsJson(hosts.get(0).get("name").asText(), hosts.get(0).get("address").asText()));
 
             }
 
             stringBuilder.append("]}");
 
-            this.agentInformation = stringBuilder.toString();
+            info = stringBuilder.toString();
 
         }
+
+        this.hostsInformation = info;
 
         LOG.info("Retrieved information.");
 
     }
 
     /**
-     * Retrieve agents information.
+     * Acquire status information for a given host with name <code>name</code> and address <code>address</code>.
      * @author Griefed
-     * @return String in JSON format. Returns information about the configured agent(s).
+     * @param name {@link String} The name of the host.
+     * @param address {@link String} The address of the host to check.
+     * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
      */
-    public String retrieveAgentsInformation() {
+    private String getHostInformationAsJson(String name, String address) {
+        String status = WEB_UTILITIES.getHostStatus(address);
+        String ip = null;
+        int code;
+        boolean hostAvailable = false;
 
-        if (agentInformation == null || agentInformation.length() == 0) {
-            setAgentsInformation();
+        ip = WEB_UTILITIES.getIpOfHost(address);
+        hostAvailable = WEB_UTILITIES.ping(address, ip);
+        code = WEB_UTILITIES.getHostCode(address);
+
+        if ((code != 200 && code != 301) || !status.matches("^(OK|REDIRECT)$")) {
+            sendNotification(name + " (" + address + ") ",status);
         }
 
-        return agentInformation;
-    }
-
-    /**
-     * Get information from an agent. If the HttpStatus is OK, the response is returned. If it is not, status 1 is returned,
-     * indicating that the agent has problems.
-     * @author Griefed
-     * @param agent The agent to query.
-     * @return String in JSON format. Returns the information gathered from the agent.
-     */
-    private String getResponse(String agent) {
-        // TODO: Implement token passing
-        ResponseEntity<String> response;
-        InetAddress address;
-
-        try {
-
-            String ping = agent.replace("http://","").replace("https://","");
-
-            if (ping.contains(":")) {
-                ping = ping.replace(ping.substring(ping.lastIndexOf(":")), "");
-            }
-
-            LOG.info("Ping address: " + ping);
-
-            address = InetAddress.getByName(ping);
-
-        } catch (UnknownHostException ex) {
-
-            LOG.error("Host " + agent + " unreachable or down.", ex);
-            return String.format(AGENT_DOWN, agent);
-
-        }
-
-        boolean reachable = false;
-
-        if (address != null) {
-
-            try {
-
-                if (address.isReachable(PROPERTIES.getTimeoutConnect() * 1000)) {
-                    reachable = true;
-                }
-
-            } catch (IOException ignored) {}
-
-            if (!reachable) {
-
-                for (int port : PROPERTIES.getPorts()) {
-
-                    try (Socket soc = new Socket()) {
-
-                        soc.connect(new InetSocketAddress(address, port), 1000);
-                        reachable = true;
-
-                    } catch (IOException ignored) {}
-
-                }
-            }
-
-        } else {
-
-            LOG.error("Host " + agent + " unreachable or down.");
-            sendNotification(agent,1);
-            return String.format(AGENT_DOWN, agent);
-
-        }
-
-        if (reachable) {
-
-            try {
-
-                LOG.info(String.format("Retrieving information for %s", agent));
-
-                response = REST_TEMPLATE.getForEntity(agent + "/api/v1/agent", String.class);
-
-                if (response.getStatusCode() == HttpStatus.OK) {
-
-                    return String.format(AGENT_OK, agent) + response.getBody().substring(1);
-
-                } else {
-
-                    LOG.error("Host " + agent + " reachable, but agent not.");
-                    sendNotification(agent,0);
-                    return String.format(AGENT_UNREACHABLE, agent);
-
-                }
-
-            } catch (Exception ex) {
-
-                LOG.error("Host " + agent + " reachable, but agent not.");
-                sendNotification(agent,0);
-                return String.format(AGENT_UNREACHABLE, agent);
-            }
-
-        } else {
-
-            LOG.error("Host " + agent + " unreachable or down.");
-            sendNotification(agent,1);
-            return String.format(AGENT_DOWN, agent);
-
-        }
-
-
+        return "{" +
+                "\"name\":\"" + name + "\"," +
+                "\"address\":\"" + address + "\"," +
+                "\"ip\":\"" + ip + "\"," +
+                "\"hostAvailable\":" + hostAvailable + "," +
+                "\"status\":\"" + status + "\"," +
+                "\"code\":" + code +
+                "}";
     }
 
     /**
      * Sends a notification,
      * @author Griefed
-     * @param agent String. The agent to mention in the notifications body.
-     * @param status Integer. The statuscode of the agent.
+     * @param host String. The host to mention in the notifications body.
+     * @param status Integer. The statuscode of the host.
      */
-    private void sendNotification(String agent, int status) {
-
+    private void sendNotification(String host, String status) {
         try {
-
-            switch (status) {
-                // Host up, but agent down
-                case 0:
-                    MAIL_NOTIFICATION.sendMailNotification(
-                            "WARNING! Agent unreachable!",
-                            "The host " + agent + " is reachable, but the agent is not. Is an agent setup or down?"
-                    );
-                    break;
-
-                // Host down
-                case 1:
-                    MAIL_NOTIFICATION.sendMailNotification(
-                            "CRITICAL! Host down!",
-                            "The host " + agent + " is unreachable or down!"
-                    );
-                    break;
-
-                // you what mate?
-                default:
-                    LOG.debug("Unknown status: " + status);
-                    break;
-            }
-
+            MAIL_NOTIFICATION.sendMailNotification(
+                    "Host down or unreachable",
+                    "The host " + host + " is unreachable or down! Status: " + status
+            );
         } catch (MessagingException ex) {
 
-            LOG.error("Error sending notification for agent " + agent, ex);
+            LOG.error("Error sending notification for host " + host, ex);
 
         }
 

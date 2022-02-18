@@ -4,13 +4,18 @@ import java.text.SimpleDateFormat
 import org.siouan.frontendgradleplugin.infrastructure.gradle.RunNpm
 
 plugins {
-    id 'org.springframework.boot' version '2.6.3'
-    id "com.github.ben-manes.versions" version '0.41.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'org.siouan.frontend-jdk8' version '6.0.0'
-    id 'jacoco'
     id 'java'
     id 'idea'
+
+    id 'jacoco'
+
+    id "com.github.ben-manes.versions" version '0.42.0'
+
+    id 'edu.sc.seis.launch4j' version '2.5.1'
+    id 'org.siouan.frontend-jdk8' version '6.0.0'
+
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 group = 'de.griefed'
@@ -39,28 +44,6 @@ sourceSets {
     }
 }
 
-def isNonStable = { String version ->
-    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
-    def regex = /^[0-9,.v-]+(-r)?$/
-    return !stableKeyword && !(version ==~ regex)
-}
-
-tasks.named("dependencyUpdates").configure {
-
-    checkForGradleUpdate = true
-    outputFormatter = "json"
-
-    resolutionStrategy {
-        componentSelection {
-            all {
-                if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
-                    reject('Release candidate')
-                }
-            }
-        }
-    }
-}
-
 configurations {
     all {
         // Exclude logging from dependencies because we already have logging set up
@@ -81,7 +64,8 @@ dependencies {
     embed 'org.springframework.boot:spring-boot-starter-web:2.6.3'
     embed 'org.springframework.boot:spring-boot-starter-log4j2:2.6.3'
     embed 'commons-io:commons-io:2.11.0'
-    embed 'com.github.oshi:oshi-core:6.0.0'
+
+    implementation 'org.jetbrains:annotations:22.0.0'
 
     embed 'org.apache.logging.log4j:log4j-api:2.17.1'
     embed 'org.apache.logging.log4j:log4j-core:2.17.1'
@@ -97,6 +81,53 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testImplementation 'org.junit.platform:junit-platform-commons:1.8.2'
+}
+
+// Configure frontend plugin. See documentation at https://siouan.github.io/frontend-gradle-plugin/.
+frontend {
+    packageJsonDirectory = file("${projectDir}/frontend")
+
+    nodeVersion = '16.9.1'
+    nodeInstallDirectory = file("${projectDir}/frontend/node")
+
+    yarnEnabled = false
+    //yarnVersion = "1.22.11"
+    //yarnInstallDirectory = file("${projectDir}/frontend/yarn")
+
+    cleanScript = 'run clean'
+    assembleScript = 'run build'
+
+    // Print the architecture we are running on.
+    System.out.println(String.format("I am running on: %s", System.getProperty("os.arch")))
+
+    // If we are running on arm, specify Node path pattern so arm-builds succeed.
+    if (System.getProperty("os.arch").equals("arm")) {
+        nodeDistributionUrlPathPattern = 'vVERSION/node-vVERSION-linux-armv7l.TYPE'
+    } else if (System.getProperty("os.arch").equals("aarch64")) {
+        nodeDistributionUrlPathPattern = 'vVERSION/node-vVERSION-linux-arm64.TYPE'
+    }
+}
+
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+
+    checkForGradleUpdate = true
+    outputFormatter = "json"
+
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
+                    reject('Release candidate')
+                }
+            }
+        }
+    }
 }
 
 test {
@@ -125,31 +156,6 @@ jacocoTestReport {
 jacoco {
     toolVersion = "0.8.7"
     reportsDirectory = layout.buildDirectory.dir('jacoco')
-}
-
-// Configure frontend plugin. See documentation at https://siouan.github.io/frontend-gradle-plugin/.
-frontend {
-    packageJsonDirectory = file("${projectDir}/frontend")
-
-    nodeVersion = '16.9.1'
-    nodeInstallDirectory = file("${projectDir}/frontend/node")
-
-    yarnEnabled = false
-    //yarnVersion = "1.22.11"
-    //yarnInstallDirectory = file("${projectDir}/frontend/yarn")
-
-    cleanScript = 'run clean'
-    assembleScript = 'run build'
-
-    // Print the architecture we are running on.
-    System.out.println(String.format("I am running on: %s", System.getProperty("os.arch")))
-
-    // If we are running on arm, specify Node path pattern so arm-builds succeed.
-    if (System.getProperty("os.arch").equals("arm")) {
-        nodeDistributionUrlPathPattern = 'vVERSION/node-vVERSION-linux-armv7l.TYPE'
-    } else if (System.getProperty("os.arch").equals("aarch64")) {
-        nodeDistributionUrlPathPattern = 'vVERSION/node-vVERSION-linux-arm64.TYPE'
-    }
 }
 
 // Include specific files in resources folder, like the license and readme.
@@ -199,11 +205,14 @@ bootJar {
     // Customize MANIFEST to include relevant information.
     manifest {
         attributes  "Start-Class"    : "de.griefed.monitoring.Main",
-                "Description"    : "Simple monitoring app. Serves as monitor and agent.",
+                "Description"    : "Simple monitoring app.",
                 "Built-By"       : System.getProperty("user.name"),
                 "Build-Timestamp": new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
                 "Created-By"     : "Gradle ${gradle.gradleVersion}",
                 "Build-Jdk"      : "${System.getProperty('java.version')} (${System.getProperty('java.vendor')} ${System.getProperty('java.vm.version')})",
-                "Build-OS"       : "${System.getProperty('os.name')} ${System.getProperty('os.arch')} ${System.getProperty('os.version')}"
+                "Build-OS"       : "${System.getProperty('os.name')} ${System.getProperty('os.arch')} ${System.getProperty('os.version')}",
+                "Implementation-Version" : "${project.version}",
+                "Implementation-Title"   : "monitoring",
+                "Application-Name": "Monitoring"
     }
 }

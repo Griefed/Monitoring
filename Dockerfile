@@ -1,6 +1,8 @@
 FROM griefed/baseimage-ubuntu-jdk-8:2.0.4 AS builder
 
 ARG BRANCH_OR_TAG=main
+ARG HOSTER=git.griefed.de
+ARG VERSION=dev
 
 RUN \
   apt-get update && apt-get upgrade -y && \
@@ -8,17 +10,20 @@ RUN \
     libatomic1 && \
   git clone \
     -b $BRANCH_OR_TAG \
-      https://github.com/Griefed/Monitoring.git \
+      https://$HOSTER/Griefed/Monitoring.git \
         /tmp/monitoring && \
   chmod +x /tmp/monitoring/gradlew* && \
   cd /tmp/monitoring && \
-  ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build --info -x test && \
-  ls -ahl ./build/libs/
+  ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build -Pversion=$VERSION --info -x test && \
+  ls -ahl ./build/libs/ && \
+  mv \
+    ./build/libs/Monitoring-$VERSION.jar \
+    ./build/libs/monitoring.jar && \
 
 FROM griefed/baseimage-ubuntu-jdk-8:2.0.4
 
 LABEL maintainer="Griefed <griefed@griefed.de>"
-LABEL description="Simple monitoring app. Serves as monitor and agent, depending on how you configure it."
+LABEL description="Simple monitoring app."
 
 ENV LOG4J_FORMAT_MSG_NO_LOOKUPS=true
 
@@ -35,7 +40,7 @@ RUN \
       /root/.cache \
       /tmp/*
 
-COPY --from=builder tmp/monitoring/build/libs/Monitoring.jar /app/monitoring/monitoring.jar
+COPY --from=builder tmp/monitoring/build/libs/monitoring.jar /app/monitoring/monitoring.jar
 
 COPY root/ /
 

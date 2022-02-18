@@ -23,7 +23,6 @@
 package de.griefed.monitoring.utilities;
 
 import de.griefed.monitoring.ApplicationProperties;
-import de.griefed.monitoring.components.RamComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -47,11 +47,14 @@ public class Schedules {
         this.PROPERTIES = injectedApplicationProperties;
     }
 
-    @Scheduled(cron = "${de.griefed.monitoring.schedule.agents}")
-    public void refreshAgentsInformation() {
-        if (!PROPERTIES.isAgent()) {
-            LOG.debug("Current Time: " + dateFormat.format(new Date()) + " - Refreshing agents information.");
-            INFORMATION_SERVICE.setAgentsInformation();
-        }
+    /**
+     * Periodically check and update the status information for the configured hosts. Set <code>de.griefed.monitoring.schedule.hosts</code>
+     * to your desired CRON expression.
+     * @author Griefed
+     */
+    @Scheduled(cron = "${de.griefed.monitoring.schedule.hosts}")
+    public void refreshHosts() {
+        LOG.debug("Current Time: " + dateFormat.format(new Date()) + " - Refreshing hosts information.");
+        INFORMATION_SERVICE.poll();
     }
 }

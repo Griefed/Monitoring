@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # JAVA AND GRADLE
   gradle:
     runs-on: ubuntu-latest
     steps:
@@ -21,11 +20,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build --info
+        run: ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build --info --stacktrace
       - name: List files in libs
         run: ls -ahl build/libs
-
-      # UPLOAD ARTIFACTS
       - uses: actions/upload-artifact@v2
         with:
           name: build-artifacts-gradle
@@ -41,7 +38,6 @@ jobs:
           path: build/reports/tests/test/
           if-no-files-found: warn # 'warn' or 'ignore' are also available, defaults to `warn`
 
-  # DOCKER RELATED
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -49,6 +45,7 @@ jobs:
       - name: Get branch name
         id: branch-name
         uses: tj-actions/branch-names@v5
+      # DOCKER RELATED
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -58,6 +55,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          build-args: BRANCH_OR_TAG=${{ steps.branch-name.outputs.current_branch }}
-          platforms: linux/amd64,linux/arm64
+          build-args: |
+            BRANCH_OR_TAG=${{ steps.branch-name.outputs.current_branch }}
+            HOSTER=github.com
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: false

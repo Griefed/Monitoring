@@ -41,12 +41,6 @@ public class MonitoringJavaApplication {
     private static final Logger LOG = LogManager.getLogger(MonitoringJavaApplication.class);
 
     public static void main(String[] args) {
-
-        if (Boolean.parseBoolean(args[0])) {
-            LOG.info("Running Monitoring as agent.");
-        }
-
         SpringApplication.run(MonitoringJavaApplication.class, args);
-
     }
 }
