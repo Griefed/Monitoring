@@ -18,7 +18,7 @@ RUN \
   ls -ahl ./build/libs/ && \
   mv \
     ./build/libs/Monitoring-$VERSION.jar \
-    ./build/libs/monitoring.jar && \
+    ./build/libs/monitoring.jar
 
 FROM griefed/baseimage-ubuntu-jdk-8:2.0.4
 
