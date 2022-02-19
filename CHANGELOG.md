@@ -1,3 +1,23 @@
+## [1.0.0](https://git.griefed.de/Griefed/Monitoring/compare/0.11.16...1.0.0) (2022-02-19)
+
+
+### 🦊 CI/CD
+
+* Add GitHub workflow for GitHub PRs ([c5cb38a](https://git.griefed.de/Griefed/Monitoring/commit/c5cb38a56f18e72e724db498d0c85705bd37160e))
+* **Dockerfile:** Remove unnecessary command chaining causing the build to fail. ([9bab116](https://git.griefed.de/Griefed/Monitoring/commit/9bab116906a162cbc8e83a23f4b4309ed7cbc28b))
+* **Dockerfile:** Remove unnecessary command chaining causing the build to fail. ([a7ec245](https://git.griefed.de/Griefed/Monitoring/commit/a7ec2455f63a8acc9fe0a694e787d1ff0eaa3115))
+
+
+### 🧨 Breaking changes!
+
+* Complete rework. Gather information for hosts configured in hosts.json in the base-directory. Display problematic hosts first, others last. No longer acquire system-specific information. ([426fcde](https://git.griefed.de/Griefed/Monitoring/commit/426fcde72c2c42483c1cc34ad8b3ed6c5e6d5130))
+
+
+### Other
+
+* **deps:** update ghcr.io/griefed/gitlab-ci-cd docker tag to v2.0.2 ([7a7103e](https://git.griefed.de/Griefed/Monitoring/commit/7a7103e4cdd9d2b773896fb62944faee5a6e0c0d))
+* **deps:** update griefed/baseimage-ubuntu-jdk-8 docker tag to v2.0.5 ([d914a7c](https://git.griefed.de/Griefed/Monitoring/commit/d914a7c7fcfffd574197128f0c29eb163c453d21))
+
 ### [0.11.16](https://git.griefed.de/Griefed/Monitoring/compare/0.11.15...0.11.16) (2021-12-29)
 
 
