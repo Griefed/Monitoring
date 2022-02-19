@@ -17,7 +17,7 @@ RUN \
   ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build -Pversion=$VERSION --info -x test && \
   ls -ahl ./build/libs/ && \
   mv \
-    ./build/libs/Monitoring-$VERSION.jar \
+    ./build/libs/monitoring-$VERSION.jar \
     ./build/libs/monitoring.jar
 
 FROM griefed/baseimage-ubuntu-jdk-8:2.0.5
