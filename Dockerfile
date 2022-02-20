@@ -1,4 +1,4 @@
-FROM griefed/baseimage-ubuntu-jdk-8:2.0.4 AS builder
+FROM griefed/baseimage-ubuntu-jdk-8:2.0.5 AS builder
 
 ARG BRANCH_OR_TAG=main
 ARG HOSTER=git.griefed.de
@@ -17,10 +17,10 @@ RUN \
   ./gradlew about installQuasar cleanFrontend assembleFrontend copyDist build -Pversion=$VERSION --info -x test && \
   ls -ahl ./build/libs/ && \
   mv \
-    ./build/libs/Monitoring-$VERSION.jar \
+    ./build/libs/monitoring-$VERSION.jar \
     ./build/libs/monitoring.jar
 
-FROM griefed/baseimage-ubuntu-jdk-8:2.0.4
+FROM griefed/baseimage-ubuntu-jdk-8:2.0.5
 
 LABEL maintainer="Griefed <griefed@griefed.de>"
 LABEL description="Simple monitoring app."
