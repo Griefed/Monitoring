@@ -3,7 +3,7 @@
     <!--<img class="flex absolute-center" alt="SUK-IT logo" src="~assets/logo.webp">-->
 
     <!-- HOSTS WHICH ARE UP -->
-    <q-card class="row flex-center transparent" style="height: 80%;">
+    <div class="row flex-center transparent" style="padding-bottom: 120px;">
       <q-card flat style="margin: 5px; width: 100%; max-width: 400px;" v-for="host in hostsDown" v-bind:key="host">
         <q-list>
 
@@ -39,21 +39,24 @@
 
         </q-list>
       </q-card>
-    </q-card>
+    </div>
 
     <!-- HOSTS WHICH ARE DOWN -->
-    <q-card class="window-width" style="height: 20%; width: 100%">
-      <q-scroll-area style="height: 200px; width: 100%">
+    <q-card class="fixed-bottom vertical-bottom window-width" style="width: 100%">
+      <q-scroll-area class="vertical-bottom window-width" style="height: 120px; width: 100%">
         <q-card-section class="row wrap flex-center">
 
-            <q-item dense v-ripple v-for="host in hostsOk" v-bind:key="host" style="margin: 10px; width: 100%; max-width: 200px;">
-              <q-item-section>
-                <q-item-label>
-                  <q-badge rounded color="green" floating>{{ host.status }}</q-badge>
-                  {{ host.name }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
+          <q-chip outline v-ripple v-for="host in hostsOk" v-bind:key="host" style="margin: 10px; width: 100%; max-width: 200px;">
+            <q-item-section>
+              <q-item-label class="text-center text-weight-bolder">
+                <q-badge rounded color="green" floating>{{ host.status }}</q-badge>
+                {{ host.name }}
+              </q-item-label>
+            </q-item-section>
+            <q-tooltip v-if="!this.$q.platform.is.mobile">
+              {{ host.address }}
+            </q-tooltip>
+          </q-chip>
 
         </q-card-section>
       </q-scroll-area>
