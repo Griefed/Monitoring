@@ -1,3 +1,15 @@
+### [1.0.1](https://git.griefed.de/Griefed/Monitoring/compare/1.0.0...1.0.1) (2022-02-20)
+
+
+### 🦊 CI/CD
+
+* Provide default hosts.json for Docker container. Cleanup application-properties. Update README. ([ec30419](https://git.griefed.de/Griefed/Monitoring/commit/ec304195d7d9e3be21bd191a4de5f1edf2ef8617))
+
+
+### 🛠 Fixes
+
+* Correctly display problematic hosts and those which are okay. Improve visualization of both. ([19bfb09](https://git.griefed.de/Griefed/Monitoring/commit/19bfb09774293268258cf30a3c1f173e01cdb59d))
+
 ## [1.0.0](https://git.griefed.de/Griefed/Monitoring/compare/0.11.16...1.0.0) (2022-02-19)
 
 
