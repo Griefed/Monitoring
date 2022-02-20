@@ -1,0 +1,12 @@
+{
+  "hosts": [
+    {
+      "name": "Griefed's Homepage",
+      "address": "https://griefed.de"
+    },
+    {
+      "name": "GitHub",
+      "address": "https://github.com"
+    }
+  ]
+}

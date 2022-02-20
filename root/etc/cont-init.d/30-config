@@ -1,5 +1,12 @@
 #!/usr/bin/with-contenv bash
 
+if [ ! -f /config/hosts.json ]; then
+  echo "**** Setting up default configuration. ****"
+  cp -f \
+    /defaults/hosts.json \
+    /config/hosts.json
+fi
+
 chown -R \
   grfd:grfd \
     /app/monitoring \
