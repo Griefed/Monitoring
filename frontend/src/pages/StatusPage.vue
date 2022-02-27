@@ -29,10 +29,23 @@
 
           <q-item>
             <q-item-section top>
-              <q-item-label lines="1">
+              <q-item-label lines="3">
                 <span class="text-weight-bolder text-red-8 right">{{ host.status }}</span>
                 <span class="text-weight-bolder">{{host.address}}</span><br>
-                <span v-if="!host.address.includes(host.ip) && host.ip !== 'null'" class="text-weight-bolder">{{host.ip}}</span>
+                <q-chip
+                  v-if="host.hostAvailable && host.ip !== 'null'"
+                  class="text-weight-bolder"
+                  dense
+                  color="green"
+                  :label="host.ip"
+                />
+                <q-chip
+                  v-if="!host.hostAvailable && host.ip !== 'null'"
+                  class="text-weight-bolder"
+                  dense
+                  color="red"
+                  :label="host.ip"
+                />
               </q-item-label>
             </q-item-section>
           </q-item>
