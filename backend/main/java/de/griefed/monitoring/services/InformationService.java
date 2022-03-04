@@ -195,14 +195,35 @@ public class InformationService {
      * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
      */
     private String getHostInformationAsJson(String name, String address) {
-        String status = WEB_UTILITIES.getHostStatus(address);
-        String ip = null;
+
+        String status;
+        String ip;
+
         int code;
+
         boolean hostAvailable = false;
 
-        ip = WEB_UTILITIES.getIpOfHost(address);
-        hostAvailable = WEB_UTILITIES.ping(address, ip);
-        code = WEB_UTILITIES.getHostCode(address);
+        if (address.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+
+            ip = address;
+            code = 418;
+            hostAvailable = WEB_UTILITIES.ping(ip);
+
+            if (hostAvailable) {
+                status = "OK";
+                code = 200;
+            } else {
+                status = "DOWN";
+            }
+
+        } else {
+
+            ip = WEB_UTILITIES.getIpOfHost(address);
+            code = WEB_UTILITIES.getHostCode(address);
+            status = WEB_UTILITIES.getHostStatus(address);
+            hostAvailable = WEB_UTILITIES.ping(address, ip);
+
+        }
 
         if ((code != 200 && code != 301) || !status.matches("^(OK|REDIRECT)$")) {
             sendNotification(name + " (" + address + ") ",status);

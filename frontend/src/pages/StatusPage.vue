@@ -125,12 +125,7 @@ export default defineComponent({
         console.log("Encountered an error fetching host information: " + error);
 
       });
-    },
-
-    refreshValues() {
-      this.updateHosts()
     }
-
   },
   mounted() {
     api.get('/polling').then(response => {
@@ -138,7 +133,7 @@ export default defineComponent({
       this.polling = response.data.polling;
 
       setInterval(() => {
-        this.refreshValues()
+        this.updateHosts()
       }, parseInt(this.polling));
 
     }).catch(error => {

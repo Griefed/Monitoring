@@ -179,4 +179,22 @@ public class WebUtilities {
         return available;
     }
 
+    /**
+     * Check the status of a given IP-address.
+     * @author Griefed
+     * @param ip {@link String} The IP-address of the host.
+     * @return {@link Boolean} True if the host is reachable/available.
+     */
+    public boolean ping(String ip) {
+        boolean available = false;
+
+        try {
+            available = InetAddress.getByName(ip).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
+        } catch (IOException ignored) {
+
+        }
+
+        return available;
+    }
+
 }
