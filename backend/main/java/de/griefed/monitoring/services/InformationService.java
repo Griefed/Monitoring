@@ -54,7 +54,7 @@ public class InformationService {
     private final MailNotification MAIL_NOTIFICATION;
     private final WebUtilities WEB_UTILITIES;
 
-    private String hostsInformation = "";
+    private String hostsInformation = "{\"hosts\": []}";
 
     /**
      * Constructor responsible for DI.
@@ -71,6 +71,8 @@ public class InformationService {
         this.APPLICATION_PROPERTIES = injectedApplicationProperties;
         this.MAIL_NOTIFICATION = injectedMailNotification;
         this.WEB_UTILITIES = injectedWebUtilities;
+
+        poll();
     }
 
     /**
@@ -79,11 +81,6 @@ public class InformationService {
      * @return String in JSON format. Returns information about the configured host(s).
      */
     public String retrieveHostsInformation() {
-
-        if (hostsInformation == null || hostsInformation.length() == 0) {
-            poll();
-        }
-
         return hostsInformation;
     }
 
