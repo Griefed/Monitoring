@@ -97,18 +97,11 @@ module.exports = configure(function (ctx) {
       // Quasar plugins
       plugins: [
         'Notify',
-        'Loading',
-        'LoadingBar',
         'AppFullscreen',
         'Cookies'
       ],
 
       config: {
-        loadingBar: {
-          color: 'accent',
-          size: '1px',
-          position: 'bottom'
-        },
         brand: {
           primary:   '#325358',
           secondary: '#c0ffee',
@@ -168,7 +161,7 @@ module.exports = configure(function (ctx) {
         description: `Simple monitoring app. Serves as monitor and agent`,
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#ffffff',
+        background_color: '#325358',
         theme_color: '#325358',
         icons: [
           {
