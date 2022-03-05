@@ -44,7 +44,8 @@ Here's an example for a `hosts.json`-file:
   "hosts": [
     {
       "name": "Griefed's Homepage",
-      "address": "https://griefed.de"
+      "address": "https://griefed.de",
+      "ports": "9001,9002,9003,9004,9005"
     },
     {
       "name": "Griefed's Git Haven",
@@ -66,32 +67,25 @@ Here's an example for a `hosts.json`-file:
 }
 ```
 
+Each configured host can have a set of `ports` with which the host availability is checked in case a regular ping fails.
+If no host-individual port setting is available, the globally configured ports from the property `de.griefed.monitoring.host.ports` are
+used. If you set the property `de.griefed.monitoring.ports.additive` to `true`, the two settings are combined, resulting
+in a singular list consisting of host-individual ports *and* globally configured ports.
+
+Bear in mind that the more ports you configure, the longer it can take to determine whether a host is available.
+
 # Default configuration
 
 Default values are: 
 
 ```properties
-# suppress inspection "SpringBootApplicationProperties" for whole file
 server.port=8080
-server.error.whitelabel.enabled=false
-server.tomcat.basedir=.
-server.tomcat.accesslog.enabled=true
-server.tomcat.accesslog.directory=logs
-server.tomcat.accesslog.file-date-format=_yyyy-MM-dd
-server.tomcat.accesslog.prefix=tomcat_access
-server.tomcat.accesslog.suffix=.log
-server.tomcat.accesslog.pattern=common
-spring.output.ansi.enabled=ALWAYS
-server.error.include-message=ALWAYS
-server.error.include-stacktrace=ALWAYS
-spring.application.name=Monitoring
-de.griefed.monitoring.timeout.connect=3
-de.griefed.monitoring.timeout.read=3
-# To disable a cronjob, set it to -
+...
 de.griefed.monitoring.schedule.hosts=0 */5 * * * *
-# Interval at which the frontend should refresh visible data
 de.griefed.monitoring.polling=5000
-# To leave emailing disabled, do not edit the mail.* properties
+de.griefed.monitoring.thread.count=100
+de.griefed.monitoring.host.ports=20,21,22,80,443,8080,8443
+de.griefed.monitoring.ports.additive=false
 mail.smtp.starttls.enable=true
 mail.smtp.auth=true
 mail.smtp.host=smtp.example.com
@@ -100,8 +94,24 @@ mail.recipients=example@example.com
 mail.from=monitoring@example.com
 mail.user=example@example.com
 mail.password=123456
-de.griefed.monitoring.thread.count=100
+
 ```
+
+| Property                             | Description                                                                                |
+|--------------------------------------|--------------------------------------------------------------------------------------------|
+| de.griefed.monitoring.schedule.hosts | Cron schedule at which host information is refreshed. To disable a cronjob, set it to -    |
+| de.griefed.monitoring.polling        | Milliseconds. Interval at which the frontend should refresh visible data.                  |
+| de.griefed.monitoring.thread.count   | Number of threads to use for host information acquisition.                                 |
+| de.griefed.monitoring.host.ports     | Global configuration for ports with which to check for host availability.                  |
+| de.griefed.monitoring.ports.additive | Whether globally configured ports are to be added to host-individual ports, if configured. |
+| mail.smtp.starttls.enable            | Whether STARTTLS is enabled.                                                               |
+| mail.smtp.auth                       | Whether authentication is required.                                                        |
+| mail.smtp.host                       | Your SMPT host.                                                                            |
+| mail.smtp.port                       | The SMTP port of your host.                                                                |
+| mail.recipients                      | The recipient of the notification email.                                                   |
+| mail.from                            | The name from which the email is sent.                                                     |
+| mail.user                            | Username for your SMTP host.                                                               |
+| mail.password                        | Password for your SMTP host.                                                               |
 
 The docker image comes with a prepared `hosts.json`-file:
 

@@ -247,6 +247,7 @@ public class InformationService {
      * @author Griefed
      * @param name {@link String} The name of the host.
      * @param address {@link String} The address of the host to check.
+     * @param ports {@link List} Integer List of ports with which to check for host availability.
      * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
      */
     private String getHostInformationAsJson(String name, String address, List<Integer> ports) {
@@ -256,7 +257,7 @@ public class InformationService {
 
         int code;
 
-        boolean hostAvailable = false;
+        boolean hostAvailable;
 
         if (address.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
 
