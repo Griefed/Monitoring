@@ -72,6 +72,10 @@
 </a>
 <h2 class="title">A</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#additivePorts--">additivePorts()</a></span> - Method in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
+<dd>
+<div class="block">Getter for whether default ports should be added to host-configured ports.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#APPLICATION_PROPERTIES">APPLICATION_PROPERTIES</a></span> - Variable in class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/WebUtilities.html#APPLICATION_PROPERTIES">APPLICATION_PROPERTIES</a></span> - Variable in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/WebUtilities.html" title="class in de.griefed.monitoring.utilities">WebUtilities</a></dt>
@@ -90,6 +94,10 @@
 </a>
 <h2 class="title">C</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/WebUtilities.html#checkAvailability-java.lang.String-java.util.List-">checkAvailability(String, List&lt;Integer&gt;)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/WebUtilities.html" title="class in de.griefed.monitoring.utilities">WebUtilities</a></dt>
+<dd>
+<div class="block">Check the availability of a host with a socket connection and a list of ports.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/Main.html#createFile-java.io.File-">createFile(File)</a></span> - Static method in class de.griefed.monitoring.<a href="de/griefed/monitoring/Main.html" title="class in de.griefed.monitoring">Main</a></dt>
 <dd>
 <div class="block">Copy a file from inside our JAR to the host filesystem.</div>
@@ -130,7 +138,7 @@
 <dd>
 <div class="block">Acquire the response from a given String-URL.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#getHostInformationAsJson-java.lang.String-java.lang.String-">getHostInformationAsJson(String, String)</a></span> - Method in class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#getHostInformationAsJson-java.lang.String-java.lang.String-java.util.List-">getHostInformationAsJson(String, String, List&lt;Integer&gt;)</a></span> - Method in class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
 <dd>
 <div class="block">Acquire status information for a given host with name <code>name</code> and address <code>address</code>.</div>
 </dd>
@@ -176,13 +184,13 @@
 <dd>
 <div class="block">Getter for the number of threads used for updating host information.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#getTimeoutAvailability--">getTimeoutAvailability()</a></span> - Method in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
+<dd>
+<div class="block">Getter for the number of seconds to wait until a read timeout is triggered for getting information from hosts.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#getTimeoutConnect--">getTimeoutConnect()</a></span> - Method in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
 <dd>
 <div class="block">Getter for the number of seconds to wait until a connection timeout is triggered for getting information from hosts.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#getTimeoutRead--">getTimeoutRead()</a></span> - Method in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
-<dd>
-<div class="block">Getter for the number of seconds to wait until a read timeout is triggered for getting information from hosts.</div>
 </dd>
 </dl>
 <a name="I:H">
@@ -297,9 +305,13 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.lang.String-">ping(String, String)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/WebUtilities.html" title="class in de.griefed.monitoring.utilities">WebUtilities</a></dt>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.lang.String-java.util.List-">ping(String, String, List&lt;Integer&gt;)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/WebUtilities.html" title="class in de.griefed.monitoring.utilities">WebUtilities</a></dt>
 <dd>
 <div class="block">Check the status of a given host and IP-address.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.util.List-">ping(String, List&lt;Integer&gt;)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/WebUtilities.html" title="class in de.griefed.monitoring.utilities">WebUtilities</a></dt>
+<dd>
+<div class="block">Check the status of a given IP-address.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#poll--">poll()</a></span> - Method in class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
 <dd>
@@ -355,13 +367,13 @@
 <dd>
 <div class="block">Number of threads used for updating host information.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#timeoutAvailability">timeoutAvailability</a></span> - Variable in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
+<dd>
+<div class="block">Seconds to wait until a read timeout is triggered for getting information from hosts.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#timeoutConnect">timeoutConnect</a></span> - Variable in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
 <dd>
 <div class="block">Seconds to wait until a connection timeout is triggered for getting information from hosts.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#timeoutRead">timeoutRead</a></span> - Variable in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
-<dd>
-<div class="block">Seconds to wait until a read timeout is triggered for getting information from hosts.</div>
 </dd>
 </dl>
 <a name="I:W">

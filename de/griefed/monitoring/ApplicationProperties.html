@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -172,14 +172,14 @@ extends java.util.Properties</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#timeoutConnect">timeoutConnect</a></span></code>
-<div class="block">Seconds to wait until a connection timeout is triggered for getting information from hosts.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#timeoutAvailability">timeoutAvailability</a></span></code>
+<div class="block">Seconds to wait until a read timeout is triggered for getting information from hosts.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>private int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#timeoutRead">timeoutRead</a></span></code>
-<div class="block">Seconds to wait until a read timeout is triggered for getting information from hosts.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#timeoutConnect">timeoutConnect</a></span></code>
+<div class="block">Seconds to wait until a connection timeout is triggered for getting information from hosts.</div>
 </td>
 </tr>
 </table>
@@ -224,39 +224,45 @@ extends java.util.Properties</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>java.lang.Boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#additivePorts--">additivePorts</a></span>()</code>
+<div class="block">Getter for whether default ports should be added to host-configured ports.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>com.fasterxml.jackson.databind.JsonNode</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getHosts--">getHosts</a></span>()</code>
 <div class="block">Getter for a list of hosts to gather information from.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getPollingRate--">getPollingRate</a></span>()</code>
 <div class="block">The polling rate at which to update the webfrontend.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.Integer&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getPorts--">getPorts</a></span>()</code>
 <div class="block">Getter for a list of ports to scan in <a href="../../../de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services"><code>InformationService</code></a> for host availability.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getThreadCount--">getThreadCount</a></span>()</code>
 <div class="block">Getter for the number of threads used for updating host information.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getTimeoutAvailability--">getTimeoutAvailability</a></span>()</code>
+<div class="block">Getter for the number of seconds to wait until a read timeout is triggered for getting information from hosts.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getTimeoutConnect--">getTimeoutConnect</a></span>()</code>
 <div class="block">Getter for the number of seconds to wait until a connection timeout is triggered for getting information from hosts.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../de/griefed/monitoring/ApplicationProperties.html#getTimeoutRead--">getTimeoutRead</a></span>()</code>
-<div class="block">Getter for the number of seconds to wait until a read timeout is triggered for getting information from hosts.</div>
 </td>
 </tr>
 </table>
@@ -333,14 +339,14 @@ private&nbsp;int timeoutConnect</pre>
 <div class="block">Seconds to wait until a connection timeout is triggered for getting information from hosts.</div>
 </li>
 </ul>
-<a name="timeoutRead">
+<a name="timeoutAvailability">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>timeoutRead</h4>
-<pre>@Value(value="${de.griefed.monitoring.timeout.read}")
-private&nbsp;int timeoutRead</pre>
+<h4>timeoutAvailability</h4>
+<pre>@Value(value="${de.griefed.monitoring.timeout.availability}")
+private&nbsp;int timeoutAvailability</pre>
 <div class="block">Seconds to wait until a read timeout is triggered for getting information from hosts.</div>
 </li>
 </ul>
@@ -417,6 +423,20 @@ public&nbsp;ApplicationProperties(<a href="../../../de/griefed/monitoring/utilit
 </dl>
 </li>
 </ul>
+<a name="additivePorts--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>additivePorts</h4>
+<pre>public&nbsp;java.lang.Boolean&nbsp;additivePorts()</pre>
+<div class="block">Getter for whether default ports should be added to host-configured ports.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>Boolean</code> True if default ports should be added to host-configured ports.</dd>
+</dl>
+</li>
+</ul>
 <a name="getTimeoutConnect--">
 <!--   -->
 </a>
@@ -431,13 +451,13 @@ public&nbsp;ApplicationProperties(<a href="../../../de/griefed/monitoring/utilit
 </dl>
 </li>
 </ul>
-<a name="getTimeoutRead--">
+<a name="getTimeoutAvailability--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getTimeoutRead</h4>
-<pre>public&nbsp;int&nbsp;getTimeoutRead()</pre>
+<h4>getTimeoutAvailability</h4>
+<pre>public&nbsp;int&nbsp;getTimeoutAvailability()</pre>
 <div class="block">Getter for the number of seconds to wait until a read timeout is triggered for getting information from hosts.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>

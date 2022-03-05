@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -169,33 +169,48 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>private boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#checkAvailability-java.lang.String-java.util.List-">checkAvailability</a></span>(java.lang.String&nbsp;address,
+                 java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</code>
+<div class="block">Check the availability of a host with a socket connection and a list of ports.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getHostCode-java.lang.String-">getHostCode</a></span>(@NotNull java.lang.String&nbsp;hostUrlAsString)</code>
 <div class="block">Acquire the response from a given String-URL.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getHostCode-java.net.URL-">getHostCode</a></span>(@NotNull java.net.URL&nbsp;hostUrl)</code>
 <div class="block">Acquire the response from a given URL.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getHostStatus-java.lang.String-">getHostStatus</a></span>(@NotNull java.lang.String&nbsp;hostUrlAsString)</code>
 <div class="block">Acquire the status of the specified host.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getIpOfHost-java.lang.String-">getIpOfHost</a></span>(java.lang.String&nbsp;address)</code>
 <div class="block">Acquire the IP-address of a given host.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.lang.String-">ping</a></span>(java.lang.String&nbsp;address,
-    java.lang.String&nbsp;ip)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.util.List-">ping</a></span>(java.lang.String&nbsp;ip,
+    java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</code>
+<div class="block">Check the status of a given IP-address.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.lang.String-java.util.List-">ping</a></span>(java.lang.String&nbsp;address,
+    java.lang.String&nbsp;ip,
+    java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</code>
 <div class="block">Check the status of a given host and IP-address.</div>
 </td>
 </tr>
@@ -336,19 +351,57 @@ public&nbsp;WebUtilities(<a href="../../../../de/griefed/monitoring/ApplicationP
 </dl>
 </li>
 </ul>
-<a name="ping-java.lang.String-java.lang.String-">
+<a name="ping-java.lang.String-java.lang.String-java.util.List-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ping</h4>
 <pre>public&nbsp;boolean&nbsp;ping(java.lang.String&nbsp;address,
-                    java.lang.String&nbsp;ip)</pre>
+                    java.lang.String&nbsp;ip,
+                    java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</pre>
 <div class="block">Check the status of a given host and IP-address.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>address</code> - <code>String</code> The address of the host.</dd>
 <dd><code>ip</code> - <code>String</code> The IP-address of the host.</dd>
+<dd><code>ports</code> - <code>List</code> Ports with which to check for host availability. Use <code>null</code> if you want to use
+                          the default list of ports.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>Boolean</code> True if the host is reachable/available.</dd>
+</dl>
+</li>
+</ul>
+<a name="ping-java.lang.String-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ping</h4>
+<pre>public&nbsp;boolean&nbsp;ping(java.lang.String&nbsp;ip,
+                    java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</pre>
+<div class="block">Check the status of a given IP-address.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ip</code> - <code>String</code> The IP-address of the host.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>Boolean</code> True if the host is reachable/available.</dd>
+</dl>
+</li>
+</ul>
+<a name="checkAvailability-java.lang.String-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>checkAvailability</h4>
+<pre>private&nbsp;boolean&nbsp;checkAvailability(java.lang.String&nbsp;address,
+                                  java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</pre>
+<div class="block">Check the availability of a host with a socket connection and a list of ports.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>address</code> - <code>String</code> Address of the host. IP preferred.</dd>
+<dd><code>ports</code> - <code>List</code> Integer list of ports to check with.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>Boolean</code> True if the host is reachable/available.</dd>
 </dl>
