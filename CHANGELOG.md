@@ -1,3 +1,30 @@
+## [1.2.0](https://git.griefed.de/Griefed/Monitoring/compare/1.1.0...1.2.0) (2022-03-05)
+
+
+### 💎 Improvements
+
+* **Host Availability:** When ping fails, check with socket connection and configurable ports. ([8fed7d4](https://git.griefed.de/Griefed/Monitoring/commit/8fed7d427a441a7314eb6b152b7d918bb4a23664))
+* **Host information:** Retrieve host information at startup to prevent multiple pollings running at once. ([c4baed6](https://git.griefed.de/Griefed/Monitoring/commit/c4baed603582b24f446462a2ad58a3604b4835bb))
+* **Host information:** When the address is only an IP address matching d+.d+.d+.d+, only check for host availability. ([870cf42](https://git.griefed.de/Griefed/Monitoring/commit/870cf4240ea4ececb8bc4659539330106f6b72d0))
+* **Status Page:** Improve visuals and identification of problematic hosts. ([cc057f0](https://git.griefed.de/Griefed/Monitoring/commit/cc057f0cf99e7c40f0a8dc8f16ab2db1983f8c30))
+
+
+### 📔 Docs
+
+* Add documentation for properties, ports. Add missing param in javadocs. ([069d1f7](https://git.griefed.de/Griefed/Monitoring/commit/069d1f7fbad9b7b037f063da5cf3a0f5b4b3546b))
+
+
+### 🛠 Fixes
+
+* **Logging:** Split Monitoring log-level so Spring and Monitoring logging have separate log-levels, allowing for more control. ([c8f1c00](https://git.griefed.de/Griefed/Monitoring/commit/c8f1c004c4cfb6271edcfe9a5359af3080847dd0))
+
+
+### Other
+
+* **deps:** update dependency ghcr.io/griefed/gitlab-ci-cd to v2.0.4 ([e4e269c](https://git.griefed.de/Griefed/Monitoring/commit/e4e269c3a68501d025c33a942ae457333a9b47b3))
+* **deps:** update dependency griefed/baseimage-ubuntu-jdk-8 to v2.0.7 ([dab1080](https://git.griefed.de/Griefed/Monitoring/commit/dab1080423ccff237816040d59eb9685412c78ff))
+* **README:** Replace image in docker-compose example ([b86c11b](https://git.griefed.de/Griefed/Monitoring/commit/b86c11bd35dca9ec6ad2c1ebb5e0ffe7bed2a5fc))
+
 ## [1.1.0](https://git.griefed.de/Griefed/Monitoring/compare/1.0.1...1.1.0) (2022-02-27)
 
 
