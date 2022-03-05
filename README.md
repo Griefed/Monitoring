@@ -138,7 +138,7 @@ The docker image comes with a prepared `hosts.json`-file:
 version: '3'
 services:
   monitoring:
-    image: ghcr.io/suk-it/monitoring:latest
+    image: griefed/monitoring:latest
     container_name: monitoring
     restart: unless-stopped
     environment:

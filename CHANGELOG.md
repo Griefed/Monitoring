@@ -1,3 +1,24 @@
+## [1.1.0](https://git.griefed.de/Griefed/Monitoring/compare/1.0.1...1.1.0) (2022-02-27)
+
+
+### 💎 Improvements
+
+* **Host Availability:** Depending on hostAvailable, and whether an IP address was acquired, display in green/red whether host is available. ([7611742](https://git.griefed.de/Griefed/Monitoring/commit/7611742bf622d5dcd5ed5df7f4f43e318e380c10))
+
+
+### 🦊 CI/CD
+
+* **GitHub:** Correctly execute (pre)release actions when tags are pushed. ([6629c13](https://git.griefed.de/Griefed/Monitoring/commit/6629c1304d7e4f554b575ffdaba889669b25103d))
+* **Releases:** Create minor release upon improv-commit. ([e45c4db](https://git.griefed.de/Griefed/Monitoring/commit/e45c4db67cab9bbc49eb6bb5f8eb41f5ff57f653))
+
+
+### Other
+
+* **deps:** update dependency ghcr.io/griefed/gitlab-ci-cd to v2.0.3 ([c68c840](https://git.griefed.de/Griefed/Monitoring/commit/c68c840d76ea7976e6d962b4649d199b89c3798f))
+* **deps:** update dependency griefed/baseimage-ubuntu-jdk-8 to v2.0.6 ([196ba0b](https://git.griefed.de/Griefed/Monitoring/commit/196ba0b7eed1760479b820580997aa6abc4f5a0a))
+* **deps:** update jamesives/github-pages-deploy-action action to v4.2.5 ([ca4ec47](https://git.griefed.de/Griefed/Monitoring/commit/ca4ec47257116972c0b080438fd37c2ec98fa380))
+* **deps:** update plugin edu.sc.seis.launch4j to v2.5.2 ([8bbdc69](https://git.griefed.de/Griefed/Monitoring/commit/8bbdc6964cc95bae2dd409c135a9104af9ee1de9))
+
 ### [1.0.1](https://git.griefed.de/Griefed/Monitoring/compare/1.0.0...1.0.1) (2022-02-20)
 
 
