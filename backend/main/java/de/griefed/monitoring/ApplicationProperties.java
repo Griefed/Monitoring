@@ -60,8 +60,8 @@ public class ApplicationProperties extends Properties {
     /**
      * Seconds to wait until a read timeout is triggered for getting information from hosts.
      */
-    @Value("${de.griefed.monitoring.timeout.read}")
-    private int timeoutRead = 5;
+    @Value("${de.griefed.monitoring.timeout.availability}")
+    private int timeoutAvailability = 5;
 
     /**
      * Number of threads used for updating host information.
@@ -128,21 +128,30 @@ public class ApplicationProperties extends Properties {
 
         List<Integer> ports = new ArrayList<>(1000);
 
-        if (getProperty("de.griefed.monitoring.scan.ports").contains(",")) {
+        if (getProperty("de.griefed.monitoring.host.ports").contains(",")) {
 
             List<String> portsAsStrings = new ArrayList<String>(
                     Arrays.asList(
-                            getProperty("de.griefed.monitoring.scan.ports").split(",")));
+                            getProperty("de.griefed.monitoring.host.ports").split(",")));
 
             portsAsStrings.forEach(entry -> ports.add(Integer.parseInt(entry)));
 
         } else {
 
-            ports.add(Integer.parseInt(getProperty("de.griefed.monitoring.scan.ports")));
+            ports.add(Integer.parseInt(getProperty("de.griefed.monitoring.host.ports")));
 
         }
 
         return ports;
+    }
+
+    /**
+     * Getter for whether default ports should be added to host-configured ports.
+     * @author Griefed
+     * @return {@link Boolean} True if default ports should be added to host-configured ports.
+     */
+    public Boolean additivePorts() {
+        return Boolean.parseBoolean(getProperty("de.griefed.ports.additive"));
     }
 
     /**
@@ -159,8 +168,8 @@ public class ApplicationProperties extends Properties {
      * @author Griefed
      * @return Integer. Returns the number of seconds as an int.
      */
-    public int getTimeoutRead() {
-        return timeoutRead;
+    public int getTimeoutAvailability() {
+        return timeoutAvailability;
     }
 
     /**

@@ -127,30 +127,71 @@ public class InformationService {
                 String lastName = hosts.get(hosts.size() - 1).get("name").asText();
                 String lastAddress = hosts.get(hosts.size() - 1).get("address").asText();
 
+                List<Integer> firstPorts = new ArrayList<>(100);
+                List<Integer> lastPorts = new ArrayList<>(100);
+
+                try {
+                    String[] ports = hosts.get(0).get("ports").asText().split(",");
+                    for (String port : ports) {
+                        try {
+                            firstPorts.add(Integer.parseInt(port));
+                        } catch (NumberFormatException ex) {
+                            LOG.error("Couldn't parse String to Integer: " + port);
+                        }
+
+                    }
+                } catch (Exception ignored) {
+                }
+
+                try {
+                    String[] ports = hosts.get(hosts.size() - 1).get("ports").asText().split(",");
+                    for (String port : ports) {
+
+                        try {
+                            lastPorts.add(Integer.parseInt(port));
+                        } catch (NumberFormatException ex) {
+                            LOG.error("Couldn't parse String to Integer: " + port);
+                        }
+
+                    }
+                } catch (Exception ignored) {
+                }
+
                 completableFuturesList.add(
-                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(firstName, firstAddress), forkJoinPool)
+                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(firstName, firstAddress, firstPorts), forkJoinPool)
                 );
 
                 completableFuturesList.add(
-                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(lastName, lastAddress), forkJoinPool)
+                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(lastName, lastAddress, lastPorts), forkJoinPool)
                 );
-
-                //stringBuilder.append(getHostInformationAsJson(hosts.get(0).get("name").asText(), hosts.get(0).get("address").asText())).append(",");
 
                 for (int i = 1; i < hosts.size() - 1; i++) {
-
-                    //stringBuilder.append(getHostInformationAsJson(hosts.get(i).get("name").asText(), hosts.get(i).get("address").asText())).append(",");
 
                     String nameI = hosts.get(i).get("name").asText();
                     String addressI = hosts.get(i).get("address").asText();
 
+                    List<Integer> portsI = new ArrayList<>(100);
+
+                    try {
+                        String[] ports = hosts.get(i).get("ports").asText().split(",");
+                        for (String port : ports) {
+
+                            try {
+                                portsI.add(Integer.parseInt(port));
+                            } catch (NumberFormatException ex) {
+                                LOG.error("Couldn't parse String to Integer: " + port);
+                            }
+
+                        }
+                    } catch (Exception ignored) {
+                    }
+
                     completableFuturesList.add(
-                            CompletableFuture.supplyAsync(() -> getHostInformationAsJson(nameI, addressI), forkJoinPool)
+                            CompletableFuture.supplyAsync(() -> getHostInformationAsJson(nameI, addressI, portsI), forkJoinPool)
                     );
                 }
 
                 try {
-                    //combinedFuture.get();
 
                     stringBuilder.append(
                             completableFuturesList
@@ -166,12 +207,26 @@ public class InformationService {
                     e.printStackTrace();
                 }
 
-                //stringBuilder.append(",").append(getHostInformationAsJson(hosts.get(hosts.size() - 1).get("name").asText(), hosts.get(hosts.size() - 1).get("address").asText()));
-
                 // Retrieve information for host if only one is configured
             } else {
 
-                stringBuilder.append(getHostInformationAsJson(hosts.get(0).get("name").asText(), hosts.get(0).get("address").asText()));
+                List<Integer> oneHostPorts = new ArrayList<>(100);
+
+                try {
+                    String[] ports = hosts.get(0).get("ports").asText().split(",");
+                    for (String port : ports) {
+
+                        try {
+                            oneHostPorts.add(Integer.parseInt(port));
+                        } catch (NumberFormatException ex) {
+                            LOG.error("Couldn't parse String to Integer: " + port);
+                        }
+
+                    }
+                } catch (Exception ignored) {
+                }
+
+                stringBuilder.append(getHostInformationAsJson(hosts.get(0).get("name").asText(), hosts.get(0).get("address").asText(), oneHostPorts));
 
             }
 
@@ -194,7 +249,7 @@ public class InformationService {
      * @param address {@link String} The address of the host to check.
      * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
      */
-    private String getHostInformationAsJson(String name, String address) {
+    private String getHostInformationAsJson(String name, String address, List<Integer> ports) {
 
         String status;
         String ip;
@@ -207,7 +262,7 @@ public class InformationService {
 
             ip = address;
             code = 418;
-            hostAvailable = WEB_UTILITIES.ping(ip);
+            hostAvailable = WEB_UTILITIES.ping(ip, ports);
 
             if (hostAvailable) {
                 status = "OK";
@@ -221,7 +276,7 @@ public class InformationService {
             ip = WEB_UTILITIES.getIpOfHost(address);
             code = WEB_UTILITIES.getHostCode(address);
             status = WEB_UTILITIES.getHostStatus(address);
-            hostAvailable = WEB_UTILITIES.ping(address, ip);
+            hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
 
         }
 

@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.net.*;
+import java.util.List;
 
 @Component
 public class WebUtilities {
@@ -99,7 +100,7 @@ public class WebUtilities {
         } catch (ConnectException e) {
             return "CONNECTION REFUSED";
         } catch (IOException e) {
-            return "HOST CRITICAL";
+            return "UNAVAILABLE";
         }
 
         switch (code) {
@@ -119,6 +120,10 @@ public class WebUtilities {
      * @return {@link String} The IP-address of the host.
      */
     public String getIpOfHost(String address) {
+
+        if (address.contains("localhost")) {
+            return "127.0.0.1";
+        }
 
         try {
 
@@ -144,37 +149,38 @@ public class WebUtilities {
      * @author Griefed
      * @param address {@link String} The address of the host.
      * @param ip {@link String} The IP-address of the host.
+     * @param ports {@link List} Ports with which to check for host availability. Use <code>null</code> if you want to use
+     *                          the default list of ports.
      * @return {@link Boolean} True if the host is reachable/available.
      */
-    public boolean ping(String address, String ip) {
+    public boolean ping(String address, String ip, List<Integer> ports) {
         boolean available;
 
         try {
+
             available = InetAddress.getByName(address).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
+
         } catch (IOException e) {
+
             available = false;
         }
 
         if (!available) {
             try {
-                return InetAddress.getByName(ip).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
+
+                available = InetAddress.getByName(ip).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
+
             } catch (IOException ignored) {
 
+                available = false;
             }
         }
 
-        if (!available && address.contains(":")) {
-            String socketAddress = address.replace("http://","").replace("https://","");
+        if (!available) {
 
-            try (Socket soc = new Socket()) {
-
-                soc.connect(new InetSocketAddress(socketAddress.split(":")[0], Integer.parseInt(socketAddress.split(":")[1])), APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
-                available = true;
-
-            } catch (IOException ignored) {}
+            available = checkAvailability(address, ports);
 
         }
-
 
         return available;
     }
@@ -185,13 +191,93 @@ public class WebUtilities {
      * @param ip {@link String} The IP-address of the host.
      * @return {@link Boolean} True if the host is reachable/available.
      */
-    public boolean ping(String ip) {
+    public boolean ping(String ip, List<Integer> ports) {
         boolean available = false;
 
         try {
             available = InetAddress.getByName(ip).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
         } catch (IOException ignored) {
 
+        }
+
+        if (!available) {
+
+            LOG.debug("Ping of " + ip + " failed. Trying socket...");
+            available = checkAvailability(ip, ports);
+
+        }
+
+        return available;
+    }
+
+    /**
+     * Check the availability of a host with a socket connection and a list of ports.
+     * @author Griefed
+     * @param address {@link String} Address of the host. IP preferred.
+     * @param ports {@link List} Integer list of ports to check with.
+     * @return {@link Boolean} True if the host is reachable/available.
+     */
+    private boolean checkAvailability(String address, List<Integer> ports) {
+
+        boolean available = false;
+
+        if (address.contains(":")) {
+
+            address = address.replace(address.substring(address.lastIndexOf(":")),"");
+
+        }
+
+        address = address.replace("http://","").replace("https://","");
+
+        if (address.endsWith("/")) {
+            address = address.replace(address.substring(address.lastIndexOf("/")),"");
+        }
+
+        if (ports == null || ports.size() == 0) {
+            for (int port : APPLICATION_PROPERTIES.getPorts()) {
+
+                try (Socket socket = new Socket()) {
+
+                    socket.connect(
+                            new InetSocketAddress(address, port),
+                            APPLICATION_PROPERTIES.getTimeoutAvailability() * 1000);
+
+                    available = true;
+                    break;
+
+                } catch (IOException ignored) {
+
+                }
+
+            }
+        } else {
+
+            if (APPLICATION_PROPERTIES.additivePorts()) {
+                for (int port : APPLICATION_PROPERTIES.getPorts()) {
+                    if (!ports.contains(port)) {
+                        ports.add(port);
+                    }
+                }
+            }
+
+            LOG.debug("Ports: " + ports);
+
+            for (int port : ports) {
+
+                try (Socket socket = new Socket()) {
+
+                    socket.connect(
+                            new InetSocketAddress(address, port),
+                            APPLICATION_PROPERTIES.getTimeoutAvailability() * 1000);
+
+                    available = true;
+                    break;
+
+                } catch (IOException ignored) {
+
+                }
+
+            }
         }
 
         return available;
