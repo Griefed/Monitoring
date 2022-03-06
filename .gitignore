@@ -47,3 +47,4 @@ out/
 /application.properties
 /hosts.json
 /log4j2.xml
+/Monitoring-*.jar
