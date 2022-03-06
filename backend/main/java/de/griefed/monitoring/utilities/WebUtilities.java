@@ -189,6 +189,7 @@ public class WebUtilities {
      * Check the status of a given IP-address.
      * @author Griefed
      * @param ip {@link String} The IP-address of the host.
+     * @param ports {@link List} Integer List. List of ports with which to check for host availability.
      * @return {@link Boolean} True if the host is reachable/available.
      */
     public boolean ping(String ip, List<Integer> ports) {

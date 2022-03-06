@@ -12,7 +12,7 @@
             :style="this.$q.platform.is.mobile ? 'font-size: 18px;' : 'padding-top: 5px; padding-bottom: 5px;'"
           >
             <q-badge
-              v-if="host.code != 418"
+              v-if="host.code !== 418"
               class="q-mr-xs"
               style="font-size: 16px;"
               floating
@@ -106,6 +106,7 @@
     </q-card>
 
   </q-page>
+
 </template>
 
 <script>
@@ -143,12 +144,10 @@ export default defineComponent({
         address,
         null,
         {
-          noopener: true, // this is set by default for security purposes
-                          // but it can be disabled if specified with a Boolean false value
+          noopener: true,
           menubar: false,
           toolbar: false,
           noreferrer: false,
-          // .....any other window features
         }
       )
     },

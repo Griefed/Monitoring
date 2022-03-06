@@ -6,7 +6,7 @@
         <q-icon name="monitor_heart" style="font-size: 32px;" />
 
         <q-toolbar-title>
-          Monitoring
+          Monitoring  <span style="font-size: 14px; padding-left: 30px;">{{this.store.state.version}}</span>
         </q-toolbar-title>
 
         <q-btn v-if="!this.$q.platform.is.mobile" label="GitHub" style="color: #C0FFEE" type="a" target="_blank" href="https://github.com/SuK-IT/Monitoring">
@@ -68,6 +68,38 @@
     </q-page-container>
 
   </q-layout>
+
+
+  <q-dialog v-model="this.store.state.updateAvailable" v-if="this.store.state.updateReminder">
+    <q-card style="max-width: 1000px;width:750px">
+      <q-card-section>
+        <div class="text-h4 text-weight-bolder text-center">Update available!</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none text-center">
+        <span class="text-h6 text-weight-bolder">Version {{ this.store.state.updateVersion }}</span>
+          <br><br>
+        <span class="text-h6">Available at: {{ this.store.state.updateLink }}</span>
+          <br><br>
+      </q-card-section>
+      <q-card-actions align="right">
+        <q-btn dense label="Visit Release Page" color="primary" type="a" target="_blank" :href="this.store.state.updateLink">
+          <q-tooltip :disable="this.$q.platform.is.mobile">
+            Click here to visit the release page!
+          </q-tooltip>
+        </q-btn>
+        <q-btn dense label="OK" color="primary" v-close-popup>
+          <q-tooltip :disable="this.$q.platform.is.mobile">
+            Close popup.
+          </q-tooltip>
+        </q-btn>
+        <q-btn dense label="Don't remind me again" @click="noReminder()" color="primary" v-close-popup>
+          <q-tooltip :disable="this.$q.platform.is.mobile">
+            Close popup and don't inform about updates again.
+          </q-tooltip>
+        </q-btn>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -90,12 +122,43 @@ export default defineComponent({
     toggleDarkMode() {
       this.$q.dark.toggle();
       this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
+    },
+    noReminder() {
+      this.store.state.updateReminder = false;
+      this.$q.cookies.set('update.remind', this.store.state.updateReminder);
     }
   },
   mounted() {
+    this.$settings.get().then(response => {
+      this.store.state.version = response.data.version;
+      this.store.state.pollingRate = response.data.pollingRate;
+    }).catch(error => {
+      console.log(error);
+    });
+
+    if (this.$q.cookies.has('update.remind')) {
+      this.store.state.updateReminder = this.$q.cookies.get('update.remind');
+    } else {
+      this.store.state.updateReminder = true;
+      this.$q.cookies.set('update.remind', true);
+    }
+
+    this.$api.get('/updates').then(response => {
+      this.store.state.updateAvailable = response.data.available;
+      this.store.state.updateVersion = response.data.version;
+      this.store.state.updateLink = response.data.link;
+    }).catch(error => {
+      console.log(error);
+    })
+
     this.$q.platform.is.mobile ? this.drawer = false : this.drawer = true;
-    this.$q.dark.set(this.$q.cookies.get('dark.isActive'));
-    this.store.methods.setExpandHost(this.$q.cookies.get('toggle.host'));
+
+    if (this.$q.cookies.has('dark.isActive')) {
+      this.$q.dark.set(this.$q.cookies.get('dark.isActive'));
+    } else {
+      this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
+    }
+
     tsParticles.load("particles-js",{
       "fpsLimit": 30,
       "particles": {

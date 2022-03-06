@@ -17,6 +17,15 @@ const hosts = axios.create(
   }
 );
 
+const settings = axios.create(
+  {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    baseURL: '/api/v1/settings'
+  }
+);
+
 const api = axios.create(
   {
     headers: {
@@ -33,13 +42,17 @@ export default boot(({ app }) => {
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$agents = hosts
-  // ^ ^ ^ this will allow you to use this.$agents (for Vue Options API form)
+  app.config.globalProperties.$hosts = hosts
+  // ^ ^ ^ this will allow you to use this.$hosts (for Vue Options API form)
+  //       so you can easily perform requests against your app's API
+
+  app.config.globalProperties.$settings = settings
+  // ^ ^ ^ this will allow you to use this.$settings (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 
   app.config.globalProperties.$api = api
-  // ^ ^ ^ this will allow you to use this.$agents (for Vue Options API form)
+  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 });
 
-export { hosts, api }
+export { hosts, api, settings }

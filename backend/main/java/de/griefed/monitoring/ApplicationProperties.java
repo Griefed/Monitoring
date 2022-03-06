@@ -51,6 +51,8 @@ public class ApplicationProperties extends Properties {
 
     private final JsonUtilities JSON_UTILITIES;
 
+    private String monitoringVersion = "dev";
+
     /**
      * Seconds to wait until a connection timeout is triggered for getting information from hosts.
      */
@@ -107,6 +109,13 @@ public class ApplicationProperties extends Properties {
         }
 
         this.threadCount = Integer.parseInt(getProperty("de.griefed.monitoring.thread.count","40"));
+
+        String version = ApplicationProperties.class.getPackage().getImplementationVersion();
+        if (version != null) {
+            this.monitoringVersion = version;
+        } else {
+            this.monitoringVersion = "dev";
+        }
     }
 
     /**
@@ -188,5 +197,14 @@ public class ApplicationProperties extends Properties {
      */
     public int getPollingRate() {
         return Integer.parseInt(getProperty("de.griefed.monitoring.polling", "5000"));
+    }
+
+    /**
+     * Getter for the version of this Monitoring instance.
+     * @author Griefed
+     * @return {@link String} The version of this Monitoring instance.
+     */
+    public String getVersion() {
+        return monitoringVersion;
     }
 }

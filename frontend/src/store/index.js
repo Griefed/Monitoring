@@ -1,17 +1,17 @@
-import {reactive} from 'vue';
+import { reactive, ref } from 'vue';
 
 const state = reactive({
-  autorefresh: true
+  autorefresh: true,
+  version: ref("dev"),
+  updateAvailable: ref(true),
+  updateVersion: ref(""),
+  updateLink: ref(""),
+  updateReminder: ref(false),
+  pollingRate: ref(5000)
 });
 
 const methods = {
-  setExpandHost(newState) {
-    if (newState) {
-      state.expandHost = true;
-    } else {
-      state.expandHost = false;
-    }
-  }
+
 };
 
 export default {
