@@ -1,3 +1,10 @@
+## [1.3.0](https://git.griefed.de/Griefed/Monitoring/compare/1.2.0...1.3.0) (2022-03-06)
+
+
+### 🚀 Features
+
+* **Update Checker:** Check for available updates. Display popup with information and link to update release page. Update reminders can be disabled by clicking "Don't remind me again". To reactivate, clear cookies. ([6d4911f](https://git.griefed.de/Griefed/Monitoring/commit/6d4911f9fc44a412627faad780d74bb3be8cfe06))
+
 ## [1.2.0](https://git.griefed.de/Griefed/Monitoring/compare/1.1.0...1.2.0) (2022-03-05)
 
 
