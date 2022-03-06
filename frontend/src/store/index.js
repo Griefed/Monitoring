@@ -3,10 +3,10 @@ import { reactive, ref } from 'vue';
 const state = reactive({
   autorefresh: true,
   version: ref("dev"),
-  updateAvailable: ref(true),
+  updateAvailable: ref(false),
   updateVersion: ref(""),
   updateLink: ref(""),
-  updateReminder: ref(false),
+  updateReminder: ref(true),
   pollingRate: ref(5000)
 });
 
