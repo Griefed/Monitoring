@@ -1,3 +1,19 @@
+### [1.3.1](https://git.griefed.de/Griefed/Monitoring/compare/1.3.0...1.3.1) (2022-03-06)
+
+
+### 🛠 Fixes
+
+* **Startup:** Run initial polling of host information in separate thread so it doesn't block the startup sequence. ([f7bdd8f](https://git.griefed.de/Griefed/Monitoring/commit/f7bdd8f09bbc1bbee8ca4b15ab0ce93a6fe12ee4))
+* **Update Checks:** Fix update dialog showing up briefly, even though no update is actually available. ([0498471](https://git.griefed.de/Griefed/Monitoring/commit/0498471da7bcd6925229bd94a2d0de73516736a6))
+
+
+### Other
+
+* **gitignore:** Add Monitoring-*.jar to ignore list. Nice for testing stuff. ([4251d3b](https://git.griefed.de/Griefed/Monitoring/commit/4251d3bb30def12627e07e24f17c142d2e7b982d))
+* **Logging:** Set default logging to INFO level. ([24df16a](https://git.griefed.de/Griefed/Monitoring/commit/24df16adf4679fd44f687c73adb21fa9c7103d29))
+* **README:** Update badges ([7e678a6](https://git.griefed.de/Griefed/Monitoring/commit/7e678a64ec78bdfbc285232711ec3cccdaf72d20))
+* **README:** Update screenshots in README ([e860c4d](https://git.griefed.de/Griefed/Monitoring/commit/e860c4df9768d531cd80eab4579026d96a810222))
+
 ## [1.3.0](https://git.griefed.de/Griefed/Monitoring/compare/1.2.0...1.3.0) (2022-03-06)
 
 
