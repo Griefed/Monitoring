@@ -22,9 +22,7 @@ For questions, you can always join my [Discord server](https://discord.griefed.d
 [![GitHub Repo stars](https://img.shields.io/github/stars/Griefed/monitoring?label=GitHub%20Stars&style=for-the-badge&logo=Github&labelColor=325358&color=c0ffee)](https://github.com/Griefed/Monitoring)
 [![GitHub forks](https://img.shields.io/github/forks/Griefed/monitoring?label=GitHub%20Forks&style=for-the-badge&logo=Github&labelColor=325358&color=c0ffee)](https://github.com/Griefed/Monitoring)
 
-A small amateur-ish Java program making use of the Spring Boot and Quasar frameworks to provide a webinterface to monitor the host as well as any configured agent.
-
-**All IPs and infos in these screenshots are test instances or VMs which got disposed of after these tests.
+A small Java monitoring program. Displays problematic hosts depending on their status.
 
 | Light mode                   | Dark mode                  |
 |------------------------------|----------------------------|
