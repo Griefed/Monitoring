@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -131,12 +131,20 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>private <a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#APPLICATIONPROPERTIES">APPLICATIONPROPERTIES</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>private de.griefed.versionchecker.github.GitHubChecker</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#GITHUB">GITHUB</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>private static org.apache.logging.log4j.Logger</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#LOG">LOG</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>private java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#updater">updater</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -153,7 +161,7 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#UpdateChecker--">UpdateChecker</a></span>()</code>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#UpdateChecker-de.griefed.monitoring.ApplicationProperties-">UpdateChecker</a></span>(<a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a>&nbsp;injectedApplicationProperties)</code>
 <div class="block">Constructor for Dependency Injection.</div>
 </td>
 </tr>
@@ -173,13 +181,25 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#check--">check</a></span>()</code>
+<div class="block">Check for available updates.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#checkForUpdate-java.lang.String-java.lang.Boolean-">checkForUpdate</a></span>(@NotNull java.lang.String&nbsp;version,
               java.lang.Boolean&nbsp;preReleaseCheck)</code>
 <div class="block">Check our GitLab, GitGriefed and GitHub instances for updates, sequentially, and then return the update.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#getUpdater--">getUpdater</a></span>()</code>
+<div class="block">Getter for the updater which can contain information about the latest available update, if one is available;</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html" title="class in de.griefed.monitoring.utilities">UpdateChecker</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html#refresh--">refresh</a></span>()</code>
 <div class="block">Refresh the GitHub, GitLab and GitGriefed instances, so we get the most current releases.</div>
@@ -219,10 +239,28 @@ extends java.lang.Object</pre>
 <a name="GITHUB">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>GITHUB</h4>
 <pre>private&nbsp;de.griefed.versionchecker.github.GitHubChecker GITHUB</pre>
+</li>
+</ul>
+<a name="APPLICATIONPROPERTIES">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>APPLICATIONPROPERTIES</h4>
+<pre>private final&nbsp;<a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a> APPLICATIONPROPERTIES</pre>
+</li>
+</ul>
+<a name="updater">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>updater</h4>
+<pre>private&nbsp;java.lang.String updater</pre>
 </li>
 </ul>
 </li>
@@ -233,14 +271,14 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="UpdateChecker--">
+<a name="UpdateChecker-de.griefed.monitoring.ApplicationProperties-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>UpdateChecker</h4>
 <pre>@Autowired
-public&nbsp;UpdateChecker()</pre>
+public&nbsp;UpdateChecker(<a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a>&nbsp;injectedApplicationProperties)</pre>
 <div class="block">Constructor for Dependency Injection.</div>
 </li>
 </ul>
@@ -252,6 +290,30 @@ public&nbsp;UpdateChecker()</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a name="check--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>check</h4>
+<pre>public&nbsp;void&nbsp;check()</pre>
+<div class="block">Check for available updates.</div>
+</li>
+</ul>
+<a name="getUpdater--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUpdater</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getUpdater()</pre>
+<div class="block">Getter for the updater which can contain information about the latest available update, if one is available;</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>String</code> Return information about the latest available update, if available.</dd>
+</dl>
+</li>
+</ul>
 <a name="refresh--">
 <!--   -->
 </a>

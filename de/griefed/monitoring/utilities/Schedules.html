@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -141,8 +141,8 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#LOG">LOG</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>private <a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#PROPERTIES">PROPERTIES</a></span></code>&nbsp;</td>
+<td class="colFirst"><code>private <a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html" title="class in de.griefed.monitoring.utilities">UpdateChecker</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#UPDATE_CHECKER">UPDATE_CHECKER</a></span></code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -159,8 +159,8 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#Schedules-de.griefed.monitoring.services.InformationService-de.griefed.monitoring.ApplicationProperties-">Schedules</a></span>(<a href="../../../../de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a>&nbsp;injectedInformationService,
-         <a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a>&nbsp;injectedApplicationProperties)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#Schedules-de.griefed.monitoring.services.InformationService-de.griefed.monitoring.utilities.UpdateChecker-">Schedules</a></span>(<a href="../../../../de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a>&nbsp;injectedInformationService,
+         <a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html" title="class in de.griefed.monitoring.utilities">UpdateChecker</a>&nbsp;injectedUpdateChecker)</code>&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -178,6 +178,10 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#checkForUpdates--">checkForUpdates</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/Schedules.html#refreshHosts--">refreshHosts</a></span>()</code>
 <div class="block">Periodically check and update the status information for the configured hosts.</div>
@@ -232,13 +236,13 @@ extends java.lang.Object</pre>
 <pre>private final&nbsp;<a href="../../../../de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a> INFORMATION_SERVICE</pre>
 </li>
 </ul>
-<a name="PROPERTIES">
+<a name="UPDATE_CHECKER">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>PROPERTIES</h4>
-<pre>private final&nbsp;<a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a> PROPERTIES</pre>
+<h4>UPDATE_CHECKER</h4>
+<pre>private final&nbsp;<a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html" title="class in de.griefed.monitoring.utilities">UpdateChecker</a> UPDATE_CHECKER</pre>
 </li>
 </ul>
 </li>
@@ -249,14 +253,14 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="Schedules-de.griefed.monitoring.services.InformationService-de.griefed.monitoring.ApplicationProperties-">
+<a name="Schedules-de.griefed.monitoring.services.InformationService-de.griefed.monitoring.utilities.UpdateChecker-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Schedules</h4>
 <pre>public&nbsp;Schedules(<a href="../../../../de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a>&nbsp;injectedInformationService,
-                 <a href="../../../../de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a>&nbsp;injectedApplicationProperties)</pre>
+                 <a href="../../../../de/griefed/monitoring/utilities/UpdateChecker.html" title="class in de.griefed.monitoring.utilities">UpdateChecker</a>&nbsp;injectedUpdateChecker)</pre>
 </li>
 </ul>
 </li>
@@ -270,13 +274,23 @@ extends java.lang.Object</pre>
 <a name="refreshHosts--">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>refreshHosts</h4>
 <pre>@Scheduled(cron="${de.griefed.monitoring.schedule.hosts}")
 public&nbsp;void&nbsp;refreshHosts()</pre>
 <div class="block">Periodically check and update the status information for the configured hosts. Set <code>de.griefed.monitoring.schedule.hosts</code>
  to your desired CRON expression.</div>
+</li>
+</ul>
+<a name="checkForUpdates--">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>checkForUpdates</h4>
+<pre>@Scheduled(cron="${de.griefed.monitoring.schedule.updatecheck}")
+public&nbsp;void&nbsp;checkForUpdates()</pre>
 </li>
 </ul>
 </li>
