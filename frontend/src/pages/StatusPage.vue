@@ -18,15 +18,25 @@
               floating
               :label="host.code"
             />
-            {{ host.name }}<br>
+            <span>
+              {{ host.name.length > 35 ? host.name.substring(0,32) + '...' : host.name }}
+              <q-tooltip v-if="host.name.length > 35 && !this.$q.platform.is.mobile">
+                {{ host.name }}
+              </q-tooltip>
+            </span>
+            <br>
             <q-chip
               outline
               dense
               v-ripple
               clickable
-              :label="host.address"
+              :label="host.address.length > 47 ? host.address.substring(0, 44) + '...' : host.address"
               @click="openURL(host.address)"
-            />
+            >
+              <q-tooltip v-if="host.address.length > 47 && !this.$q.platform.is.mobile">
+                {{ host.address }}
+              </q-tooltip>
+            </q-chip>
           </q-item-label>
 
           <q-separator
@@ -92,13 +102,16 @@
                 >
                   {{ host.status }}
                 </q-badge>
-                {{ host.name }}
+                {{ host.name.length > 25 ? host.name.substring(0,22) + '...' : host.name }}
               </q-item-label>
             </q-item-section>
-            <q-tooltip v-if="!this.$q.platform.is.mobile">
+            <q-tooltip class="text-center" v-if="host.name.length > 25 && !this.$q.platform.is.mobile">
+              {{ host.name }}<br>
               {{ host.address }}
             </q-tooltip>
-
+            <q-tooltip v-else-if="!this.$q.platform.is.mobile">
+              {{ host.address }}
+            </q-tooltip>
           </q-chip>
 
         </q-card-section>
