@@ -207,4 +207,14 @@ public class ApplicationProperties extends Properties {
     public String getVersion() {
         return monitoringVersion;
     }
+
+    public int getParticlesCount() {
+        try {
+            return Integer.parseInt(getProperty("de.griefed.monitoring.particles.count"));
+        } catch (NumberFormatException ex) {
+            LOG.error("particles.count configuration invalid. Not a parseable integer.");
+            return 40;
+        }
+
+    }
 }

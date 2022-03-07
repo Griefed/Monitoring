@@ -7,7 +7,8 @@ const state = reactive({
   updateVersion: ref(""),
   updateLink: ref(""),
   updateReminder: ref(true),
-  pollingRate: ref(5000)
+  pollingRate: ref(5000),
+  particlesCount: ref(40)
 });
 
 const methods = {

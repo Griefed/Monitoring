@@ -132,6 +132,107 @@ export default defineComponent({
     this.$settings.get().then(response => {
       this.store.state.version = response.data.version;
       this.store.state.pollingRate = response.data.pollingRate;
+      this.store.state.particlesCount = response.data.particlesCount;
+      tsParticles.load("particles-js",{
+        "fpsLimit": 30,
+        "particles": {
+          "number": {
+            "value": this.store.state.particlesCount,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": ["#325358","#C0FFEE","#31CCEC","#6A1A78"]
+          },
+          "shape": {
+            "type": ["circle","triangle","edge","polygon"],
+            "stroke": {
+              "width": 0,
+              "color": ["#325358","#C0FFEE","#31CCEC","#6A1A78"]
+            },
+            "polygon": {
+              "nb_sides": 6
+            }
+          },
+          "opacity": {
+            "value": 1,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3.5,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "links": {
+            "enable": true,
+            "distance": 150,
+            "color": "#C0FFEE",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1.5,
+            "direction": "right",
+            "random": true,
+            "straight": false,
+            "outModes": {
+              "default": "out",
+              "bottom": "out",
+              "left": "out",
+              "right": "out",
+              "top": "out"
+            },
+            "bounce": false
+          },
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": ["bubble","grab"]
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 140,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 200,
+              "size": 4,
+              "duration": 5,
+              "opacity": 1,
+              "speed": 0.1
+            },
+            "push": {
+              "particles_nb": 4
+            }
+          }
+        },
+        "retina_detect": true
+      });
     }).catch(error => {
       console.log(error);
     });
@@ -158,107 +259,6 @@ export default defineComponent({
     } else {
       this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
     }
-
-    tsParticles.load("particles-js",{
-      "fpsLimit": 30,
-      "particles": {
-        "number": {
-          "value": 40,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color": {
-          "value": ["#325358","#C0FFEE","#31CCEC","#6A1A78"]
-        },
-        "shape": {
-          "type": ["circle","triangle","edge","polygon"],
-          "stroke": {
-            "width": 0,
-            "color": ["#325358","#C0FFEE","#31CCEC","#6A1A78"]
-          },
-          "polygon": {
-            "nb_sides": 6
-          }
-        },
-        "opacity": {
-          "value": 1,
-          "random": true,
-          "anim": {
-            "enable": true,
-            "speed": 1,
-            "opacity_min": 0.1,
-            "sync": false
-          }
-        },
-        "size": {
-          "value": 3.5,
-          "random": true,
-          "anim": {
-            "enable": true,
-            "speed": 1,
-            "size_min": 0.1,
-            "sync": false
-          }
-        },
-        "links": {
-          "enable": true,
-          "distance": 150,
-          "color": "#C0FFEE",
-          "opacity": 0.4,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 1.5,
-          "direction": "right",
-          "random": true,
-          "straight": false,
-          "outModes": {
-            "default": "out",
-            "bottom": "out",
-            "left": "out",
-            "right": "out",
-            "top": "out"
-          },
-          "bounce": false
-        },
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": {
-            "enable": true,
-            "mode": ["bubble","grab"]
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          },
-          "resize": true
-        },
-        "modes": {
-          "grab": {
-            "distance": 140,
-            "line_linked": {
-              "opacity": 1
-            }
-          },
-          "bubble": {
-            "distance": 200,
-            "size": 4,
-            "duration": 5,
-            "opacity": 1,
-            "speed": 0.1
-          },
-          "push": {
-            "particles_nb": 4
-          }
-        }
-      },
-      "retina_detect": true
-    });
   }
 })
 </script>
@@ -371,23 +371,10 @@ export default defineComponent({
     );
 }
 
-.toolbar {
-  border-bottom: #c0ffee 1px solid;
-}
-
-.drawer {
-  background-image: url("~assets/tile.webp");
-  background-repeat: repeat-y;
-}
-
 .page {
   background-image: url("~assets/background.webp");
   background-repeat: repeat;
   background-attachment: fixed;
-}
-
-.header {
-  background: url("~assets/tile.webp") repeat-x;
 }
 
 a:link {

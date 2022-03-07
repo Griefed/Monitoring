@@ -87,6 +87,7 @@ de.griefed.monitoring.polling=5000
 de.griefed.monitoring.thread.count=100
 de.griefed.monitoring.host.ports=20,21,22,80,443,8080,8443
 de.griefed.monitoring.ports.additive=false
+de.griefed.monitoring.particles.count=40
 mail.smtp.starttls.enable=true
 mail.smtp.auth=true
 mail.smtp.host=smtp.example.com
@@ -95,7 +96,6 @@ mail.recipients=example@example.com
 mail.from=monitoring@example.com
 mail.user=example@example.com
 mail.password=123456
-
 ```
 
 | Property                             | Description                                                                                |
@@ -105,6 +105,7 @@ mail.password=123456
 | de.griefed.monitoring.thread.count   | Number of threads to use for host information acquisition.                                 |
 | de.griefed.monitoring.host.ports     | Global configuration for ports with which to check for host availability.                  |
 | de.griefed.monitoring.ports.additive | Whether globally configured ports are to be added to host-individual ports, if configured. |
+| de.griefed.monitoring.particles.count | Amount of particles to display in the web-frontend.                                        |
 | mail.smtp.starttls.enable            | Whether STARTTLS is enabled.                                                               |
 | mail.smtp.auth                       | Whether authentication is required.                                                        |
 | mail.smtp.host                       | Your SMPT host.                                                                            |

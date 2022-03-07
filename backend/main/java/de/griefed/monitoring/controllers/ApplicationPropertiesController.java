@@ -55,7 +55,8 @@ public class ApplicationPropertiesController {
     public String getConfiguration() {
         return "{" +
                 "\"version\":\"" + APPLICATIONPROPERTIES.getVersion() + "\"," +
-                "\"pollingRate\":" + APPLICATIONPROPERTIES.getPollingRate() +
+                "\"pollingRate\":" + APPLICATIONPROPERTIES.getPollingRate() + "," +
+                "\"particlesCount\":" + APPLICATIONPROPERTIES.getParticlesCount() +
                 "}";
     }
 
