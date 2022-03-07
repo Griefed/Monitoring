@@ -3,7 +3,7 @@
     <q-header elevated>
       <q-toolbar>
 
-        <q-icon name="monitor_heart" style="font-size: 32px;" />
+        <q-icon name="img:favicon.gif" style="font-size: 32px;" />
 
         <q-toolbar-title>
           Monitoring  <span style="font-size: 14px; padding-left: 30px;">{{this.store.state.version}}</span>
