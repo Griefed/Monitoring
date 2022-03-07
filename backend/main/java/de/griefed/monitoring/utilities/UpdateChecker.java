@@ -22,6 +22,7 @@
  */
 package de.griefed.monitoring.utilities;
 
+import de.griefed.monitoring.ApplicationProperties;
 import de.griefed.versionchecker.github.GitHubChecker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,13 +43,18 @@ public class UpdateChecker {
     private static final Logger LOG = LogManager.getLogger(UpdateChecker.class);
 
     private GitHubChecker GITHUB;
+    private final ApplicationProperties APPLICATIONPROPERTIES;
+
+    private String updater;
 
     /**
      * Constructor for Dependency Injection.
      * @author Griefed
      */
     @Autowired
-    public UpdateChecker() {
+    public UpdateChecker(ApplicationProperties injectedApplicationProperties) {
+
+        this.APPLICATIONPROPERTIES = injectedApplicationProperties;
 
         try {
             this.GITHUB = new GitHubChecker("Griefed/Monitoring").refresh();
@@ -57,6 +63,25 @@ public class UpdateChecker {
             this.GITHUB = null;
         }
 
+        this.updater = checkForUpdate(APPLICATIONPROPERTIES.getVersion(), false);
+    }
+
+    /**
+     * Check for available updates.
+     * @author Griefed
+     */
+    public void check() {
+        refresh();
+        this.updater = checkForUpdate(APPLICATIONPROPERTIES.getVersion(), false);
+    }
+
+    /**
+     * Getter for the updater which can contain information about the latest available update, if one is available;
+     * @author Griefed
+     * @return {@link String} Return information about the latest available update, if available.
+     */
+    public String getUpdater() {
+        return updater;
     }
 
     /**

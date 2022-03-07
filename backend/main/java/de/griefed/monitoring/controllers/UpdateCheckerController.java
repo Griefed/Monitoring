@@ -22,7 +22,6 @@
  */
 package de.griefed.monitoring.controllers;
 
-import de.griefed.monitoring.ApplicationProperties;
 import de.griefed.monitoring.utilities.UpdateChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,25 +39,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdateCheckerController {
 
     private final UpdateChecker UPDATECHECKER;
-    private final ApplicationProperties APPLICATIONPROPERTIES;
 
     @Autowired
-    public UpdateCheckerController(UpdateChecker injectedUpdateChecker, ApplicationProperties injectedApplicationProperties) {
+    public UpdateCheckerController(UpdateChecker injectedUpdateChecker) {
         this.UPDATECHECKER = injectedUpdateChecker;
-        this.APPLICATIONPROPERTIES = injectedApplicationProperties;
     }
 
     @GetMapping(produces = "application/json")
     public String getUpdateInformation() {
 
-        String updater = UPDATECHECKER.checkForUpdate(APPLICATIONPROPERTIES.getVersion(), false);
-
-        if (updater.contains(";")) {
+        if (UPDATECHECKER.getUpdater().contains(";")) {
 
             return "{" +
                     "\"available\": true," +
-                    "\"version\": \"" + updater.split(";")[0] + "\"," +
-                    "\"link\": \"" + updater.split(";")[1] + "\"" +
+                    "\"version\": \"" + UPDATECHECKER.getUpdater().split(";")[0] + "\"," +
+                    "\"link\": \"" + UPDATECHECKER.getUpdater().split(";")[1] + "\"" +
                     "}";
         } else {
 

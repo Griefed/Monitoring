@@ -88,6 +88,7 @@ de.griefed.monitoring.thread.count=100
 de.griefed.monitoring.host.ports=20,21,22,80,443,8080,8443
 de.griefed.monitoring.ports.additive=false
 de.griefed.monitoring.particles.count=40
+de.griefed.monitoring.schedule.updatecheck=0 0 0 * * *
 mail.smtp.starttls.enable=true
 mail.smtp.auth=true
 mail.smtp.host=smtp.example.com
@@ -98,22 +99,23 @@ mail.user=example@example.com
 mail.password=123456
 ```
 
-| Property                             | Description                                                                                |
-|--------------------------------------|--------------------------------------------------------------------------------------------|
-| de.griefed.monitoring.schedule.hosts | Cron schedule at which host information is refreshed. To disable a cronjob, set it to -    |
-| de.griefed.monitoring.polling        | Milliseconds. Interval at which the frontend should refresh visible data.                  |
-| de.griefed.monitoring.thread.count   | Number of threads to use for host information acquisition.                                 |
-| de.griefed.monitoring.host.ports     | Global configuration for ports with which to check for host availability.                  |
-| de.griefed.monitoring.ports.additive | Whether globally configured ports are to be added to host-individual ports, if configured. |
-| de.griefed.monitoring.particles.count | Amount of particles to display in the web-frontend.                                        |
-| mail.smtp.starttls.enable            | Whether STARTTLS is enabled.                                                               |
-| mail.smtp.auth                       | Whether authentication is required.                                                        |
-| mail.smtp.host                       | Your SMPT host.                                                                            |
-| mail.smtp.port                       | The SMTP port of your host.                                                                |
-| mail.recipients                      | The recipient of the notification email.                                                   |
-| mail.from                            | The name from which the email is sent.                                                     |
-| mail.user                            | Username for your SMTP host.                                                               |
-| mail.password                        | Password for your SMTP host.                                                               |
+| Property                                   | Description                                                                                |
+|--------------------------------------------|--------------------------------------------------------------------------------------------|
+| de.griefed.monitoring.schedule.hosts       | Cron schedule at which host information is refreshed. To disable a cronjob, set it to `-`  |
+| de.griefed.monitoring.polling              | Milliseconds. Interval at which the frontend should refresh visible data.                  |
+| de.griefed.monitoring.thread.count         | Number of threads to use for host information acquisition.                                 |
+| de.griefed.monitoring.host.ports           | Global configuration for ports with which to check for host availability.                  |
+| de.griefed.monitoring.ports.additive       | Whether globally configured ports are to be added to host-individual ports, if configured. |
+| de.griefed.monitoring.particles.count      | Amount of particles to display in the web-frontend.                                        |
+| de.griefed.monitoring.schedule.updatecheck | Cron schedule at which to check for available updates. To disable a cronjob, set it to `-` |
+| mail.smtp.starttls.enable                  | Whether STARTTLS is enabled.                                                               |
+| mail.smtp.auth                             | Whether authentication is required.                                                        |
+| mail.smtp.host                             | Your SMPT host.                                                                            |
+| mail.smtp.port                             | The SMTP port of your host.                                                                |
+| mail.recipients                            | The recipient of the notification email.                                                   |
+| mail.from                                  | The name from which the email is sent.                                                     |
+| mail.user                                  | Username for your SMTP host.                                                               |
+| mail.password                              | Password for your SMTP host.                                                               |
 
 The docker image comes with a prepared `hosts.json`-file:
 
