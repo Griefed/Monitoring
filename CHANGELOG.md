@@ -1,3 +1,17 @@
+### [1.3.2](https://git.griefed.de/Griefed/Monitoring/compare/1.3.1...1.3.2) (2022-03-07)
+
+
+### 💎 Improvements
+
+* **MainLayout Icon:** Replace icon in layout with animated logo ([4f7523b](https://git.griefed.de/Griefed/Monitoring/commit/4f7523b377e5197520cbb471edc2de553e6a1755))
+* **Status Page:** If host name or address exceed certain lengths, truncate them and add a hover-tooltip. ([822db37](https://git.griefed.de/Griefed/Monitoring/commit/822db37c4ecf852a96382c8b580176429e8d7f40))
+* **Update Checks:** Periodically check for available updates. Configurable via property de.griefed.monitoring.schedule.updatecheck ([d1d3dd3](https://git.griefed.de/Griefed/Monitoring/commit/d1d3dd3476d36b5397609e1db030c0c876851c17))
+
+
+### 🦊 CI/CD
+
+* **Releases:** Degrade improv-type to patch-release. ([37213fa](https://git.griefed.de/Griefed/Monitoring/commit/37213fa15d9cf7f544b52111b8e47965bed8c26f))
+
 ### [1.3.1](https://git.griefed.de/Griefed/Monitoring/compare/1.3.0...1.3.1) (2022-03-06)
 
 
