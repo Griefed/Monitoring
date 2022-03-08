@@ -187,9 +187,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>private java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/services/InformationService.html#getHostInformationAsJson-java.lang.String-java.lang.String-java.util.List-">getHostInformationAsJson</a></span>(java.lang.String&nbsp;name,
-                        java.lang.String&nbsp;address,
-                        java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/services/InformationService.html#getHostInformationAsJson-com.fasterxml.jackson.databind.JsonNode-">getHostInformationAsJson</a></span>(com.fasterxml.jackson.databind.JsonNode&nbsp;host)</code>
 <div class="block">Acquire status information for a given host with name <code>name</code> and address <code>address</code>.</div>
 </td>
 </tr>
@@ -338,21 +336,17 @@ public&nbsp;InformationService(<a href="../../../../de/griefed/monitoring/Applic
 <div class="block">Retrieve all information about the configured host(s) and stores it in memory for retrieval by <a href="../../../../de/griefed/monitoring/services/InformationService.html#retrieveHostsInformation--"><code>retrieveHostsInformation()</code></a>.</div>
 </li>
 </ul>
-<a name="getHostInformationAsJson-java.lang.String-java.lang.String-java.util.List-">
+<a name="getHostInformationAsJson-com.fasterxml.jackson.databind.JsonNode-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getHostInformationAsJson</h4>
-<pre>private&nbsp;java.lang.String&nbsp;getHostInformationAsJson(java.lang.String&nbsp;name,
-                                                  java.lang.String&nbsp;address,
-                                                  java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</pre>
+<pre>private&nbsp;java.lang.String&nbsp;getHostInformationAsJson(com.fasterxml.jackson.databind.JsonNode&nbsp;host)</pre>
 <div class="block">Acquire status information for a given host with name <code>name</code> and address <code>address</code>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>name</code> - <code>String</code> The name of the host.</dd>
-<dd><code>address</code> - <code>String</code> The address of the host to check.</dd>
-<dd><code>ports</code> - <code>List</code> Integer List of ports with which to check for host availability.</dd>
+<dd><code>host</code> - <code>JsonNode</code> JsonNode containing information about the host used to acquire more information.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>String</code> Name, address, IP, availability, status, code wrapped in JSON.</dd>
 </dl>
