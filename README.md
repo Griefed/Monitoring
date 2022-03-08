@@ -64,6 +64,11 @@ Here's an example for a `hosts.json`-file:
     {
       "name": "Indie Retro News",
       "address": "https://www.indieretronews.com"
+    },
+    {
+      "name": "Example",
+      "address": "https://example.com",
+      "notificationsDisabled": true
     }
   ]
 }
@@ -90,6 +95,7 @@ de.griefed.monitoring.host.ports=20,21,22,80,443,8080,8443
 de.griefed.monitoring.ports.additive=false
 de.griefed.monitoring.particles.count=40
 de.griefed.monitoring.schedule.updatecheck=0 0 0 * * *
+de.griefed.monitoring.notifications=true
 mail.smtp.starttls.enable=true
 mail.smtp.auth=true
 mail.smtp.host=smtp.example.com
@@ -109,6 +115,7 @@ mail.password=123456
 | de.griefed.monitoring.ports.additive       | Whether globally configured ports are to be added to host-individual ports, if configured. |
 | de.griefed.monitoring.particles.count      | Amount of particles to display in the web-frontend.                                        |
 | de.griefed.monitoring.schedule.updatecheck | Cron schedule at which to check for available updates. To disable a cronjob, set it to `-` |
+| de.griefed.monitoring.notifications        | Whether notifications are enabled. Set to `false`to disable all notifications.             |
 | mail.smtp.starttls.enable                  | Whether STARTTLS is enabled.                                                               |
 | mail.smtp.auth                             | Whether authentication is required.                                                        |
 | mail.smtp.host                             | Your SMPT host.                                                                            |

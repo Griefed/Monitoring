@@ -217,4 +217,13 @@ public class ApplicationProperties extends Properties {
         }
 
     }
+
+    /**
+     * Whether notifications are enabled on this instance of Monitoring.
+     * @author Griefed
+     * @return {@link Boolean} Whether notifications are enabled. <code>true</code> if they are.
+     */
+    public boolean notificationsEnabled() {
+        return Boolean.parseBoolean(getProperty("de.griefed.monitoring.notifications"));
+    }
 }

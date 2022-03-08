@@ -192,6 +192,7 @@ public class InformationService {
         int code;
 
         boolean hostAvailable;
+        boolean hostNotificationsDisabled = false;
 
         if (address.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
 
@@ -229,8 +230,18 @@ public class InformationService {
             status = "OFFLINE";
         }
 
-        if ((code != 200 && code != 301) || !status.matches("^(OK|REDIRECT)$")) {
-            sendNotification(name + " (" + address + ") ",status);
+        try {
+            hostNotificationsDisabled = host.get("notificationsDisabled").asBoolean();
+        } catch (Exception ignored) {
+
+        }
+
+        if (APPLICATION_PROPERTIES.notificationsEnabled() && !hostNotificationsDisabled) {
+
+            if (code != 200 && code != 301 && !status.matches("^(OK|REDIRECT)$")) {
+                sendNotification(name + " (" + address + ") ",status);
+            }
+
         }
 
         return "{" +
