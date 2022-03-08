@@ -1,3 +1,16 @@
+## [1.4.0](https://git.griefed.de/Griefed/Monitoring/compare/1.3.2...1.4.0) (2022-03-08)
+
+
+### 💎 Improvements
+
+* **InformationService:** Refactor InformationService.getHostInformationAsJson to receive the full host JsonNode and return status OFFLINE if hostAvailable is false. ([1f8ac75](https://git.griefed.de/Griefed/Monitoring/commit/1f8ac75c4ff1833f7aab6a709aa18fe2f7d9a0c1))
+
+
+### 🚀 Features
+
+* **Disabling Notifications:** Set de.griefed.monitoring.notifications to false to globally disable all notifications. Per host, set notificationsDisabled to true to specifically disable notifications for a single host. ([9bf96aa](https://git.griefed.de/Griefed/Monitoring/commit/9bf96aa9d34acfcdda5bf20f6601a1c9485a30e0))
+* **DNS matching:** Allow specifying of expectedIp. If the automatically acquired IP does not matche the expected IP, DNS MISMATCH is set as the host status. ([410cc9d](https://git.griefed.de/Griefed/Monitoring/commit/410cc9d7a23283353b1c77caf1f3f57191297f04))
+
 ### [1.3.2](https://git.griefed.de/Griefed/Monitoring/compare/1.3.1...1.3.2) (2022-03-07)
 
 
