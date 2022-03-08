@@ -119,73 +119,10 @@ public class InformationService {
 
                 ForkJoinPool forkJoinPool = new ForkJoinPool(APPLICATION_PROPERTIES.getThreadCount());
 
-                String firstName = hosts.get(0).get("name").asText();
-                String firstAddress = hosts.get(0).get("address").asText();
-
-                String lastName = hosts.get(hosts.size() - 1).get("name").asText();
-                String lastAddress = hosts.get(hosts.size() - 1).get("address").asText();
-
-                List<Integer> firstPorts = new ArrayList<>(100);
-                List<Integer> lastPorts = new ArrayList<>(100);
-
-                try {
-                    String[] ports = hosts.get(0).get("ports").asText().split(",");
-                    for (String port : ports) {
-                        try {
-                            firstPorts.add(Integer.parseInt(port));
-                        } catch (NumberFormatException ex) {
-                            LOG.error("Couldn't parse String to Integer: " + port);
-                        }
-
-                    }
-                } catch (Exception ignored) {
-                }
-
-                try {
-                    String[] ports = hosts.get(hosts.size() - 1).get("ports").asText().split(",");
-                    for (String port : ports) {
-
-                        try {
-                            lastPorts.add(Integer.parseInt(port));
-                        } catch (NumberFormatException ex) {
-                            LOG.error("Couldn't parse String to Integer: " + port);
-                        }
-
-                    }
-                } catch (Exception ignored) {
-                }
-
-                completableFuturesList.add(
-                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(firstName, firstAddress, firstPorts), forkJoinPool)
-                );
-
-                completableFuturesList.add(
-                        CompletableFuture.supplyAsync(() -> getHostInformationAsJson(lastName, lastAddress, lastPorts), forkJoinPool)
-                );
-
-                for (int i = 1; i < hosts.size() - 1; i++) {
-
-                    String nameI = hosts.get(i).get("name").asText();
-                    String addressI = hosts.get(i).get("address").asText();
-
-                    List<Integer> portsI = new ArrayList<>(100);
-
-                    try {
-                        String[] ports = hosts.get(i).get("ports").asText().split(",");
-                        for (String port : ports) {
-
-                            try {
-                                portsI.add(Integer.parseInt(port));
-                            } catch (NumberFormatException ex) {
-                                LOG.error("Couldn't parse String to Integer: " + port);
-                            }
-
-                        }
-                    } catch (Exception ignored) {
-                    }
+                for (JsonNode host : hosts) {
 
                     completableFuturesList.add(
-                            CompletableFuture.supplyAsync(() -> getHostInformationAsJson(nameI, addressI, portsI), forkJoinPool)
+                            CompletableFuture.supplyAsync(() -> getHostInformationAsJson(host), forkJoinPool)
                     );
                 }
 
@@ -201,30 +138,14 @@ public class InformationService {
                                             Collectors.joining(",")
                                     )
                     );
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ex) {
+                    LOG.error("Error joining host information.",ex);
                 }
 
                 // Retrieve information for host if only one is configured
             } else {
 
-                List<Integer> oneHostPorts = new ArrayList<>(100);
-
-                try {
-                    String[] ports = hosts.get(0).get("ports").asText().split(",");
-                    for (String port : ports) {
-
-                        try {
-                            oneHostPorts.add(Integer.parseInt(port));
-                        } catch (NumberFormatException ex) {
-                            LOG.error("Couldn't parse String to Integer: " + port);
-                        }
-
-                    }
-                } catch (Exception ignored) {
-                }
-
-                stringBuilder.append(getHostInformationAsJson(hosts.get(0).get("name").asText(), hosts.get(0).get("address").asText(), oneHostPorts));
+                stringBuilder.append(getHostInformationAsJson(hosts.get(0)));
 
             }
 
@@ -243,12 +164,26 @@ public class InformationService {
     /**
      * Acquire status information for a given host with name <code>name</code> and address <code>address</code>.
      * @author Griefed
-     * @param name {@link String} The name of the host.
-     * @param address {@link String} The address of the host to check.
-     * @param ports {@link List} Integer List of ports with which to check for host availability.
+     * @param host {@link JsonNode} JsonNode containing information about the host used to acquire more information.
      * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
      */
-    private String getHostInformationAsJson(String name, String address, List<Integer> ports) {
+    private String getHostInformationAsJson(JsonNode host) {
+
+        String name = host.get("name").asText();
+        String address = host.get("address").asText();
+        List<Integer> ports = new ArrayList<>(100);
+
+        try {
+            for (String port : host.get("ports").asText().split(",")) {
+                try {
+                    ports.add(Integer.parseInt(port));
+                } catch (NumberFormatException ex) {
+                    LOG.error("Couldn't parse String to Integer: " + port);
+                }
+
+            }
+        } catch (Exception ignored) {
+        }
 
         String status;
         String ip;
@@ -277,6 +212,10 @@ public class InformationService {
             status = WEB_UTILITIES.getHostStatus(address);
             hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
 
+        }
+
+        if (!hostAvailable) {
+            status = "OFFLINE";
         }
 
         if ((code != 200 && code != 301) || !status.matches("^(OK|REDIRECT)$")) {
