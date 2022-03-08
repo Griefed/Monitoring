@@ -50,7 +50,8 @@ Here's an example for a `hosts.json`-file:
     },
     {
       "name": "Griefed's Git Haven",
-      "address": "https://git.griefed.de"
+      "address": "https://git.griefed.de",
+      "expectedIp": "159.69.152.189"
     },
     {
       "name": "Griefed's Wiki",

@@ -171,6 +171,7 @@ public class InformationService {
 
         String name = host.get("name").asText();
         String address = host.get("address").asText();
+
         List<Integer> ports = new ArrayList<>(100);
 
         try {
@@ -210,6 +211,16 @@ public class InformationService {
             ip = WEB_UTILITIES.getIpOfHost(address);
             code = WEB_UTILITIES.getHostCode(address);
             status = WEB_UTILITIES.getHostStatus(address);
+
+            try {
+                if (!host.get("expectedIp").asText().equals(ip)) {
+                    status = "DNS MISMATCH";
+                    code = 418;
+                }
+            } catch (Exception ignored) {
+
+            }
+
             hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
 
         }

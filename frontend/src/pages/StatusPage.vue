@@ -1,10 +1,13 @@
 <template>
   <q-page>
-    <!--<img class="flex absolute-center" alt="SUK-IT logo" src="~assets/logo.webp">-->
-
     <!-- HOSTS WHICH ARE UP -->
     <div class="row flex-center transparent" style="padding-bottom: 120px;">
-      <q-card flat :style="'margin: 5px; width: 100%; max-width: 400px; height: 120px; background: ' + getCssColor(host.status, host.hostAvailable) + ';'" v-for="host in hostsDown" v-bind:key="host">
+      <q-card
+        flat
+        :style="'margin: 5px; width: 100%; max-width: 400px; height: 120px; background: ' + getCssColor(host.status, host.hostAvailable) + ';'"
+        v-for="host in hostsDown"
+        v-bind:key="host"
+      >
         <q-list>
 
           <q-item-label
@@ -133,17 +136,11 @@ export default defineComponent({
 
     const store = inject('store');
 
-    let hostsOk = ref(null);
-    let hostsDown = ref(null);
-
-    let ipRegEx = new RegExp('\\d+\\.\\d+\\.\\d+\\.\\d+')
-
     return {
       store,
-      hostsOk,
-      hostsDown,
-      polling: 5000,
-      ipRegEx
+      hostsOk: ref([]),
+      hostsDown: ref([]),
+      ipRegEx: new RegExp('\\d+\\.\\d+\\.\\d+\\.\\d+')
     }
   },
   methods: {
@@ -167,20 +164,16 @@ export default defineComponent({
     updateHosts() {
       hosts.get().then(response => {
 
-        let hosts = response.data.hosts;
-        let ok = [];
-        let down = [];
+        this.hostsOk = [];
+        this.hostsDown = [];
 
-        hosts.forEach(host => {
+        response.data.hosts.forEach(host => {
           if (host.code === 200 || host.code === 301) {
-            ok.push(host);
+            this.hostsOk.push(host);
           } else {
-            down.push(host);
+            this.hostsDown.push(host);
           }
         })
-
-        this.hostsOk = ok;
-        this.hostsDown = down;
 
         this.$forceUpdate();
 
@@ -199,10 +192,15 @@ export default defineComponent({
 
       switch (status) {
 // CRITICAL
-        case "UNAVAILABLE":
+        case "OFFLINE":
 
-          // blue-grey #647d8b
-          return "#647d8b";
+          // red-10 #ad1e1f
+          return '#ad1e1f';
+
+        case "DNS MISMATCH":
+
+          // red-10 #ad1e1f
+          return '#ad1e1f';
 
         case "SSL HANDSHAKE ERROR":
 
@@ -220,6 +218,11 @@ export default defineComponent({
           return '#ceda3d';
 
 // OK / ACCEPTABLE / CONFIG ERROR
+        case "UNAVAILABLE":
+
+          // blue-grey #647d8b
+          return "#647d8b";
+
         case "OK":
 
           return getCssVar('positive');
@@ -247,10 +250,15 @@ export default defineComponent({
 
       switch (status) {
 // CRITICAL
-        case "UNAVAILABLE":
+        case "OFFLINE":
 
-          // blue-grey #647d8b
-          return "blue-grey";
+          // red-10 #ad1e1f
+          return 'red-10';
+
+        case "DNS MISMATCH":
+
+          // red-10 #ad1e1f
+          return 'red-10';
 
         case "SSL HANDSHAKE ERROR":
 
@@ -268,6 +276,11 @@ export default defineComponent({
           return 'lime-6';
 
 // OK / ACCEPTABLE / CONFIG ERROR
+        case "UNAVAILABLE":
+
+          // blue-grey #647d8b
+          return "blue-grey";
+
         case "OK":
 
           return "positive";
@@ -288,19 +301,9 @@ export default defineComponent({
     }
   },
   mounted() {
-    api.get('/polling').then(response => {
-
-      this.polling = response.data.polling;
-
-      setInterval(() => {
-        this.updateHosts()
-      }, parseInt(this.polling));
-
-    }).catch(error => {
-
-      console.log("Couldn't fetch polling rate: " + error);
-
-    });
+    setInterval(() => {
+      this.updateHosts()
+    }, parseInt(this.store.state.pollingRate));
   }
 })
 </script>
