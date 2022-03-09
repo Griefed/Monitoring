@@ -22,6 +22,7 @@
  */
 package de.griefed.monitoring.utilities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,6 +51,17 @@ public class JsonUtilities {
                         )
                 )
         );
+    }
+
+    /**
+     * Acquire a {@link JsonNode} from the given String.
+     * @author Griefed
+     * @param jsonString {@link String}. The file to read.
+     * @return {@link JsonNode} containing the files json data.
+     * @throws JsonProcessingException when the String could not be parsed/read into a {@link JsonNode}.
+     */
+    public JsonNode getJson(String jsonString) throws JsonProcessingException {
+        return getObjectMapper().readTree(jsonString);
     }
 
     /**

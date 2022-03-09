@@ -22,6 +22,7 @@
  */
 package de.griefed.monitoring.controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.ApplicationProperties;
 import de.griefed.monitoring.services.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,7 @@ public class InformationController {
      */
     @CrossOrigin(origins = "{*}")
     @RequestMapping(value = "hosts", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getHostsInformation() {
+    public ResponseEntity<JsonNode> getHostsInformation() {
         return ResponseEntity
                 .ok()
                 .header(

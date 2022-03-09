@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import { hosts,api } from "boot/axios";
+import { hosts } from "boot/axios";
 import { defineComponent, inject, ref } from 'vue';
 import { getCssVar,openURL } from 'quasar';
 
@@ -164,16 +164,8 @@ export default defineComponent({
     updateHosts() {
       hosts.get().then(response => {
 
-        this.hostsOk = [];
-        this.hostsDown = [];
-
-        response.data.hosts.forEach(host => {
-          if (host.code === 200 || host.code === 301) {
-            this.hostsOk.push(host);
-          } else {
-            this.hostsDown.push(host);
-          }
-        })
+        this.hostsOk = response.data.hostsOk;
+        this.hostsDown = response.data.hostsDown;
 
         this.$forceUpdate();
 

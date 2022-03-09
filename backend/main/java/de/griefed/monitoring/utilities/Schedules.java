@@ -22,6 +22,7 @@
  */
 package de.griefed.monitoring.utilities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.griefed.monitoring.services.InformationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +53,7 @@ public class Schedules {
      * @author Griefed
      */
     @Scheduled(cron = "${de.griefed.monitoring.schedule.hosts}")
-    public void refreshHosts() {
+    public void refreshHosts() throws JsonProcessingException {
         LOG.debug("Current Time: " + dateFormat.format(new Date()) + " - Refreshing hosts information.");
         INFORMATION_SERVICE.poll();
     }

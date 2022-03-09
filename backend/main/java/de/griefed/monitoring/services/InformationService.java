@@ -22,8 +22,12 @@
  */
 package de.griefed.monitoring.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import de.griefed.monitoring.ApplicationProperties;
+import de.griefed.monitoring.utilities.JsonUtilities;
 import de.griefed.monitoring.utilities.MailNotification;
 import de.griefed.monitoring.utilities.WebUtilities;
 import org.apache.logging.log4j.LogManager;
@@ -51,8 +55,9 @@ public class InformationService {
     private final ApplicationProperties APPLICATION_PROPERTIES;
     private final MailNotification MAIL_NOTIFICATION;
     private final WebUtilities WEB_UTILITIES;
+    private final JsonUtilities JSON_UTILITIES;
 
-    private String hostsInformation = "{\"hosts\": []}";
+    private JsonNode hostsInformation = null;
 
     /**
      * Constructor responsible for DI.
@@ -64,21 +69,29 @@ public class InformationService {
     @Autowired
     public InformationService(ApplicationProperties injectedApplicationProperties,
                               MailNotification injectedMailNotification,
-                              WebUtilities injectedWebUtilities) {
+                              WebUtilities injectedWebUtilities, JsonUtilities injectedJsonUtilities) {
 
         this.APPLICATION_PROPERTIES = injectedApplicationProperties;
         this.MAIL_NOTIFICATION = injectedMailNotification;
         this.WEB_UTILITIES = injectedWebUtilities;
+        this.JSON_UTILITIES = injectedJsonUtilities;
 
-        Executors.newSingleThreadExecutor().execute(this::poll);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                poll();
+            } catch (JsonProcessingException ex) {
+                LOG.error("Error acquiring and processing host information.",ex);
+            }
+        });
+
     }
 
     /**
      * Retrieve hosts information.
      * @author Griefed
-     * @return String in JSON format. Returns information about the configured host(s).
+     * @return {@link JsonNode} containing all information about the configured hosts.
      */
-    public String retrieveHostsInformation() {
+    public JsonNode retrieveHostsInformation() {
         return hostsInformation;
     }
 
@@ -86,10 +99,13 @@ public class InformationService {
      * Retrieve all information about the configured host(s) and stores it in memory for retrieval by {@link #retrieveHostsInformation()}.
      * @author Griefed
      */
-    public void poll() {
+    public void poll() throws JsonProcessingException {
 
         JsonNode hosts = null;
-        String info;
+        String info = "{" +
+                "\"hostsOk\": []," +
+                "\"hostsDown\": []" +
+                "}";
 
         try {
             hosts = APPLICATION_PROPERTIES.getHosts();
@@ -101,8 +117,6 @@ public class InformationService {
         if (hosts == null || hosts.size() == 0) {
 
             LOG.warn("WARNING! Hosts are not configured! Not retrieving information.");
-
-            info = "{\"status\": " + 1 + ",\"message\": \"Hosts are not configured! Not retrieving information.\"}";
 
         } else {
 
@@ -151,11 +165,33 @@ public class InformationService {
 
             stringBuilder.append("]}");
 
-            info = stringBuilder.toString();
+            JsonNode infoNode = JSON_UTILITIES.getJson(stringBuilder.toString());
+
+            if (infoNode.get("hosts").size() > 0) {
+
+                List<String> ok = new ArrayList<>(100);
+                List<String> down = new ArrayList<>(100);
+
+                for (JsonNode host : infoNode.get("hosts")) {
+
+                    if (host.get("code").asInt() == 200 || host.get("code").asInt() == 301) {
+                        ok.add(host.toPrettyString());
+                    } else {
+                        down.add(host.toPrettyString());
+                    }
+
+                }
+
+                info = "{" +
+                        "\"hostsOk\":" + ok + "," +
+                        "\"hostsDown\":" + down +
+                        "}";
+
+            }
 
         }
 
-        this.hostsInformation = info;
+        this.hostsInformation = JSON_UTILITIES.getJson(info);
 
         LOG.info("Retrieved information.");
 
