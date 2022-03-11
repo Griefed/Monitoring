@@ -18,7 +18,10 @@
             :thumb-style="downThumbStyle"
             :bar-style="downBarStyle"
           >
-            <div class="row wrap flex-center">
+            <div
+              class="row wrap flex-center"
+              v-if="hostsDown.length > 0"
+            >
               <q-card
                 flat
                 class="card-ok"
@@ -100,6 +103,16 @@
                 </q-list>
               </q-card>
             </div>
+            <div
+              class="absolute-center"
+              v-else
+            >
+              <q-spinner-rings
+                :color="this.$q.dark.isActive ? 'primary' : 'secondary'"
+                size="10em"
+                :thickness="10"
+              />
+            </div>
           </q-scroll-area>
         </template>
 
@@ -114,34 +127,49 @@
             :thumb-style="okThumbStyle"
             :bar-style="okBarStyle"
           >
-                <q-chip
-                  outline
-                  v-ripple
-                  v-for="host in hostsOk" v-bind:key="host"
-                  class="chip-down"
-                  clickable
-                  @click="openURL(host.address)"
-                >
-                  <q-item-section>
-                    <q-item-label class="text-center text-weight-bolder">
-                      <q-badge
-                        rounded
-                        :color="getQuasarColor(host.status, host.hostAvailable)"
-                        floating
-                      >
-                        {{ host.status }}
-                      </q-badge>
-                      {{ host.name.length > 25 ? host.name.substring(0,22) + '...' : host.name }}
-                    </q-item-label>
-                  </q-item-section>
-                  <q-tooltip class="text-center" v-if="host.name.length > 25 && !this.$q.platform.is.mobile">
-                    {{ host.name }}<br>
-                    {{ host.address }}
-                  </q-tooltip>
-                  <q-tooltip v-else-if="!this.$q.platform.is.mobile">
-                    {{ host.address }}
-                  </q-tooltip>
-                </q-chip>
+            <div
+              v-if="hostsOk.length > 0"
+              class="flex-center row wrap"
+            >
+              <q-chip
+                outline
+                v-ripple
+                v-for="host in hostsOk" v-bind:key="host"
+                class="chip-down"
+                clickable
+                @click="openURL(host.address)"
+              >
+                <q-item-section>
+                  <q-item-label class="text-center text-weight-bolder">
+                    <q-badge
+                      rounded
+                      :color="getQuasarColor(host.status, host.hostAvailable)"
+                      floating
+                    >
+                      {{ host.status }}
+                    </q-badge>
+                    {{ host.name.length > 25 ? host.name.substring(0,22) + '...' : host.name }}
+                  </q-item-label>
+                </q-item-section>
+                <q-tooltip class="text-center" v-if="host.name.length > 25 && !this.$q.platform.is.mobile">
+                  {{ host.name }}<br>
+                  {{ host.address }}
+                </q-tooltip>
+                <q-tooltip v-else-if="!this.$q.platform.is.mobile">
+                  {{ host.address }}
+                </q-tooltip>
+              </q-chip>
+            </div>
+            <div
+              class="absolute-center"
+              v-else
+            >
+              <q-spinner-rings
+                :color="this.$q.dark.isActive ? 'primary' : 'secondary'"
+                size="5em"
+                :thickness="10"
+              />
+            </div>
           </q-scroll-area>
         </template>
 
