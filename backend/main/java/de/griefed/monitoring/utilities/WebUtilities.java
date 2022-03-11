@@ -83,7 +83,7 @@ public class WebUtilities {
      * <code>SSL HANDSHAKE ERROR</code>, or <code>PROTOCOL ERROR</code>.
      */
     public String getHostStatus(@NotNull String hostUrlAsString) {
-        int code = 0;
+        int code;
 
         try {
 
@@ -114,6 +114,43 @@ public class WebUtilities {
     }
 
     /**
+     * Clean a given http or https address so only the FQDN remains.
+     * @author Griefed
+     * @param address {@link String} The http or https address to clean.
+     * @return {@link String} The FQDN of the given address.
+     */
+    private String cleanAddress(String address) {
+
+        address = address.replace("https://","").replace("http://","");
+
+        if (address.contains(":")) {
+            address = address.replace(address.substring(address.lastIndexOf(":")), "");
+        }
+
+        if (address.endsWith("/")) {
+            address = address.replace(address.substring(address.lastIndexOf("/") - 1),"");
+        }
+
+        if (address.contains("/")) {
+            int position = 0;
+            char[] letters = address.toCharArray();
+
+            for (int i = 0; i < letters.length; i++) {
+
+                if (String.valueOf(letters[i]).equals("/")) {
+                    position = i;
+                    break;
+                }
+            }
+
+            address = address.replace(address.substring(position), "");
+
+        }
+
+        return address;
+    }
+
+    /**
      * Acquire the IP-address of a given host.
      * @author Griefed
      * @param address {@link String} The address of the host.
@@ -125,17 +162,13 @@ public class WebUtilities {
             return "127.0.0.1";
         }
 
+        address = cleanAddress(address);
+
         try {
+            System.out.println(address);
+            LOG.debug("Address: " + address + " IP: " + InetAddress.getByName(address).getHostAddress());
 
-            String ping = address.replace("http://","").replace("https://","");
-
-            if (ping.contains(":")) {
-                ping = ping.replace(ping.substring(ping.lastIndexOf(":")), "");
-            }
-
-            LOG.debug("Address: " + address + " IP: " + InetAddress.getByName(ping).getHostAddress());
-
-            return InetAddress.getByName(ping).getHostAddress();
+            return InetAddress.getByName(address).getHostAddress();
 
         } catch (UnknownHostException ignored) {
             LOG.error("Couldn't acquire IP for " + address);
@@ -156,6 +189,8 @@ public class WebUtilities {
     public boolean ping(String address, String ip, List<Integer> ports) {
         boolean available;
 
+        address = cleanAddress(address);
+
         try {
 
             available = InetAddress.getByName(address).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
@@ -165,14 +200,13 @@ public class WebUtilities {
             available = false;
         }
 
-        if (!available) {
+        if (!available && ip != null) {
             try {
 
                 available = InetAddress.getByName(ip).isReachable(APPLICATION_PROPERTIES.getTimeoutConnect() * 1000);
 
             } catch (IOException ignored) {
 
-                available = false;
             }
         }
 

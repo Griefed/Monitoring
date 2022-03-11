@@ -174,7 +174,7 @@ public class InformationService {
 
                 for (JsonNode host : infoNode.get("hosts")) {
 
-                    if (host.get("code").asInt() == 200 || host.get("code").asInt() == 301) {
+                    if (host.get("status").asText().equals("OK")) {
                         ok.add(host.toPrettyString());
                     } else {
                         down.add(host.toPrettyString());
@@ -262,7 +262,7 @@ public class InformationService {
 
         }
 
-        if (!hostAvailable) {
+        if (!hostAvailable && ip != null) {
             status = "OFFLINE";
         }
 
