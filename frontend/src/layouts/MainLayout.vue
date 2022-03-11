@@ -6,7 +6,20 @@
         <q-icon name="img:favicon.gif" style="font-size: 32px;" />
 
         <q-toolbar-title>
-          Monitoring  <span style="font-size: 14px; padding-left: 30px;">{{this.store.state.version}}</span>
+          <b>Monitoring</b>
+          <span style="margin-left: 10px;">
+            v{{this.store.state.version}}
+          </span>
+          <q-btn
+            v-if="this.store.state.updateAvailable"
+            style="margin-left: 5px; margin-bottom: 4px;"
+            round
+            dense
+            size="xs"
+            color="warning"
+            icon="priority_high"
+            @click="showUpdateNotification()"
+          />
         </q-toolbar-title>
 
         <q-btn v-if="!this.$q.platform.is.mobile" label="GitHub" style="color: #C0FFEE" type="a" target="_blank" href="https://github.com/SuK-IT/Monitoring">
@@ -68,43 +81,12 @@
     </q-page-container>
 
   </q-layout>
-
-
-  <q-dialog v-model="this.store.state.updateAvailable" v-if="this.store.state.updateReminder">
-    <q-card style="max-width: 1000px;width:750px">
-      <q-card-section>
-        <div class="text-h4 text-weight-bolder text-center">Update available!</div>
-      </q-card-section>
-      <q-card-section class="q-pt-none text-center">
-        <span class="text-h6 text-weight-bolder">Version {{ this.store.state.updateVersion }}</span>
-          <br><br>
-        <span class="text-h6">Available at: {{ this.store.state.updateLink }}</span>
-          <br><br>
-      </q-card-section>
-      <q-card-actions align="right">
-        <q-btn dense label="Visit Release Page" color="primary" type="a" target="_blank" :href="this.store.state.updateLink">
-          <q-tooltip :disable="this.$q.platform.is.mobile">
-            Click here to visit the release page!
-          </q-tooltip>
-        </q-btn>
-        <q-btn dense label="OK" color="primary" v-close-popup>
-          <q-tooltip :disable="this.$q.platform.is.mobile">
-            Close popup.
-          </q-tooltip>
-        </q-btn>
-        <q-btn dense label="Don't remind me again" @click="noReminder()" color="primary" v-close-popup>
-          <q-tooltip :disable="this.$q.platform.is.mobile">
-            Close popup and don't inform about updates again.
-          </q-tooltip>
-        </q-btn>
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
 import { defineComponent, ref, inject } from 'vue';
 import { tsParticles } from 'tsparticles';
+import { openURL } from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -114,6 +96,7 @@ export default defineComponent({
 
     return {
       store,
+      updateNotification: ref(false),
       drawer: ref(true),
       miniState: ref(true)
     }
@@ -126,6 +109,43 @@ export default defineComponent({
     noReminder() {
       this.store.state.updateReminder = false;
       this.$q.cookies.set('update.remind', this.store.state.updateReminder);
+    },
+    showUpdateNotification() {
+      this.$q.notify({
+        color: 'primary',
+        textColor: 'secondary',
+        position: 'center',
+        multiline: true,
+        html: true,
+        timeout: 10000,
+        progress: true,
+        actions: [
+          { label: 'VISIT RELEASE PAGE', color: 'positive',
+            handler: () => {
+              openURL(
+                this.store.state.updateLink,
+                null,
+                {
+                  noopener: true,
+                  menubar: false,
+                  toolbar: false,
+                  noreferrer: false,
+                }
+              );
+            }
+          },
+          { label: 'OK', color: 'info' },
+          { label: 'DO NOT REMIND ME AGAIN', color: 'warning',
+            handler: () => {
+            this.noReminder();
+            }
+          }
+        ],
+        message:
+          '<div class="text-h4 text-weight-bolder text-center">Update available!</div><br><br>' +
+          '<span class="text-h6 text-weight-bolder absolute-center">Version ' + this.store.state.updateVersion + '</span><br>' +
+          '<span class=\"text-h6\">Available at: <br>' + this.store.state.updateLink + '</span><br>'
+      })
     }
   },
   mounted() {
@@ -235,6 +255,10 @@ export default defineComponent({
       });
     }).catch(error => {
       console.log(error);
+      this.$q.notify({
+        message: 'System Error.',
+        color: 'negative'
+      });
     });
 
     if (this.$q.cookies.has('update.remind')) {
@@ -248,8 +272,15 @@ export default defineComponent({
       this.store.state.updateAvailable = response.data.available;
       this.store.state.updateVersion = response.data.version;
       this.store.state.updateLink = response.data.link;
+      if (response.data.available && this.store.state.updateReminder) {
+        this.showUpdateNotification();
+      }
     }).catch(error => {
       console.log(error);
+      this.$q.notify({
+        message: 'System Error.',
+        color: 'negative'
+      });
     })
 
     this.$q.platform.is.mobile ? this.drawer = false : this.drawer = true;

@@ -257,6 +257,10 @@ export default defineComponent({
 
         console.log("Encountered an error fetching host information: " + error);
 
+        this.$q.notify({
+          message: 'System Error.',
+          color: 'negative'
+        });
       });
     },
     getCssColor(status, available) {
