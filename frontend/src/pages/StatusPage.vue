@@ -75,7 +75,7 @@
                       {{ host.status }}
                     </span>
                         <q-chip
-                          v-if="host.hostAvailable && host.ip !== 'null'"
+                          v-if="host.hostAvailable && host.ip !== 'null' && host.status !== 'DNS MISMATCH'"
                           class="text-weight-bolder"
                           size="lg"
                           dense
@@ -86,7 +86,7 @@
                           :label="host.ip"
                         />
                         <q-chip
-                          v-if="!host.hostAvailable && host.ip !== 'null'"
+                          v-if="!host.hostAvailable && host.ip !== 'null' && host.status !== 'DNS MISMATCH'"
                           class="text-weight-bolder"
                           size="lg"
                           dense
@@ -96,6 +96,38 @@
                           color="red"
                           :label="host.ip"
                         />
+                        <q-chip
+                          v-if="host.hostAvailable && host.expectedIp !== 'null' && host.status === 'DNS MISMATCH'"
+                          class="text-weight-bolder"
+                          size="lg"
+                          dense
+                          square
+                          flat
+                          unelevated
+                          color="green"
+                          :label="host.expectedIp"
+                        >
+                          <q-tooltip style="font-size: 15px;" v-if="!this.$q.platform.is.mobile">
+                            <strong style="color: lawngreen;">Expected:&#160;</strong>{{ host.expectedIp }}<br>
+                            <strong style="color: red;">Actual:&#160;&#160;&#160;&#160;&#160;&#160;</strong>{{ host.ip }}
+                          </q-tooltip>
+                        </q-chip>
+                        <q-chip
+                          v-if="!host.hostAvailable && host.expectedIp !== 'null' && host.status === 'DNS MISMATCH'"
+                          class="text-weight-bolder"
+                          size="lg"
+                          dense
+                          square
+                          flat
+                          unelevated
+                          color="red"
+                          :label="host.expectedIp"
+                        >
+                          <q-tooltip style="font-size: 15px;" v-if="!this.$q.platform.is.mobile">
+                            <strong style="color: lawngreen;">Expected:&#160;</strong>{{ host.expectedIp }}<br>
+                            <strong style="color: red;">Actual:&#160;&#160;&#160;&#160;&#160;&#160;</strong>{{ host.ip }}
+                          </q-tooltip>
+                        </q-chip>
                       </q-item-label>
                     </q-item-section>
                   </q-item>

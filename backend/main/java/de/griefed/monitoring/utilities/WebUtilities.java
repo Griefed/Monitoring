@@ -165,7 +165,7 @@ public class WebUtilities {
         address = cleanAddress(address);
 
         try {
-            System.out.println(address);
+
             LOG.debug("Address: " + address + " IP: " + InetAddress.getByName(address).getHostAddress());
 
             return InetAddress.getByName(address).getHostAddress();

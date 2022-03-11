@@ -207,6 +207,7 @@ public class InformationService {
 
         String name = host.get("name").asText();
         String address = host.get("address").asText();
+        String expectedIp = null;
 
         List<Integer> ports = new ArrayList<>(100);
 
@@ -250,7 +251,8 @@ public class InformationService {
             status = WEB_UTILITIES.getHostStatus(address);
 
             try {
-                if (!host.get("expectedIp").asText().equals(ip)) {
+                expectedIp = host.get("expectedIp").asText();
+                if (!expectedIp.equals(ip)) {
                     status = "DNS MISMATCH";
                     code = 418;
                 }
@@ -258,11 +260,17 @@ public class InformationService {
 
             }
 
-            hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
+            if (expectedIp != null) {
+                hostAvailable = WEB_UTILITIES.ping(address, expectedIp, ports);
+            } else {
+                hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
+            }
 
         }
 
-        if (!hostAvailable && ip != null) {
+        if (!hostAvailable && expectedIp != null) {
+            status = "OFFLINE";
+        } else if (!hostAvailable && ip != null) {
             status = "OFFLINE";
         }
 
@@ -284,10 +292,13 @@ public class InformationService {
                 "\"name\":\"" + name + "\"," +
                 "\"address\":\"" + address + "\"," +
                 "\"ip\":\"" + ip + "\"," +
+                "\"expectedIp\":\"" + expectedIp + "\"," +
                 "\"hostAvailable\":" + hostAvailable + "," +
                 "\"status\":\"" + status + "\"," +
                 "\"code\":" + code +
                 "}";
+
+
     }
 
     /**
