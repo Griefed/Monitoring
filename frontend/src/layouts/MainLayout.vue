@@ -59,8 +59,8 @@
               <div
                 id="particles-js"
                 :class="this.$q.dark.isActive ? 'dark_gradient' : 'normal_gradient'"
-              ></div>
-              <router-view/>
+              ><router-view/></div>
+
             </q-scroll-area>
           </div>
         </div>
@@ -273,6 +273,7 @@ export default defineComponent({
   background-position: 50% 50%;
 }
 
+/*noinspection CssUnusedSymbol*/
 .normal_gradient {
   background:
     radial-gradient(circle at 0% 0%,
@@ -322,6 +323,7 @@ export default defineComponent({
     );
 }
 
+/*noinspection CssUnusedSymbol*/
 .dark_gradient {
   background:
     radial-gradient(circle at 0% 0%,
@@ -371,6 +373,7 @@ export default defineComponent({
     );
 }
 
+/*noinspection CssUnknownTarget*/
 .page {
   background-image: url("~assets/background.webp");
   background-repeat: repeat;

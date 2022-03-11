@@ -1,128 +1,153 @@
 <template>
   <q-page>
-    <!-- HOSTS WHICH ARE UP -->
-    <div class="row flex-center transparent" style="padding-bottom: 120px;">
-      <q-card
-        flat
-        :style="'margin: 5px; width: 100%; max-width: 400px; height: 120px; background: ' + getCssColor(host.status, host.hostAvailable) + ';'"
-        v-for="host in hostsDown"
-        v-bind:key="host"
+    <div class="fullscreen">
+      <q-splitter
+        v-model="splitterModel"
+        style="height: 100%"
+        horizontal
+        before-class=""
+        :after-class="this.$q.dark.isActive ? 'background-dark' : 'background'"
+        :limits="[50, 100]"
+        separator-style="background: #c0ffee;"
       >
-        <q-list>
 
-          <q-item-label
-            :class="this.$q.platform.is.mobile ? 'text-weight-bolder text-h6 text-center' : 'text-weight-bolder text-h6 text-center'"
-            :style="this.$q.platform.is.mobile ? 'font-size: 18px;' : 'padding-top: 5px; padding-bottom: 5px;'"
+        <!-- HOSTS WHICH ARE UP -->
+        <template v-slot:before>
+          <q-scroll-area
+            class="full-height q-pa-md"
+            :thumb-style="downThumbStyle"
+            :bar-style="downBarStyle"
           >
-            <q-badge
-              v-if="host.code !== 418"
-              class="q-mr-xs"
-              style="font-size: 16px;"
-              floating
-              :label="host.code"
-            />
-            <span>
-              {{ host.name.length > 35 ? host.name.substring(0,32) + '...' : host.name }}
-              <q-tooltip v-if="host.name.length > 35 && !this.$q.platform.is.mobile">
-                {{ host.name }}
-              </q-tooltip>
-            </span>
-            <br>
-            <q-chip
-              outline
-              dense
-              v-ripple
-              clickable
-              :label="host.address.length > 47 ? host.address.substring(0, 44) + '...' : host.address"
-              @click="openURL(host.address)"
-            >
-              <q-tooltip v-if="host.address.length > 47 && !this.$q.platform.is.mobile">
-                {{ host.address }}
-              </q-tooltip>
-            </q-chip>
-          </q-item-label>
+            <div class="row wrap flex-center">
+              <q-card
+                flat
+                class="card-ok"
+                :style="'background: ' + getCssColor(host.status, host.hostAvailable) + ';'"
+                v-for="host in hostsDown"
+                v-bind:key="host"
+              >
+                <q-list>
 
-          <q-separator
-            inset
-            size="4px"
-          />
+                  <q-item-label
+                    :class="this.$q.platform.is.mobile ? 'text-weight-bolder text-h6 text-center' : 'text-weight-bolder text-h6 text-center'"
+                    :style="this.$q.platform.is.mobile ? 'font-size: 18px;' : 'padding-top: 5px; padding-bottom: 5px;'"
+                  >
+                    <q-badge
+                      v-if="host.code !== 418"
+                      class="q-mr-xs"
+                      style="font-size: 16px;"
+                      floating
+                      :label="host.code"
+                    />
+                    <span>
+                      {{ host.name.length > 35 ? host.name.substring(0,32) + '...' : host.name }}
+                      <q-tooltip v-if="host.name.length > 35 && !this.$q.platform.is.mobile">
+                        {{ host.name }}
+                      </q-tooltip>
+                    </span>
+                    <br>
+                    <q-chip
+                      outline
+                      dense
+                      v-ripple
+                      clickable
+                      :label="host.address.length > 47 ? host.address.substring(0, 44) + '...' : host.address"
+                      @click="openURL(host.address)"
+                    >
+                      <q-tooltip v-if="host.address.length > 47 && !this.$q.platform.is.mobile">
+                        {{ host.address }}
+                      </q-tooltip>
+                    </q-chip>
+                  </q-item-label>
 
-          <q-item>
-            <q-item-section top>
-              <q-item-label lines="2">
-                <span class="text-weight-bolder right" style="padding-top: 11px; font-size: 17px;">
-                  {{ host.status }}
-                </span>
-                <q-chip
-                  v-if="host.hostAvailable && host.ip !== 'null'"
-                  class="text-weight-bolder"
-                  size="lg"
-                  dense
-                  square
-                  flat
-                  unelevated
-                  color="green"
-                  :label="host.ip"
-                />
-                <q-chip
-                  v-if="!host.hostAvailable && host.ip !== 'null'"
-                  class="text-weight-bolder"
-                  size="lg"
-                  dense
-                  square
-                  flat
-                  unelevated
-                  color="red"
-                  :label="host.ip"
-                />
-              </q-item-label>
-            </q-item-section>
-          </q-item>
+                  <q-separator
+                    inset
+                    size="4px"
+                  />
 
-        </q-list>
-      </q-card>
-    </div>
+                  <q-item>
+                    <q-item-section top>
+                      <q-item-label lines="2">
+                    <span class="text-weight-bolder right" style="padding-top: 11px; font-size: 17px;">
+                      {{ host.status }}
+                    </span>
+                        <q-chip
+                          v-if="host.hostAvailable && host.ip !== 'null'"
+                          class="text-weight-bolder"
+                          size="lg"
+                          dense
+                          square
+                          flat
+                          unelevated
+                          color="green"
+                          :label="host.ip"
+                        />
+                        <q-chip
+                          v-if="!host.hostAvailable && host.ip !== 'null'"
+                          class="text-weight-bolder"
+                          size="lg"
+                          dense
+                          square
+                          flat
+                          unelevated
+                          color="red"
+                          :label="host.ip"
+                        />
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
 
-    <!-- HOSTS WHICH ARE DOWN -->
-    <q-card class="fixed-bottom vertical-bottom window-width" style="width: 100%">
-      <q-scroll-area class="vertical-bottom window-width" style="height: 120px; width: 100%">
-        <q-card-section class="row wrap flex-center">
+                </q-list>
+              </q-card>
+            </div>
+          </q-scroll-area>
+        </template>
 
-          <q-chip
-            outline
-            v-ripple
-            v-for="host in hostsOk" v-bind:key="host"
-            style="margin: 10px; width: 100%; max-width: 200px;"
-            clickable
-            @click="openURL(host.address)"
+        <template v-slot:separator>
+          <q-avatar color="primary" text-color="white" size="40px" icon="drag_indicator"/>
+        </template>
+
+        <!-- HOSTS WHICH ARE DOWN -->
+        <template v-slot:after>
+          <q-scroll-area
+            class="full-height q-pa-md"
+            :thumb-style="okThumbStyle"
+            :bar-style="okBarStyle"
           >
-            <q-item-section>
-              <q-item-label class="text-center text-weight-bolder">
-                <q-badge
-                  rounded
-                  :color="getQuasarColor(host.status, host.hostAvailable)"
-                  floating
+                <q-chip
+                  outline
+                  v-ripple
+                  v-for="host in hostsOk" v-bind:key="host"
+                  class="chip-down"
+                  clickable
+                  @click="openURL(host.address)"
                 >
-                  {{ host.status }}
-                </q-badge>
-                {{ host.name.length > 25 ? host.name.substring(0,22) + '...' : host.name }}
-              </q-item-label>
-            </q-item-section>
-            <q-tooltip class="text-center" v-if="host.name.length > 25 && !this.$q.platform.is.mobile">
-              {{ host.name }}<br>
-              {{ host.address }}
-            </q-tooltip>
-            <q-tooltip v-else-if="!this.$q.platform.is.mobile">
-              {{ host.address }}
-            </q-tooltip>
-          </q-chip>
+                  <q-item-section>
+                    <q-item-label class="text-center text-weight-bolder">
+                      <q-badge
+                        rounded
+                        :color="getQuasarColor(host.status, host.hostAvailable)"
+                        floating
+                      >
+                        {{ host.status }}
+                      </q-badge>
+                      {{ host.name.length > 25 ? host.name.substring(0,22) + '...' : host.name }}
+                    </q-item-label>
+                  </q-item-section>
+                  <q-tooltip class="text-center" v-if="host.name.length > 25 && !this.$q.platform.is.mobile">
+                    {{ host.name }}<br>
+                    {{ host.address }}
+                  </q-tooltip>
+                  <q-tooltip v-else-if="!this.$q.platform.is.mobile">
+                    {{ host.address }}
+                  </q-tooltip>
+                </q-chip>
+          </q-scroll-area>
+        </template>
 
-        </q-card-section>
-      </q-scroll-area>
-    </q-card>
-
+      </q-splitter>
+    </div>
   </q-page>
-
 </template>
 
 <script>
@@ -138,9 +163,40 @@ export default defineComponent({
 
     return {
       store,
+      splitterModel: ref(90),
       hostsOk: ref([]),
       hostsDown: ref([]),
-      ipRegEx: new RegExp('\\d+\\.\\d+\\.\\d+\\.\\d+')
+      ipRegEx: new RegExp('\\d+\\.\\d+\\.\\d+\\.\\d+'),
+      downThumbStyle: {
+        right: '4px',
+        borderRadius: '5px',
+        backgroundColor: '#325358',
+        width: '5px',
+        opacity: 0.75
+      },
+
+      downBarStyle: {
+        right: '2px',
+        borderRadius: '9px',
+        backgroundColor: '#c0ffee',
+        width: '9px',
+        opacity: 0.3
+      },
+      okThumbStyle: {
+        right: '4px',
+        borderRadius: '5px',
+        backgroundColor: '#325358',
+        width: '5px',
+        opacity: 0.75
+      },
+
+      okBarStyle: {
+        right: '2px',
+        borderRadius: '9px',
+        backgroundColor: '#c0ffee',
+        width: '9px',
+        opacity: 0.3
+      }
     }
   },
   methods: {
@@ -301,13 +357,39 @@ export default defineComponent({
 </script>
 
 <style>
+.chip-down {
+  margin: 10px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.card-ok {
+  margin: 5px;
+  width: 100%;
+  max-width: 400px;
+  height: 120px;
+}
+
+/*noinspection CssUnusedSymbol*/
+.background {
+  height: 100% !important;
+  background: bisque !important;
+}
+
+/*noinspection CssUnusedSymbol*/
+.background-dark {
+  height: 100% !important;
+  background: #1D1D1D !important;
+}
+
 .right {
   position: absolute;
   right: 0;
   padding-right: 10px;
 }
 
+/*noinspection CssUnusedSymbol*/
 .transparent {
-  background-color: transparent;
+  background-color: transparent !important;
 }
 </style>
