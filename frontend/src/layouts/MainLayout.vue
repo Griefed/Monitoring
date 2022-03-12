@@ -36,30 +36,67 @@
           </q-tooltip>
         </q-btn>
 
-        <q-separator style="margin-left: 5px; margin-right: 5px;"/>
+        <q-separator
+          style="margin-left: 15px; margin-right: 15px;"
+          color="secondary"
+          inset
+          vertical
+        />
 
-        <q-btn
-          :icon="this.$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-          class="q-mr-xs"
-          dense
-          @click="toggleDarkMode()">
-          <q-tooltip :disable="this.$q.platform.is.mobile">
-            {{ this.$q.dark.isActive ? 'Deactivate Dark Mode' : 'Activate Dark Mode' }}
-          </q-tooltip>
-        </q-btn>
+        <q-btn-dropdown
+          icon="settings"
+          >
+          <q-list>
+            <q-item class="flex-center">
+              <q-btn
+                :icon="this.$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
+                :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
+                label="Toggle Dark Mode"
+                @click="toggleDarkMode()"
+                dense
+                flat
+                v-close-popup
+              >
+                <q-tooltip :disable="this.$q.platform.is.mobile">
+                  {{ this.$q.dark.isActive ? 'Deactivate Dark Mode' : 'Activate Dark Mode' }}
+                </q-tooltip>
+              </q-btn>
+            </q-item>
 
-        <q-separator style="margin-left: 5px; margin-right: 5px;"/>
+            <q-item class="flex-center">
+              <q-btn
+                icon="model_training"
+                :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
+                label="Toggle Blinking"
+                @click="toggleBlinking()"
+                dense
+                flat
+                v-close-popup
+              >
+                <q-tooltip :disable="this.$q.platform.is.mobile">
+                  {{ this.store.state.blink ? 'Deactivate Blinking Of Critical Cards' : 'Activate Blinking Of Critical Cards' }}
+                </q-tooltip>
+              </q-btn>
+            </q-item>
 
-        <q-btn
-          :icon="this.$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
-          class="q-mr-xs"
-          dense
-          v-if="!this.$q.platform.is.mobile"
-          @click="this.$q.fullscreen.toggle()">
-          <q-tooltip :disable="this.$q.platform.is.mobile">
-            {{ this.$q.fullscreen.isActive ? 'Exit Fullscreen' : 'Toggle Fullscreen' }}
-          </q-tooltip>
-        </q-btn>
+            <q-item class="flex-center">
+              <q-btn
+                v-if="!this.$q.platform.is.mobile"
+                :icon="this.$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
+                :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
+                label="Toggle Fullscreen"
+                @click="this.$q.fullscreen.toggle()"
+                dense
+                flat
+                v-close-popup
+              >
+                <q-tooltip :disable="this.$q.platform.is.mobile">
+                  {{ this.$q.fullscreen.isActive ? 'Exit Fullscreen' : 'Toggle Fullscreen' }}
+                </q-tooltip>
+              </q-btn>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
 
       </q-toolbar>
     </q-header>
@@ -102,6 +139,10 @@ export default defineComponent({
     }
   },
   methods : {
+    toggleBlinking() {
+      this.store.state.blink = !this.store.state.blink;
+      this.$q.cookies.set('blink.isActive', this.store.state.blink);
+    },
     toggleDarkMode() {
       this.$q.dark.toggle();
       this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
@@ -149,6 +190,26 @@ export default defineComponent({
     }
   },
   mounted() {
+    if (this.$q.cookies.has('dark.isActive')) {
+      this.$q.dark.set(this.$q.cookies.get('dark.isActive'));
+    } else {
+      this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
+    }
+
+    if (this.$q.cookies.has('update.remind')) {
+      this.store.state.updateReminder = this.$q.cookies.get('update.remind');
+    } else {
+      this.store.state.updateReminder = true;
+      this.$q.cookies.set('update.remind', true);
+    }
+
+    if (this.$q.cookies.has('blink.isActive')) {
+      this.store.state.blink = this.$q.cookies.get('blink.isActive');
+    } else {
+      this.store.state.blink = true;
+      this.$q.cookies.set('blink.isActive', this.store.state.blink);
+    }
+
     this.$settings.get().then(response => {
       this.store.state.version = response.data.version;
       this.store.state.pollingRate = response.data.pollingRate;
@@ -261,13 +322,6 @@ export default defineComponent({
       });
     });
 
-    if (this.$q.cookies.has('update.remind')) {
-      this.store.state.updateReminder = this.$q.cookies.get('update.remind');
-    } else {
-      this.store.state.updateReminder = true;
-      this.$q.cookies.set('update.remind', true);
-    }
-
     this.$api.get('/updates').then(response => {
       this.store.state.updateAvailable = response.data.available;
       this.store.state.updateVersion = response.data.version;
@@ -282,14 +336,6 @@ export default defineComponent({
         color: 'negative'
       });
     })
-
-    this.$q.platform.is.mobile ? this.drawer = false : this.drawer = true;
-
-    if (this.$q.cookies.has('dark.isActive')) {
-      this.$q.dark.set(this.$q.cookies.get('dark.isActive'));
-    } else {
-      this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
-    }
   }
 })
 </script>
