@@ -1,3 +1,34 @@
+## [1.5.0](https://git.griefed.de/Griefed/Monitoring/compare/1.4.0...1.5.0) (2022-03-12)
+
+
+### ⏩ Performance
+
+* **Host Information:** Set hostsOk and hostsDown in backend, instead of iterating and pushing in frontend. Moves computation from the user/frontend to the backend. ([ea1c7a0](https://git.griefed.de/Griefed/Monitoring/commit/ea1c7a00b0bf2ab7031c5a040dca545bc6945623))
+
+
+### 💎 Improvements
+
+* Allow blinking of hostDown cards. Move hostOk and hostDown to components. Move toggles for blinking, fullscreen, darkmode to settings dropdown. Cleanups and beautifications. ([586ec06](https://git.griefed.de/Griefed/Monitoring/commit/586ec06c15478cd17823f80d401132061f7b482b))
+* **Notifications:** Use notify instead of q-dialog for displaying update information. Display button next to version if an update is available, so users can always trigger the update notification again. ([f0c9f7a](https://git.griefed.de/Griefed/Monitoring/commit/f0c9f7a4d3290b616497fdf7ab9ef5725e9e2745))
+* **Status Page:** Display hostsOk and hostsDown using splitters and scroll-areas, improving user experience. Allows users to hide all hostsOk. ([9c5bc3a](https://git.griefed.de/Griefed/Monitoring/commit/9c5bc3ac4e39e7e2fa124435758ed157a7cbae68))
+* **Status Page:** Display rings-spinner whilst acquiring hosts and preparing visuals. Center chips in hostsOk-section. ([bc6447e](https://git.griefed.de/Griefed/Monitoring/commit/bc6447e267ffce09a99ba2be9400a22e3b02634a))
+
+
+### 🚀 Features
+
+* **DNS matching:** Display expected and mismatched IP in tooltip of IP badge. Check expected IP for availability, instead of acquired IP. ([563baf9](https://git.griefed.de/Griefed/Monitoring/commit/563baf9f0a38c16374ed1dd289abf231afc5492d))
+
+
+### 🛠 Fixes
+
+* **Host Information:** Fix regression bug introduced in previous commit. Correctly acquire IP from http or https address. ([2ca5e02](https://git.griefed.de/Griefed/Monitoring/commit/2ca5e0206f38e62372beee95f7c57ea345591a01))
+
+
+### Other
+
+* Update dependencies. Update screenshots. ([bcbdaee](https://git.griefed.de/Griefed/Monitoring/commit/bcbdaeeeb4671b37e3ad3c694c0f0f46799be2f5))
+* **README:** Small typo in license-badge which resulted in wrong licence being displayed ([5abd24d](https://git.griefed.de/Griefed/Monitoring/commit/5abd24d73530fe3f2e54069f9ea8e7c5615c6309))
+
 ## [1.4.0](https://git.griefed.de/Griefed/Monitoring/compare/1.3.2...1.4.0) (2022-03-08)
 
 
