@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -176,37 +176,43 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>private java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#cleanAddress-java.lang.String-">cleanAddress</a></span>(java.lang.String&nbsp;address)</code>
+<div class="block">Clean a given http or https address so only the FQDN remains.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getHostCode-java.lang.String-">getHostCode</a></span>(@NotNull java.lang.String&nbsp;hostUrlAsString)</code>
 <div class="block">Acquire the response from a given String-URL.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getHostCode-java.net.URL-">getHostCode</a></span>(@NotNull java.net.URL&nbsp;hostUrl)</code>
 <div class="block">Acquire the response from a given URL.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getHostStatus-java.lang.String-">getHostStatus</a></span>(@NotNull java.lang.String&nbsp;hostUrlAsString)</code>
 <div class="block">Acquire the status of the specified host.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#getIpOfHost-java.lang.String-">getIpOfHost</a></span>(java.lang.String&nbsp;address)</code>
 <div class="block">Acquire the IP-address of a given host.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.util.List-">ping</a></span>(java.lang.String&nbsp;ip,
     java.util.List&lt;java.lang.Integer&gt;&nbsp;ports)</code>
 <div class="block">Check the status of a given IP-address.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/WebUtilities.html#ping-java.lang.String-java.lang.String-java.util.List-">ping</a></span>(java.lang.String&nbsp;address,
     java.lang.String&nbsp;ip,
@@ -332,6 +338,22 @@ public&nbsp;WebUtilities(<a href="../../../../de/griefed/monitoring/ApplicationP
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>String</code>. The status of the host. Can be either <code>OK</code>, <code>CRITICAL</code>, <code>CONNECTION REFUSED</code>,
  <code>SSL HANDSHAKE ERROR</code>, or <code>PROTOCOL ERROR</code>.</dd>
+</dl>
+</li>
+</ul>
+<a name="cleanAddress-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>cleanAddress</h4>
+<pre>private&nbsp;java.lang.String&nbsp;cleanAddress(java.lang.String&nbsp;address)</pre>
+<div class="block">Clean a given http or https address so only the FQDN remains.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>address</code> - <code>String</code> The http or https address to clean.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>String</code> The FQDN of the given address.</dd>
 </dl>
 </li>
 </ul>

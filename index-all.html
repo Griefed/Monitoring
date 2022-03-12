@@ -120,6 +120,10 @@
 </dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/Schedules.html#checkForUpdates--">checkForUpdates()</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/Schedules.html" title="class in de.griefed.monitoring.utilities">Schedules</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/WebUtilities.html#cleanAddress-java.lang.String-">cleanAddress(String)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/WebUtilities.html" title="class in de.griefed.monitoring.utilities">WebUtilities</a></dt>
+<dd>
+<div class="block">Clean a given http or https address so only the FQDN remains.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/Main.html#createFile-java.io.File-">createFile(File)</a></span> - Static method in class de.griefed.monitoring.<a href="de/griefed/monitoring/Main.html" title="class in de.griefed.monitoring">Main</a></dt>
 <dd>
 <div class="block">Copy a file from inside our JAR to the host filesystem.</div>
@@ -187,6 +191,10 @@
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/JsonUtilities.html#getJson-java.io.File-">getJson(File)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/JsonUtilities.html" title="class in de.griefed.monitoring.utilities">JsonUtilities</a></dt>
 <dd>
 <div class="block">Acquire a <code>JsonNode</code> from the given json file.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/JsonUtilities.html#getJson-java.lang.String-">getJson(String)</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/JsonUtilities.html" title="class in de.griefed.monitoring.utilities">JsonUtilities</a></dt>
+<dd>
+<div class="block">Acquire a <code>JsonNode</code> from the given String.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/utilities/JsonUtilities.html#getObjectMapper--">getObjectMapper()</a></span> - Method in class de.griefed.monitoring.utilities.<a href="de/griefed/monitoring/utilities/JsonUtilities.html" title="class in de.griefed.monitoring.utilities">JsonUtilities</a></dt>
 <dd>
@@ -262,7 +270,7 @@
 <dd>
 <div class="block">Class responsible for collecting information from all components and building a JSON string with them.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#InformationService-de.griefed.monitoring.ApplicationProperties-de.griefed.monitoring.utilities.MailNotification-de.griefed.monitoring.utilities.WebUtilities-">InformationService(ApplicationProperties, MailNotification, WebUtilities)</a></span> - Constructor for class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#InformationService-de.griefed.monitoring.ApplicationProperties-de.griefed.monitoring.utilities.MailNotification-de.griefed.monitoring.utilities.WebUtilities-de.griefed.monitoring.utilities.JsonUtilities-">InformationService(ApplicationProperties, MailNotification, WebUtilities, JsonUtilities)</a></span> - Constructor for class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
 <dd>
 <div class="block">Constructor responsible for DI.</div>
 </dd>
@@ -273,6 +281,8 @@
 <h2 class="title">J</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="de/griefed/monitoring/ApplicationProperties.html#JSON_UTILITIES">JSON_UTILITIES</a></span> - Variable in class de.griefed.monitoring.<a href="de/griefed/monitoring/ApplicationProperties.html" title="class in de.griefed.monitoring">ApplicationProperties</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="de/griefed/monitoring/services/InformationService.html#JSON_UTILITIES">JSON_UTILITIES</a></span> - Variable in class de.griefed.monitoring.services.<a href="de/griefed/monitoring/services/InformationService.html" title="class in de.griefed.monitoring.services">InformationService</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="de/griefed/monitoring/utilities/JsonUtilities.html" title="class in de.griefed.monitoring.utilities"><span class="typeNameLink">JsonUtilities</span></a> - Class in <a href="de/griefed/monitoring/utilities/package-summary.html">de.griefed.monitoring.utilities</a></dt>
 <dd>&nbsp;</dd>

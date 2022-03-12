@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -152,6 +152,12 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>com.fasterxml.jackson.databind.JsonNode</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/JsonUtilities.html#getJson-java.lang.String-">getJson</a></span>(java.lang.String&nbsp;jsonString)</code>
+<div class="block">Acquire a <code>JsonNode</code> from the given String.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>com.fasterxml.jackson.databind.ObjectMapper</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/utilities/JsonUtilities.html#getObjectMapper--">getObjectMapper</a></span>()</code>
 <div class="block">Getter for the object-mapper used for working with JSON-data.</div>
@@ -212,6 +218,25 @@ extends java.lang.Object</pre>
 <dd><code>JsonNode</code> containing the files json data.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - when the file could not be parsed/read into a <code>JsonNode</code>.</dd>
+</dl>
+</li>
+</ul>
+<a name="getJson-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getJson</h4>
+<pre>public&nbsp;com.fasterxml.jackson.databind.JsonNode&nbsp;getJson(java.lang.String&nbsp;jsonString)
+                                                throws com.fasterxml.jackson.core.JsonProcessingException</pre>
+<div class="block">Acquire a <code>JsonNode</code> from the given String.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>jsonString</code> - <code>String</code>. The file to read.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>JsonNode</code> containing the files json data.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code> - when the String could not be parsed/read into a <code>JsonNode</code>.</dd>
 </dl>
 </li>
 </ul>

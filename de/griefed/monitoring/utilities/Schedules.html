@@ -278,9 +278,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>refreshHosts</h4>
 <pre>@Scheduled(cron="${de.griefed.monitoring.schedule.hosts}")
-public&nbsp;void&nbsp;refreshHosts()</pre>
+public&nbsp;void&nbsp;refreshHosts()
+                                                                             throws com.fasterxml.jackson.core.JsonProcessingException</pre>
 <div class="block">Periodically check and update the status information for the configured hosts. Set <code>de.griefed.monitoring.schedule.hosts</code>
  to your desired CRON expression.</div>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>com.fasterxml.jackson.core.JsonProcessingException</code></dd>
+</dl>
 </li>
 </ul>
 <a name="checkForUpdates--">

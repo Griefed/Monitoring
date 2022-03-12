@@ -175,7 +175,7 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>org.springframework.http.ResponseEntity&lt;java.lang.String&gt;</code></td>
+<td class="colFirst"><code>org.springframework.http.ResponseEntity&lt;com.fasterxml.jackson.databind.JsonNode&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../de/griefed/monitoring/controllers/InformationController.html#getHostsInformation--">getHostsInformation</a></span>()</code>
 <div class="block">GET endpoint for retrieving information about all configured hosts.<br> <code>de.griefed.monitoring.host</code>
  must be set to <code>false</code> in order for this endpoint to return information, otherwise a <code>400</code>-error
@@ -289,7 +289,7 @@ public&nbsp;org.springframework.http.ResponseEntity&lt;java.lang.String&gt;&nbsp
  @RequestMapping(value="hosts",
                 method=GET,
                 produces="application/json")
-public&nbsp;org.springframework.http.ResponseEntity&lt;java.lang.String&gt;&nbsp;getHostsInformation()</pre>
+public&nbsp;org.springframework.http.ResponseEntity&lt;com.fasterxml.jackson.databind.JsonNode&gt;&nbsp;getHostsInformation()</pre>
 <div class="block">GET endpoint for retrieving information about all configured hosts.<br> <code>de.griefed.monitoring.host</code>
  must be set to <code>false</code> in order for this endpoint to return information, otherwise a <code>400</code>-error
  is returned.<br></div>
