@@ -18,7 +18,7 @@ For questions, you can always join my [Discord server](https://discord.griefed.d
 # Monitoring
 
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Griefed/monitoring?include_prereleases&label=Latest%20Release&logo=Github&style=for-the-badge&color=c0ffee&labelColor=325358)](https://github.com/Griefed/monitoring/releases/latest)
-[![GitHub](https://img.shields.io/github/license/Griefed/ServerPackCreator?logo=GitHub&style=for-the-badge&color=c0ffee&labelColor=325358)](https://github.com/Griefed/ServerPackCreator/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/github/license/Griefed/Monitoring?logo=GitHub&style=for-the-badge&color=c0ffee&labelColor=325358)](https://github.com/Griefed/Monitoring/blob/main/LICENSE)
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/griefed/monitoring?style=for-the-badge&logo=Docker&labelColor=325358&color=c0ffee&logoColor=white)](https://hub.docker.com/r/griefed/monitoring)
 [![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/griefed/monitoring?label=Image%20size&sort=date&style=for-the-badge&logo=Docker&labelColor=325358&color=c0ffee&logoColor=white)](https://hub.docker.com/r/griefed/monitoring)
