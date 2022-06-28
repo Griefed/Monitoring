@@ -22,8 +22,13 @@
  */
 package de.griefed.monitoring.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.ApplicationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * RestController for acquiring the configuration of this Monitoring instance.
+ *
  * @author Griefed
  */
 @RestController
@@ -38,26 +44,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/settings")
 public class ApplicationPropertiesController {
 
-    private final ApplicationProperties APPLICATIONPROPERTIES;
+  private final ApplicationProperties APPLICATIONPROPERTIES;
 
-    /**
-     * Constructor for DI.
-     * @author Griefed
-     * @param injectedApplicationProperties Instance of {@link ApplicationProperties} with the configuration of this Monitoring
-     *                                      instance.
-     */
-    @Autowired
-    public ApplicationPropertiesController(ApplicationProperties injectedApplicationProperties) {
-        this.APPLICATIONPROPERTIES = injectedApplicationProperties;
-    }
+  /**
+   * Constructor for DI.
+   *
+   * @author Griefed
+   * @param injectedApplicationProperties Instance of {@link ApplicationProperties} with the
+   *     configuration of this Monitoring instance.
+   */
+  @Autowired
+  public ApplicationPropertiesController(ApplicationProperties injectedApplicationProperties) {
+    this.APPLICATIONPROPERTIES = injectedApplicationProperties;
+  }
 
-    @GetMapping(produces = "application/json")
-    public String getConfiguration() {
-        return "{" +
-                "\"version\":\"" + APPLICATIONPROPERTIES.getVersion() + "\"," +
-                "\"pollingRate\":" + APPLICATIONPROPERTIES.getPollingRate() + "," +
-                "\"particlesCount\":" + APPLICATIONPROPERTIES.getParticlesCount() +
-                "}";
-    }
-
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<JsonNode> getConfiguration() throws JsonProcessingException {
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .body(APPLICATIONPROPERTIES.getPublicSettings());
+  }
 }

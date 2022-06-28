@@ -4,7 +4,7 @@
     v-ripple
     class="chip-down"
     clickable
-    @click="openURL(host.address)"
+    @click="this.store.methods.openInTab(host.address)"
   >
     <q-item-section>
       <q-item-label class="text-center text-weight-bolder">
@@ -49,23 +49,6 @@ export default defineComponent({
     }
   },
   methods: {
-    openURL(address) {
-
-      if (this.ipRegEx.test(address)) {
-        address = 'http://' + address;
-      }
-
-      openURL(
-        address,
-        null,
-        {
-          noopener: true,
-          menubar: false,
-          toolbar: false,
-          noreferrer: false,
-        }
-      )
-    },
     getQuasarColor(status) {
 
       switch (status) {

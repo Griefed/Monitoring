@@ -24,42 +24,44 @@ package de.griefed.monitoring.utilities;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.griefed.monitoring.services.InformationService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 @Configuration
 public class Schedules {
 
-    private static final Logger LOG = LogManager.getLogger(Schedules.class);
+  private static final Logger LOG = LogManager.getLogger(Schedules.class);
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    private final InformationService INFORMATION_SERVICE;
-    private final UpdateChecker UPDATE_CHECKER;
+  private final InformationService INFORMATION_SERVICE;
+  private final UpdateChecker UPDATE_CHECKER;
 
-    public Schedules(InformationService injectedInformationService, UpdateChecker injectedUpdateChecker) {
-        this.INFORMATION_SERVICE = injectedInformationService;
-        this.UPDATE_CHECKER = injectedUpdateChecker;
-    }
+  public Schedules(
+      InformationService injectedInformationService, UpdateChecker injectedUpdateChecker) {
+    this.INFORMATION_SERVICE = injectedInformationService;
+    this.UPDATE_CHECKER = injectedUpdateChecker;
+  }
 
-    /**
-     * Periodically check and update the status information for the configured hosts. Set <code>de.griefed.monitoring.schedule.hosts</code>
-     * to your desired CRON expression.
-     * @author Griefed
-     */
-    @Scheduled(cron = "${de.griefed.monitoring.schedule.hosts}")
-    public void refreshHosts() throws JsonProcessingException {
-        LOG.debug("Current Time: " + dateFormat.format(new Date()) + " - Refreshing hosts information.");
-        INFORMATION_SERVICE.poll();
-    }
+  /**
+   * Periodically check and update the status information for the configured hosts. Set <code>
+   * de.griefed.monitoring.schedule.hosts</code> to your desired CRON expression.
+   *
+   * @author Griefed
+   */
+  @Scheduled(cron = "${de.griefed.monitoring.schedule.hosts}")
+  public void refreshHosts() throws JsonProcessingException {
+    LOG.debug(
+        "Current Time: " + dateFormat.format(new Date()) + " - Refreshing hosts information.");
+    INFORMATION_SERVICE.poll();
+  }
 
-    @Scheduled(cron = "${de.griefed.monitoring.schedule.updatecheck}")
-    public void checkForUpdates() {
-        UPDATE_CHECKER.check();
-    }
+  @Scheduled(cron = "${de.griefed.monitoring.schedule.updatecheck}")
+  public void checkForUpdates() {
+    UPDATE_CHECKER.check();
+  }
 }

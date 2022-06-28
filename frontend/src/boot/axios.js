@@ -8,30 +8,39 @@ import axios from 'axios';
 // "export default () => {}" function below (which runs individually
 // for each client)
 
+const admin = axios.create(
+  {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    baseURL: "/api/v1/admin"
+  }
+);
+
 const hosts = axios.create(
   {
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
-    baseURL: '/api/v1/hosts'
+    baseURL: "/api/v1/hosts"
   }
 );
 
 const settings = axios.create(
   {
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
-    baseURL: '/api/v1/settings'
+    baseURL: "/api/v1/settings"
   }
 );
 
 const api = axios.create(
   {
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
-    baseURL: '/api/v1'
+    baseURL: "/api/v1"
   }
 );
 
@@ -41,6 +50,10 @@ export default boot(({ app }) => {
   app.config.globalProperties.$axios = axios
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
+
+  app.config.globalProperties.$admin = admin
+  // ^ ^ ^ this will allow you to use this.$hosts (for Vue Options API form)
+  //       so you can easily perform requests against your app's API
 
   app.config.globalProperties.$hosts = hosts
   // ^ ^ ^ this will allow you to use this.$hosts (for Vue Options API form)
@@ -55,4 +68,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { hosts, api, settings }
+export { admin, hosts, api, settings }

@@ -23,108 +23,116 @@
 package de.griefed.monitoring.utilities;
 
 import de.griefed.monitoring.ApplicationProperties;
+import java.util.Date;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Date;
-
 /**
- * This class provides the sendMailNotification method to send an email with the passed body to the configured
- * email-recipients.
+ * This class provides the sendMailNotification method to send an email with the passed body to the
+ * configured email-recipients.
+ *
  * @author Griefed
  */
 @Service
 public class MailNotification {
 
-    private static final Logger LOG = LogManager.getLogger(MailNotification.class);
+  private static final Logger LOG = LogManager.getLogger(MailNotification.class);
 
-    private final ApplicationProperties PROPERTIES;
-    private final Message MESSAGE;
+  private final ApplicationProperties PROPERTIES;
+  private final Message MESSAGE;
 
-    private final boolean mailEnabled;
+  private final boolean mailEnabled;
 
-    /**
-     * Constructor responsible for our DI and setting up the email-notification system.
-     * @author Griefed
-     * @param injectedApplicationProperties Instance of {@link ApplicationProperties}.
-     */
-    @Autowired
-    public MailNotification(ApplicationProperties injectedApplicationProperties) {
-        this.PROPERTIES = injectedApplicationProperties;
-        Session SESSION = Session.getInstance(PROPERTIES, new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
+  /**
+   * Constructor responsible for our DI and setting up the email-notification system.
+   *
+   * @author Griefed
+   * @param injectedApplicationProperties Instance of {@link ApplicationProperties}.
+   */
+  @Autowired
+  public MailNotification(ApplicationProperties injectedApplicationProperties) {
+    this.PROPERTIES = injectedApplicationProperties;
+    Session SESSION =
+        Session.getInstance(
+            PROPERTIES,
+            new Authenticator() {
+              protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(
-                        PROPERTIES.getProperty("mail.user", "example@example.com"),
-                        PROPERTIES.getProperty("mail.password", "123456"));
-            }
-        });
+                    PROPERTIES.getProperty("mail.user", "example@example.com"),
+                    PROPERTIES.getProperty("mail.password", "123456"));
+              }
+            });
 
-        this.MESSAGE = new MimeMessage(SESSION);
+    this.MESSAGE = new MimeMessage(SESSION);
 
-        boolean mailing = false;
+    boolean mailing = false;
 
-        try {
+    try {
 
-            if (
-                    PROPERTIES.getProperty("mail.smtp.host").equalsIgnoreCase("smtp.example.com") ||
-                    PROPERTIES.getProperty("mail.recipients").equalsIgnoreCase("example@example.com") ||
-                    PROPERTIES.getProperty("mail.from").equalsIgnoreCase("monitoring@example.com") ||
-                    PROPERTIES.getProperty("mail.user").equalsIgnoreCase("example@example.com") ||
-                    PROPERTIES.getProperty("mail.password").equalsIgnoreCase("123456")
-            ) {
+      if (PROPERTIES.getProperty("mail.smtp.host").equalsIgnoreCase("smtp.example.com")
+          || PROPERTIES.getProperty("mail.recipients").equalsIgnoreCase("example@example.com")
+          || PROPERTIES.getProperty("mail.from").equalsIgnoreCase("monitoring@example.com")
+          || PROPERTIES.getProperty("mail.user").equalsIgnoreCase("example@example.com")
+          || PROPERTIES.getProperty("mail.password").equalsIgnoreCase("123456")) {
 
-                LOG.info("Default email-notifications values detected.");
+        LOG.info("Default email-notifications values detected.");
 
-            } else {
+      } else {
 
-                InternetAddress internetAddress = new InternetAddress(PROPERTIES.getProperty("mail.from","monitoring@example.com"));
-                this.MESSAGE.setFrom(internetAddress);
-                this.MESSAGE.setRecipients(Message.RecipientType.TO, InternetAddress.parse(PROPERTIES.getProperty("mail.recipients","example@example.com")));
+        InternetAddress internetAddress =
+            new InternetAddress(PROPERTIES.getProperty("mail.from", "monitoring@example.com"));
+        this.MESSAGE.setFrom(internetAddress);
+        this.MESSAGE.setRecipients(
+            Message.RecipientType.TO,
+            InternetAddress.parse(
+                PROPERTIES.getProperty("mail.recipients", "example@example.com")));
 
-                mailing = true;
+        mailing = true;
+      }
 
-            }
+    } catch (MessagingException ex) {
 
-        } catch (MessagingException ex) {
+      LOG.error("Mailing not setup properly.", ex);
 
-            LOG.error("Mailing not setup properly.", ex);
+    } finally {
+      this.mailEnabled = mailing;
 
-        } finally {
-            this.mailEnabled = mailing;
-
-            if (this.mailEnabled) {
-                LOG.info("Email-notifications enabled.");
-            } else {
-                LOG.info("Email-notifications disabled.");
-            }
-
-        }
+      if (this.mailEnabled) {
+        LOG.info("Email-notifications enabled.");
+      } else {
+        LOG.info("Email-notifications disabled.");
+      }
     }
+  }
 
-    /**
-     * Email the configured recipients with the passed subject and body.
-     * @author Griefed
-     * @param subject String. Subject of the mail to send.
-     * @param content String. The content which should make up the mails body.
-     * @throws MessagingException Exception thrown if an error occurs sending the email.
-     */
-    public void sendMailNotification(String subject, String content) throws MessagingException {
-        if (this.mailEnabled) {
+  /**
+   * Email the configured recipients with the passed subject and body.
+   *
+   * @author Griefed
+   * @param subject String. Subject of the mail to send.
+   * @param content String. The content which should make up the mails body.
+   * @throws MessagingException Exception thrown if an error occurs sending the email.
+   */
+  public void sendMailNotification(String subject, String content) throws MessagingException {
+    if (this.mailEnabled) {
 
-            Message message = this.MESSAGE;
+      Message message = this.MESSAGE;
 
-            message.setSubject(subject);
-            message.setContent(content, "text/html");
-            message.setSentDate(new Date());
+      message.setSubject(subject);
+      message.setContent(content, "text/html");
+      message.setSentDate(new Date());
 
-            Transport.send(message);
-
-        }
+      Transport.send(message);
     }
+  }
 }

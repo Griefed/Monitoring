@@ -21,8 +21,5 @@
  * SOFTWARE.
  */
 
-/**
- * This package contains any and all REST controllers required for communication between frontend
- * and backend.
- */
-package de.griefed.monitoring.controllers;
+/** This package contains any and all classes which configure specific parts of Spring. */
+package de.griefed.monitoring.configuration;

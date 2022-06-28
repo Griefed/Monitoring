@@ -44,10 +44,10 @@
         />
 
         <q-btn-dropdown
-          icon="settings"
+          icon="more_vert"
           >
           <q-list>
-            <q-item class="flex-center">
+            <q-item>
               <q-btn
                 :icon="this.$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
                 :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
@@ -63,7 +63,7 @@
               </q-btn>
             </q-item>
 
-            <q-item class="flex-center">
+            <q-item>
               <q-btn
                 icon="model_training"
                 :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
@@ -79,7 +79,7 @@
               </q-btn>
             </q-item>
 
-            <q-item class="flex-center">
+            <q-item>
               <q-btn
                 v-if="!this.$q.platform.is.mobile"
                 :icon="this.$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
@@ -187,38 +187,13 @@ export default defineComponent({
           '<span class="text-h6 text-weight-bolder absolute-center">Version ' + this.store.state.updateVersion + '</span><br>' +
           '<span class=\"text-h6\">Available at: <br>' + this.store.state.updateLink + '</span><br>'
       })
-    }
-  },
-  mounted() {
-    if (this.$q.cookies.has('dark.isActive')) {
-      this.$q.dark.set(this.$q.cookies.get('dark.isActive'));
-    } else {
-      this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
-    }
-
-    if (this.$q.cookies.has('update.remind')) {
-      this.store.state.updateReminder = this.$q.cookies.get('update.remind');
-    } else {
-      this.store.state.updateReminder = true;
-      this.$q.cookies.set('update.remind', true);
-    }
-
-    if (this.$q.cookies.has('blink.isActive')) {
-      this.store.state.blink = this.$q.cookies.get('blink.isActive');
-    } else {
-      this.store.state.blink = true;
-      this.$q.cookies.set('blink.isActive', this.store.state.blink);
-    }
-
-    this.$settings.get().then(response => {
-      this.store.state.version = response.data.version;
-      this.store.state.pollingRate = response.data.pollingRate;
-      this.store.state.particlesCount = response.data.particlesCount;
+    },
+    loadParticles(amount) {
       tsParticles.load("particles-js",{
         "fpsLimit": 30,
         "particles": {
           "number": {
-            "value": this.store.state.particlesCount,
+            "value": amount,
             "density": {
               "enable": true,
               "value_area": 800
@@ -314,10 +289,39 @@ export default defineComponent({
         },
         "retina_detect": true
       });
+    }
+  },
+  mounted() {
+    if (this.$q.cookies.has('dark.isActive')) {
+      this.$q.dark.set(this.$q.cookies.get('dark.isActive'));
+    } else {
+      this.$q.cookies.set('dark.isActive', this.$q.dark.isActive);
+    }
+
+    if (this.$q.cookies.has('update.remind')) {
+      this.store.state.updateReminder = this.$q.cookies.get('update.remind');
+    } else {
+      this.store.state.updateReminder = true;
+      this.$q.cookies.set('update.remind', true);
+    }
+
+    if (this.$q.cookies.has('blink.isActive')) {
+      this.store.state.blink = this.$q.cookies.get('blink.isActive');
+    } else {
+      this.store.state.blink = true;
+      this.$q.cookies.set('blink.isActive', this.store.state.blink);
+    }
+
+    this.$settings.get().then(response => {
+      this.store.state.version = response.data.version;
+      this.store.state.pollingRate = response.data.pollingRate;
+      this.store.state.particlesCount = response.data.particlesCount;
+      this.loadParticles(this.store.state.particlesCount);
     }).catch(error => {
       console.log(error);
+      this.loadParticles(this.store.state.particlesCount);
       this.$q.notify({
-        message: 'System Error.',
+        message: 'Error fetching information.',
         color: 'negative'
       });
     });
@@ -332,7 +336,7 @@ export default defineComponent({
     }).catch(error => {
       console.log(error);
       this.$q.notify({
-        message: 'System Error.',
+        message: 'Error fetching information.',
         color: 'negative'
       });
     })

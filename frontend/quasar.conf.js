@@ -32,16 +32,17 @@ module.exports = configure(function (ctx) {
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
+      // FONTS
+      'roboto-font',
+
+      // ICONS
       // 'ionicons-v4',
-      // 'mdi-v5',
       // 'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
-
-      'roboto-font', // optional, you are not bound to it
-      'material-icons', // optional, you are not bound to it
+      'mdi-v5',
+      'material-icons',
     ],
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
@@ -70,14 +71,10 @@ module.exports = configure(function (ctx) {
       port: 3000,
       proxy: {
         '/api': {
-          target: {
-            host: 'localhost',
-            protocol: 'http:',
-            port: 8080
+          target: 'http://localhost:8080'
           }
-        }
       },
-      open: true, // opens browser window automatically
+      open: true
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework

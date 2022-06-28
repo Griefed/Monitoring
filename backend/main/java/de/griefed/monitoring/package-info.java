@@ -21,7 +21,5 @@
  * SOFTWARE.
  */
 
-/**
- * Main package containing all classes and packages about Monitoring.
- */
+/** Main package containing all classes and packages about Monitoring. */
 package de.griefed.monitoring;

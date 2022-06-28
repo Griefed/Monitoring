@@ -24,300 +24,298 @@ package de.griefed.monitoring.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import de.griefed.monitoring.ApplicationProperties;
 import de.griefed.monitoring.utilities.JsonUtilities;
 import de.griefed.monitoring.utilities.MailNotification;
 import de.griefed.monitoring.utilities.WebUtilities;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
- * Class responsible for collecting information from all components and building a JSON string with them.
+ * Class responsible for collecting information from all components and building a JSON string with
+ * them.
+ *
  * @author Griefed
  */
 @Service
 public class InformationService {
 
-    private static final Logger LOG = LogManager.getLogger(InformationService.class);
+  private static final Logger LOG = LogManager.getLogger(InformationService.class);
 
-    private final ApplicationProperties APPLICATION_PROPERTIES;
-    private final MailNotification MAIL_NOTIFICATION;
-    private final WebUtilities WEB_UTILITIES;
-    private final JsonUtilities JSON_UTILITIES;
+  private final ApplicationProperties APPLICATION_PROPERTIES;
+  private final MailNotification MAIL_NOTIFICATION;
+  private final WebUtilities WEB_UTILITIES;
+  private final JsonUtilities JSON_UTILITIES;
+  private final ForkJoinPool FORKJOINPOOL;
+  private JsonNode hostsInformation = null;
 
-    private JsonNode hostsInformation = null;
+  /**
+   * Constructor responsible for DI.
+   *
+   * @author Griefed
+   * @param injectedApplicationProperties Instance of {@link ApplicationProperties}.
+   * @param injectedMailNotification Instance of {@link MailNotification}.
+   * @param injectedWebUtilities Instance of {@link WebUtilities}.
+   */
+  @Autowired
+  public InformationService(
+      ApplicationProperties injectedApplicationProperties,
+      MailNotification injectedMailNotification,
+      WebUtilities injectedWebUtilities,
+      JsonUtilities injectedJsonUtilities) {
 
-    /**
-     * Constructor responsible for DI.
-     * @author Griefed
-     * @param injectedApplicationProperties Instance of {@link ApplicationProperties}.
-     * @param injectedMailNotification Instance of {@link MailNotification}.
-     * @param injectedWebUtilities Instance of {@link WebUtilities}.
-     */
-    @Autowired
-    public InformationService(ApplicationProperties injectedApplicationProperties,
-                              MailNotification injectedMailNotification,
-                              WebUtilities injectedWebUtilities, JsonUtilities injectedJsonUtilities) {
+    this.APPLICATION_PROPERTIES = injectedApplicationProperties;
+    this.MAIL_NOTIFICATION = injectedMailNotification;
+    this.WEB_UTILITIES = injectedWebUtilities;
+    this.JSON_UTILITIES = injectedJsonUtilities;
 
-        this.APPLICATION_PROPERTIES = injectedApplicationProperties;
-        this.MAIL_NOTIFICATION = injectedMailNotification;
-        this.WEB_UTILITIES = injectedWebUtilities;
-        this.JSON_UTILITIES = injectedJsonUtilities;
+    FORKJOINPOOL = new ForkJoinPool(APPLICATION_PROPERTIES.getThreadCount());
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
+    Executors.newSingleThreadExecutor()
+        .execute(
+            () -> {
+              try {
                 poll();
-            } catch (JsonProcessingException ex) {
-                LOG.error("Error acquiring and processing host information.",ex);
-            }
-        });
+              } catch (JsonProcessingException ex) {
+                LOG.error("Error acquiring and processing host information.", ex);
+              }
+            });
+  }
 
+  /**
+   * Retrieve hosts information.
+   *
+   * @author Griefed
+   * @return {@link JsonNode} containing all information about the configured hosts.
+   */
+  public JsonNode retrieveHostsInformation() {
+    return hostsInformation;
+  }
+
+  /**
+   * Retrieve all information about the configured host(s) and stores it in memory for retrieval by
+   * {@link #retrieveHostsInformation()}.
+   *
+   * @author Griefed
+   */
+  public void poll() throws JsonProcessingException {
+
+    JsonNode hosts = null;
+    String info = "{" + "\"hostsOk\": []," + "\"hostsDown\": []" + "}";
+
+    try {
+      hosts = APPLICATION_PROPERTIES.getHosts();
+    } catch (IOException ex) {
+      LOG.error("Error acquiring hosts JSON.", ex);
     }
 
-    /**
-     * Retrieve hosts information.
-     * @author Griefed
-     * @return {@link JsonNode} containing all information about the configured hosts.
-     */
-    public JsonNode retrieveHostsInformation() {
-        return hostsInformation;
-    }
+    // If host-configuration is default, do not retrieve anything.
+    if (hosts == null || hosts.size() == 0) {
 
-    /**
-     * Retrieve all information about the configured host(s) and stores it in memory for retrieval by {@link #retrieveHostsInformation()}.
-     * @author Griefed
-     */
-    public void poll() throws JsonProcessingException {
+      LOG.warn("WARNING! Host are not configured! Not retrieving information.");
 
-        JsonNode hosts = null;
-        String info = "{" +
-                "\"hostsOk\": []," +
-                "\"hostsDown\": []" +
-                "}";
+    } else {
 
-        try {
-            hosts = APPLICATION_PROPERTIES.getHosts();
-        } catch (IOException ex) {
-            LOG.error("Error acquiring hosts JSON.",ex);
-        }
+      StringBuilder stringBuilder = new StringBuilder();
 
-        // If host-configuration is default, do not retrieve anything.
-        if (hosts == null || hosts.size() == 0) {
+      stringBuilder.append("{\"hosts\": [");
 
-            LOG.warn("WARNING! Hosts are not configured! Not retrieving information.");
+      // Retrieve all information for all hosts if more than one is configured
+      if (hosts.size() > 1) {
 
-        } else {
+        LOG.debug("Thread count: " + APPLICATION_PROPERTIES.getThreadCount());
 
-            StringBuilder stringBuilder = new StringBuilder();
+        List<CompletableFuture<String>> completableFuturesList = new ArrayList<>(1000);
 
-            stringBuilder.append("{\"hosts\": [");
+        for (JsonNode host : hosts) {
 
-            // Retrieve all information for all hosts if more than one is configured
-            if (hosts.size() > 1) {
-
-                LOG.debug("Thread count: " + APPLICATION_PROPERTIES.getThreadCount());
-
-                List<CompletableFuture<String>> completableFuturesList = new ArrayList<>(1000);
-
-                ForkJoinPool forkJoinPool = new ForkJoinPool(APPLICATION_PROPERTIES.getThreadCount());
-
-                for (JsonNode host : hosts) {
-
-                    completableFuturesList.add(
-                            CompletableFuture.supplyAsync(() -> getHostInformationAsJson(host), forkJoinPool)
-                    );
-                }
-
-                try {
-
-                    stringBuilder.append(
-                            completableFuturesList
-                                    .stream()
-                                    .map(
-                                            CompletableFuture::join
-                                    )
-                                    .collect(
-                                            Collectors.joining(",")
-                                    )
-                    );
-                } catch (Exception ex) {
-                    LOG.error("Error joining host information.",ex);
-                }
-
-                // Retrieve information for host if only one is configured
-            } else {
-
-                stringBuilder.append(getHostInformationAsJson(hosts.get(0)));
-
-            }
-
-            stringBuilder.append("]}");
-
-            JsonNode infoNode = JSON_UTILITIES.getJson(stringBuilder.toString());
-
-            if (infoNode.get("hosts").size() > 0) {
-
-                List<String> ok = new ArrayList<>(100);
-                List<String> down = new ArrayList<>(100);
-
-                for (JsonNode host : infoNode.get("hosts")) {
-
-                    if (host.get("status").asText().equals("OK")) {
-                        ok.add(host.toPrettyString());
-                    } else {
-                        down.add(host.toPrettyString());
-                    }
-
-                }
-
-                info = "{" +
-                        "\"hostsOk\":" + ok + "," +
-                        "\"hostsDown\":" + down +
-                        "}";
-
-            }
-
-        }
-
-        this.hostsInformation = JSON_UTILITIES.getJson(info);
-
-        LOG.info("Retrieved information.");
-
-    }
-
-    /**
-     * Acquire status information for a given host with name <code>name</code> and address <code>address</code>.
-     * @author Griefed
-     * @param host {@link JsonNode} JsonNode containing information about the host used to acquire more information.
-     * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
-     */
-    private String getHostInformationAsJson(JsonNode host) {
-
-        String name = host.get("name").asText();
-        String address = host.get("address").asText();
-        String expectedIp = null;
-
-        List<Integer> ports = new ArrayList<>(100);
-
-        try {
-            for (String port : host.get("ports").asText().split(",")) {
-                try {
-                    ports.add(Integer.parseInt(port));
-                } catch (NumberFormatException ex) {
-                    LOG.error("Couldn't parse String to Integer: " + port);
-                }
-
-            }
-        } catch (Exception ignored) {
-        }
-
-        String status;
-        String ip;
-
-        int code;
-
-        boolean hostAvailable;
-        boolean hostNotificationsDisabled = false;
-
-        if (address.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
-
-            ip = address;
-            code = 418;
-            hostAvailable = WEB_UTILITIES.ping(ip, ports);
-
-            if (hostAvailable) {
-                status = "OK";
-                code = 200;
-            } else {
-                status = "DOWN";
-            }
-
-        } else {
-
-            ip = WEB_UTILITIES.getIpOfHost(address);
-            code = WEB_UTILITIES.getHostCode(address);
-            status = WEB_UTILITIES.getHostStatus(address);
-
-            try {
-                expectedIp = host.get("expectedIp").asText();
-                if (!expectedIp.equals(ip)) {
-                    status = "DNS MISMATCH";
-                    code = 418;
-                }
-            } catch (Exception ignored) {
-
-            }
-
-            if (expectedIp != null) {
-                hostAvailable = WEB_UTILITIES.ping(address, expectedIp, ports);
-            } else {
-                hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
-            }
-
-        }
-
-        if (!hostAvailable && expectedIp != null) {
-            status = "OFFLINE";
-        } else if (!hostAvailable && ip != null) {
-            status = "OFFLINE";
+          completableFuturesList.add(
+              CompletableFuture.supplyAsync(() -> getHostInformationAsJson(host), FORKJOINPOOL));
         }
 
         try {
-            hostNotificationsDisabled = host.get("notificationsDisabled").asBoolean();
-        } catch (Exception ignored) {
 
+          stringBuilder.append(
+              completableFuturesList.stream()
+                  .map(CompletableFuture::join)
+                  .collect(Collectors.joining(",")));
+        } catch (Exception ex) {
+          LOG.error("Error joining host information.", ex);
         }
 
-        if (APPLICATION_PROPERTIES.notificationsEnabled() && !hostNotificationsDisabled) {
+        // Retrieve information for host if only one is configured
+      } else {
 
-            if (code != 200 && code != 301 && !status.matches("^(OK|REDIRECT)$")) {
-                sendNotification(name + " (" + address + ") ",status);
-            }
+        stringBuilder.append(getHostInformationAsJson(hosts.get(0)));
+      }
 
+      stringBuilder.append("]}");
+
+      JsonNode infoNode = JSON_UTILITIES.getJson(stringBuilder.toString());
+
+      if (infoNode.get("hosts").size() > 0) {
+
+        List<String> ok = new ArrayList<>(100);
+        List<String> down = new ArrayList<>(100);
+
+        for (JsonNode host : infoNode.get("hosts")) {
+
+          if (host.get("status").asText().equals("OK")) {
+            ok.add(host.toPrettyString());
+          } else {
+            down.add(host.toPrettyString());
+          }
         }
 
-        return "{" +
-                "\"name\":\"" + name + "\"," +
-                "\"address\":\"" + address + "\"," +
-                "\"ip\":\"" + ip + "\"," +
-                "\"expectedIp\":\"" + expectedIp + "\"," +
-                "\"hostAvailable\":" + hostAvailable + "," +
-                "\"status\":\"" + status + "\"," +
-                "\"code\":" + code +
-                "}";
-
-
+        info = "{" + "\"hostsOk\":" + ok + "," + "\"hostsDown\":" + down + "}";
+      }
     }
 
-    /**
-     * Sends a notification,
-     * @author Griefed
-     * @param host String. The host to mention in the notifications body.
-     * @param status Integer. The statuscode of the host.
-     */
-    private void sendNotification(String host, String status) {
+    this.hostsInformation = JSON_UTILITIES.getJson(info);
+
+    LOG.info("Retrieved information.");
+  }
+
+  /**
+   * Acquire status information for a given host with name <code>name</code> and address <code>
+   * address</code>.
+   *
+   * @author Griefed
+   * @param host {@link JsonNode} JsonNode containing information about the host used to acquire
+   *     more information.
+   * @return {@link String} Name, address, IP, availability, status, code wrapped in JSON.
+   */
+  private String getHostInformationAsJson(JsonNode host) {
+
+    String name = host.get("name").asText();
+    String address = host.get("address").asText();
+    String expectedIp = null;
+
+    List<Integer> ports = new ArrayList<>(100);
+
+    try {
+      for (String port : host.get("ports").asText().split(",")) {
         try {
-            MAIL_NOTIFICATION.sendMailNotification(
-                    "Host down or unreachable",
-                    "The host " + host + " is unreachable or down! Status: " + status
-            );
-        } catch (MessagingException ex) {
-
-            LOG.error("Error sending notification for host " + host, ex);
-
+          ports.add(Integer.parseInt(port));
+        } catch (NumberFormatException ex) {
+          LOG.error("Couldn't parse String to Integer: " + port);
         }
+      }
+    } catch (Exception ignored) {
+    }
+
+    String status;
+    String ip;
+
+    int code;
+
+    boolean hostAvailable;
+    boolean hostNotificationsDisabled = false;
+
+    if (address.matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+
+      ip = address;
+      code = 418;
+      hostAvailable = WEB_UTILITIES.ping(ip, ports);
+
+      if (hostAvailable) {
+        status = "OK";
+        code = 200;
+      } else {
+        status = "DOWN";
+      }
+
+    } else {
+
+      ip = WEB_UTILITIES.getIpOfHost(address);
+      code = WEB_UTILITIES.getHostCode(address);
+      status = WEB_UTILITIES.getHostStatus(address);
+
+      try {
+        expectedIp = host.get("expectedIp").asText();
+        if (!expectedIp.equals(ip)) {
+          status = "DNS MISMATCH";
+          code = 418;
+        }
+      } catch (Exception ignored) {
+
+      }
+
+      if (expectedIp != null) {
+        hostAvailable = WEB_UTILITIES.ping(address, expectedIp, ports);
+      } else {
+        hostAvailable = WEB_UTILITIES.ping(address, ip, ports);
+      }
+    }
+
+    if (!hostAvailable && expectedIp != null) {
+      status = "OFFLINE";
+    } else if (!hostAvailable && ip != null) {
+      status = "OFFLINE";
+    }
+
+    try {
+      hostNotificationsDisabled = host.get("notificationsDisabled").asBoolean();
+    } catch (Exception ignored) {
 
     }
+
+    if (APPLICATION_PROPERTIES.getNotificationsEnabled() && !hostNotificationsDisabled) {
+
+      if (code != 200 && code != 301 && !status.matches("^(OK|REDIRECT)$")) {
+        sendNotification(name + " (" + address + ") ", status);
+      }
+    }
+
+    return "{"
+        + "\"name\":\""
+        + name
+        + "\","
+        + "\"address\":\""
+        + address
+        + "\","
+        + "\"ip\":\""
+        + ip
+        + "\","
+        + "\"expectedIp\":\""
+        + expectedIp
+        + "\","
+        + "\"hostAvailable\":"
+        + hostAvailable
+        + ","
+        + "\"status\":\""
+        + status
+        + "\","
+        + "\"code\":"
+        + code
+        + "}";
+  }
+
+  /**
+   * Sends a notification,
+   *
+   * @author Griefed
+   * @param host String. The host to mention in the notifications body.
+   * @param status Integer. The statuscode of the host.
+   */
+  private void sendNotification(String host, String status) {
+    try {
+      MAIL_NOTIFICATION.sendMailNotification(
+          "Host down or unreachable",
+          "The host " + host + " is unreachable or down! Status: " + status);
+    } catch (MessagingException ex) {
+
+      LOG.error("Error sending notification for host " + host, ex);
+    }
+  }
 }

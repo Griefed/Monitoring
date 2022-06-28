@@ -1,9 +1,7 @@
 <template>
   <q-card
     bordered
-    :class="this.store.state.blink ?
-                (getCssColor(host.status) === '#ad1e1f' ? 'card-ok blink' : 'card-ok') :
-                 'card-ok'"
+    :class="this.store.state.blink ? (getCssColor(host.status) === '#ad1e1f' ? 'card-ok blink' : 'card-ok') : 'card-ok'"
     :style="'background: ' + getCssColor(host.status) + ';'"
   >
     <q-list>
@@ -32,7 +30,7 @@
           v-ripple
           clickable
           :label="host.address.length > 47 ? host.address.substring(0, 44) + '...' : host.address"
-          @click="openURL(host.address)"
+          @click="this.store.methods.openInTab(host.address)"
         >
           <q-tooltip v-if="host.address.length > 47 && !this.$q.platform.is.mobile">
             {{ host.address }}
@@ -131,27 +129,9 @@ export default defineComponent({
 
     return {
       store,
-      ipRegEx: new RegExp('\\d+\\.\\d+\\.\\d+\\.\\d+')
     }
   },
   methods: {
-    openURL(address) {
-
-      if (this.ipRegEx.test(address)) {
-        address = 'http://' + address;
-      }
-
-      openURL(
-        address,
-        null,
-        {
-          noopener: true,
-          menubar: false,
-          toolbar: false,
-          noreferrer: false,
-        }
-      )
-    },
     getCssColor(status) {
 
       switch (status) {

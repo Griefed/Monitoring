@@ -21,7 +21,5 @@
  * SOFTWARE.
  */
 
-/**
- * Utilities for Monitoring.
- */
+/** Utilities for Monitoring. */
 package de.griefed.monitoring.utilities;

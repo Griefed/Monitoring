@@ -17,6 +17,8 @@ For questions, you can always join my [Discord server](https://discord.griefed.d
 
 # Monitoring
 
+[![monitoring](img/repo_and_website_banner.gif)](https://github.com/Griefed/Monitoring)
+
 [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/Griefed/monitoring?include_prereleases&label=Latest%20Release&logo=Github&style=for-the-badge&color=c0ffee&labelColor=325358)](https://github.com/Griefed/monitoring/releases/latest)
 [![GitHub](https://img.shields.io/github/license/Griefed/Monitoring?logo=GitHub&style=for-the-badge&color=c0ffee&labelColor=325358)](https://github.com/Griefed/Monitoring/blob/main/LICENSE)
 

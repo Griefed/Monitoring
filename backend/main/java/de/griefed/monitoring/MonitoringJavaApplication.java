@@ -33,14 +33,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @PropertySources({
-        @PropertySource("classpath:application.properties"),
-        @PropertySource(value = "file:./application.properties", ignoreResourceNotFound = true)
+  @PropertySource("classpath:application.properties"),
+  @PropertySource(value = "file:./application.properties", ignoreResourceNotFound = true)
 })
 public class MonitoringJavaApplication {
 
-    private static final Logger LOG = LogManager.getLogger(MonitoringJavaApplication.class);
+  private static final Logger LOG = LogManager.getLogger(MonitoringJavaApplication.class);
 
-    public static void main(String[] args) {
-        SpringApplication.run(MonitoringJavaApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(MonitoringJavaApplication.class, args);
+  }
 }

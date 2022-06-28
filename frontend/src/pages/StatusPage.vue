@@ -14,7 +14,7 @@
         <!-- HOSTS WHICH ARE UP -->
         <template v-slot:before>
           <q-scroll-area
-            class="full-height q-pa-md"
+            class="full-height q-pa-xs"
             :thumb-style="downThumbStyle"
             :bar-style="downBarStyle"
           >
@@ -48,7 +48,7 @@
         <!-- HOSTS WHICH ARE DOWN -->
         <template v-slot:after>
           <q-scroll-area
-            class="full-height q-pa-md"
+            class="full-height"
             :thumb-style="okThumbStyle"
             :bar-style="okBarStyle"
           >
@@ -120,7 +120,6 @@ export default defineComponent({
         width: '5px',
         opacity: 0.75
       },
-
       okBarStyle: {
         right: '2px',
         borderRadius: '9px',
@@ -140,6 +139,11 @@ export default defineComponent({
         this.$forceUpdate();
 
       }).catch(error => {
+
+        this.hostsOk = [];
+        this.hostsDown = [];
+
+        this.$forceUpdate();
 
         console.log("Error fetching host information: " + error);
 

@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * RestController for getting information regarding available updates.
+ *
  * @author Griefed
  */
 @RestController
@@ -38,28 +39,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/updates")
 public class UpdateCheckerController {
 
-    private final UpdateChecker UPDATECHECKER;
+  private final UpdateChecker UPDATECHECKER;
 
-    @Autowired
-    public UpdateCheckerController(UpdateChecker injectedUpdateChecker) {
-        this.UPDATECHECKER = injectedUpdateChecker;
+  @Autowired
+  public UpdateCheckerController(UpdateChecker injectedUpdateChecker) {
+    this.UPDATECHECKER = injectedUpdateChecker;
+  }
+
+  @GetMapping(produces = "application/json")
+  public String getUpdateInformation() {
+
+    if (UPDATECHECKER.getUpdater().contains(";")) {
+
+      return "{"
+          + "\"available\": true,"
+          + "\"version\": \""
+          + UPDATECHECKER.getUpdater().split(";")[0]
+          + "\","
+          + "\"link\": \""
+          + UPDATECHECKER.getUpdater().split(";")[1]
+          + "\""
+          + "}";
+    } else {
+
+      return "{" + "\"available\": false" + "}";
     }
-
-    @GetMapping(produces = "application/json")
-    public String getUpdateInformation() {
-
-        if (UPDATECHECKER.getUpdater().contains(";")) {
-
-            return "{" +
-                    "\"available\": true," +
-                    "\"version\": \"" + UPDATECHECKER.getUpdater().split(";")[0] + "\"," +
-                    "\"link\": \"" + UPDATECHECKER.getUpdater().split(";")[1] + "\"" +
-                    "}";
-        } else {
-
-            return "{" +
-                    "\"available\": false" +
-                    "}";
-        }
-    }
+  }
 }
