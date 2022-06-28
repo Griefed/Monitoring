@@ -23,7 +23,7 @@
 package de.griefed.monitoring.utilities;
 
 import de.griefed.monitoring.ApplicationProperties;
-import de.griefed.versionchecker.github.GitHubChecker;
+import de.griefed.versionchecker.GitHubChecker;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

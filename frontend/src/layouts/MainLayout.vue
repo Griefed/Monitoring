@@ -3,26 +3,28 @@
     <q-header elevated>
       <q-toolbar>
 
-        <q-icon name="img:favicon.gif" style="font-size: 32px;" />
+        <q-icon name="img:favicon.gif" style="font-size: 32px;"/>
 
         <q-toolbar-title>
           <b>Monitoring</b>
           <span style="margin-left: 10px;">
-            v{{this.store.state.version}}
+            v{{ this.store.state.version }}
           </span>
           <q-btn
             v-if="this.store.state.updateAvailable"
-            style="margin-left: 5px; margin-bottom: 4px;"
-            round
-            dense
-            size="xs"
             color="warning"
+            dense
             icon="priority_high"
+            round
+            size="xs"
+            style="margin-left: 5px; margin-bottom: 4px;"
             @click="showUpdateNotification()"
           />
         </q-toolbar-title>
 
-        <q-btn v-if="!this.$q.platform.is.mobile" label="GitHub" style="color: #C0FFEE" type="a" target="_blank" href="https://github.com/SuK-IT/Monitoring">
+        <q-btn v-if="!this.$q.platform.is.mobile" href="https://github.com/SuK-IT/Monitoring"
+               label="GitHub" style="color: #C0FFEE"
+               target="_blank" type="a">
           <q-tooltip>
             Visit the project on GitHub!
           </q-tooltip>
@@ -30,32 +32,34 @@
 
         <q-separator style="margin-left: 5px; margin-right: 5px;"/>
 
-        <q-btn v-if="!this.$q.platform.is.mobile" label="Support" style="color: #C0FFEE" type="a" target="_blank" href="https://github.com/SuK-IT/Monitoring/issues">
+        <q-btn v-if="!this.$q.platform.is.mobile" href="https://github.com/SuK-IT/Monitoring/issues"
+               label="Support" style="color: #C0FFEE"
+               target="_blank" type="a">
           <q-tooltip>
             Report an issue!
           </q-tooltip>
         </q-btn>
 
         <q-separator
-          style="margin-left: 15px; margin-right: 15px;"
           color="secondary"
           inset
+          style="margin-left: 15px; margin-right: 15px;"
           vertical
         />
 
         <q-btn-dropdown
           icon="more_vert"
-          >
+        >
           <q-list>
             <q-item>
               <q-btn
+                v-close-popup
                 :icon="this.$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
                 :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
-                label="Toggle Dark Mode"
-                @click="toggleDarkMode()"
                 dense
                 flat
-                v-close-popup
+                label="Toggle Dark Mode"
+                @click="toggleDarkMode()"
               >
                 <q-tooltip :disable="this.$q.platform.is.mobile">
                   {{ this.$q.dark.isActive ? 'Deactivate Dark Mode' : 'Activate Dark Mode' }}
@@ -65,16 +69,19 @@
 
             <q-item>
               <q-btn
-                icon="model_training"
+                v-close-popup
                 :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
-                label="Toggle Blinking"
-                @click="toggleBlinking()"
                 dense
                 flat
-                v-close-popup
+                icon="model_training"
+                label="Toggle Blinking"
+                @click="toggleBlinking()"
               >
                 <q-tooltip :disable="this.$q.platform.is.mobile">
-                  {{ this.store.state.blink ? 'Deactivate Blinking Of Critical Cards' : 'Activate Blinking Of Critical Cards' }}
+                  {{
+                    this.store.state.blink ? 'Deactivate Blinking Of Critical Cards'
+                      : 'Activate Blinking Of Critical Cards'
+                  }}
                 </q-tooltip>
               </q-btn>
             </q-item>
@@ -82,13 +89,13 @@
             <q-item>
               <q-btn
                 v-if="!this.$q.platform.is.mobile"
+                v-close-popup
                 :icon="this.$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
                 :style="this.$q.dark.isActive ? 'color: #FFFFFF;' : 'color: #000000;'"
-                label="Toggle Fullscreen"
-                @click="this.$q.fullscreen.toggle()"
                 dense
                 flat
-                v-close-popup
+                label="Toggle Fullscreen"
+                @click="this.$q.fullscreen.toggle()"
               >
                 <q-tooltip :disable="this.$q.platform.is.mobile">
                   {{ this.$q.fullscreen.isActive ? 'Exit Fullscreen' : 'Toggle Fullscreen' }}
@@ -109,7 +116,9 @@
               <div
                 id="particles-js"
                 :class="this.$q.dark.isActive ? 'dark_gradient' : 'normal_gradient'"
-              ><router-view/></div>
+              >
+                <router-view/>
+              </div>
 
             </q-scroll-area>
           </div>
@@ -121,9 +130,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject } from 'vue';
-import { tsParticles } from 'tsparticles';
-import { openURL } from 'quasar';
+import {defineComponent, inject, ref} from 'vue';
+import {tsParticles} from 'tsparticles';
+import {openURL} from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -138,7 +147,7 @@ export default defineComponent({
       miniState: ref(true)
     }
   },
-  methods : {
+  methods: {
     toggleBlinking() {
       this.store.state.blink = !this.store.state.blink;
       this.$q.cookies.set('blink.isActive', this.store.state.blink);
@@ -161,7 +170,8 @@ export default defineComponent({
         timeout: 10000,
         progress: true,
         actions: [
-          { label: 'VISIT RELEASE PAGE', color: 'positive',
+          {
+            label: 'VISIT RELEASE PAGE', color: 'positive',
             handler: () => {
               openURL(
                 this.store.state.updateLink,
@@ -175,21 +185,23 @@ export default defineComponent({
               );
             }
           },
-          { label: 'OK', color: 'info' },
-          { label: 'DO NOT REMIND ME AGAIN', color: 'warning',
+          {label: 'OK', color: 'info'},
+          {
+            label: 'DO NOT REMIND ME AGAIN', color: 'warning',
             handler: () => {
-            this.noReminder();
+              this.noReminder();
             }
           }
         ],
         message:
           '<div class="text-h4 text-weight-bolder text-center">Update available!</div><br><br>' +
-          '<span class="text-h6 text-weight-bolder absolute-center">Version ' + this.store.state.updateVersion + '</span><br>' +
+          '<span class="text-h6 text-weight-bolder absolute-center">Version '
+          + this.store.state.updateVersion + '</span><br>' +
           '<span class=\"text-h6\">Available at: <br>' + this.store.state.updateLink + '</span><br>'
       })
     },
     loadParticles(amount) {
-      tsParticles.load("particles-js",{
+      tsParticles.load("particles-js", {
         "fpsLimit": 30,
         "particles": {
           "number": {
@@ -200,13 +212,13 @@ export default defineComponent({
             }
           },
           "color": {
-            "value": ["#325358","#C0FFEE","#31CCEC","#6A1A78"]
+            "value": ["#325358", "#C0FFEE", "#31CCEC", "#6A1A78"]
           },
           "shape": {
-            "type": ["circle","triangle","edge","polygon"],
+            "type": ["circle", "triangle", "edge", "polygon"],
             "stroke": {
               "width": 0,
-              "color": ["#325358","#C0FFEE","#31CCEC","#6A1A78"]
+              "color": ["#325358", "#C0FFEE", "#31CCEC", "#6A1A78"]
             },
             "polygon": {
               "nb_sides": 6
@@ -260,7 +272,7 @@ export default defineComponent({
           "events": {
             "onhover": {
               "enable": true,
-              "mode": ["bubble","grab"]
+              "mode": ["bubble", "grab"]
             },
             "onclick": {
               "enable": true,
@@ -356,102 +368,100 @@ export default defineComponent({
 
 /*noinspection CssUnusedSymbol*/
 .normal_gradient {
-  background:
-    radial-gradient(circle at 0% 0%,
-    rgba(161, 232, 213, 0.4),
-    rgba(50, 83, 88, 0.1),
-    rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 100% 0%,
+  background: radial-gradient(circle at 0% 0%,
+  rgba(161, 232, 213, 0.4),
+  rgba(50, 83, 88, 0.1),
+  rgba(50, 83, 88, 0.05) 100%
+  ),
+  radial-gradient(circle at 100% 0%,
     rgba(133, 213, 212, 0.4),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.1) 100%
-    ),
-    radial-gradient(circle at 0% 100%,
+  ),
+  radial-gradient(circle at 0% 100%,
     rgba(197, 142, 248, 0.4),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 100% 100%,
+  ),
+  radial-gradient(circle at 100% 100%,
     rgba(171, 115, 224, 0.56),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 50% 50%,
+  ),
+  radial-gradient(circle at 50% 50%,
     rgba(143, 147, 196, 0.4),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 25% 50%,
+  ),
+  radial-gradient(circle at 25% 50%,
     rgba(96, 168, 151, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    ),
-    radial-gradient(circle at 75% 50%,
+  ),
+  radial-gradient(circle at 75% 50%,
     rgba(107, 67, 190, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    ),
-    radial-gradient(circle at 50% 25%,
+  ),
+  radial-gradient(circle at 50% 25%,
     rgba(97, 166, 176, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    ),
-    radial-gradient(circle at 50% 75%,
+  ),
+  radial-gradient(circle at 50% 75%,
     rgba(137, 200, 210, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    );
+  );
 }
 
 /*noinspection CssUnusedSymbol*/
 .dark_gradient {
-  background:
-    radial-gradient(circle at 0% 0%,
-    rgba(34, 81, 114, 0.6),
-    rgba(50, 83, 88, 0.1),
-    rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 100% 0%,
+  background: radial-gradient(circle at 0% 0%,
+  rgba(34, 81, 114, 0.6),
+  rgba(50, 83, 88, 0.1),
+  rgba(50, 83, 88, 0.05) 100%
+  ),
+  radial-gradient(circle at 100% 0%,
     rgba(17, 87, 85, 0.4),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.1) 100%
-    ),
-    radial-gradient(circle at 0% 100%,
+  ),
+  radial-gradient(circle at 0% 100%,
     rgb(49, 26, 133),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 100% 100%,
+  ),
+  radial-gradient(circle at 100% 100%,
     rgba(80, 20, 136, 0.6),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 50% 50%,
+  ),
+  radial-gradient(circle at 50% 50%,
     rgba(128, 134, 204, 0.4),
     rgba(50, 83, 88, 0.1),
     rgba(50, 83, 88, 0.05) 100%
-    ),
-    radial-gradient(circle at 25% 50%,
+  ),
+  radial-gradient(circle at 25% 50%,
     rgba(66, 117, 105, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    ),
-    radial-gradient(circle at 75% 50%,
+  ),
+  radial-gradient(circle at 75% 50%,
     rgba(98, 69, 157, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    ),
-    radial-gradient(circle at 50% 25%,
+  ),
+  radial-gradient(circle at 50% 25%,
     rgba(26, 79, 87, 0.9),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    ),
-    radial-gradient(circle at 50% 75%,
+  ),
+  radial-gradient(circle at 50% 75%,
     rgba(18, 35, 89, 1),
     rgba(50, 83, 88, 0),
     rgba(50, 83, 88, 0) 100%
-    );
+  );
 }
 
 /*noinspection CssUnknownTarget*/

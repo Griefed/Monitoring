@@ -47,7 +47,6 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  @Order(0)
   SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     switch (APPLICATIONPROPERTIES.getSecuritySetting()) {
       case ALL:
@@ -79,13 +78,13 @@ public class SecurityConfiguration {
             .permitAll()
             .antMatchers("/whoops")
             .permitAll()
-            .antMatchers("/login")
+            .antMatchers("/login/**")
             .permitAll()
-            .antMatchers("/api/v1/hosts")
+            .antMatchers("/api/v1/host/**")
             .permitAll()
-            .antMatchers("/api/v1/settings")
+            .antMatchers("/api/v1/settings/**")
             .permitAll()
-            .antMatchers("/api/v1/updates")
+            .antMatchers("/api/v1/updates/**")
             .permitAll()
             .anyRequest()
             .authenticated()

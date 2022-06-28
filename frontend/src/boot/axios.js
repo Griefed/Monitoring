@@ -1,6 +1,5 @@
-import { boot } from 'quasar/wrappers';
+import {boot} from 'quasar/wrappers';
 import axios from 'axios';
-
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
@@ -10,9 +9,6 @@ import axios from 'axios';
 
 const admin = axios.create(
   {
-    headers: {
-      "Content-Type": "application/json"
-    },
     baseURL: "/api/v1/admin"
   }
 );
@@ -44,7 +40,7 @@ const api = axios.create(
   }
 );
 
-export default boot(({ app }) => {
+export default boot(({app}) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
 
   app.config.globalProperties.$axios = axios
@@ -68,4 +64,4 @@ export default boot(({ app }) => {
   //       so you can easily perform requests against your app's API
 });
 
-export { admin, hosts, api, settings }
+export {admin, hosts, api, settings}

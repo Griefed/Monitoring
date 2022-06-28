@@ -12,17 +12,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = {"*"})
-@RequestMapping("/api/v1/admin")
+@RequestMapping(
+    value = "/api/v1/admin",
+    method = {RequestMethod.GET, RequestMethod.POST})
 public class AdminController {
 
   private static final Logger LOG = LogManager.getLogger(AdminController.class);
@@ -38,7 +38,10 @@ public class AdminController {
   }
 
   @CrossOrigin(origins = {"*"})
-  @GetMapping(path = "get", produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(
+      path = "/get",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.GET)
   public ResponseEntity<JsonNode> get() throws IOException {
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -46,8 +49,11 @@ public class AdminController {
   }
 
   @CrossOrigin(origins = {"*"})
-  @PostMapping("/save")
-  public @ResponseBody String save(@RequestBody Settings settings) {
+  @RequestMapping(
+      value = "/save",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.POST)
+  public String save(@RequestBody Settings settings) {
 
     LOG.info(settings.toString());
 
@@ -64,7 +70,10 @@ public class AdminController {
   }
 
   @CrossOrigin(origins = {"*"})
-  @GetMapping("set")
+  @RequestMapping(
+      path = "/set",
+      produces = MediaType.APPLICATION_JSON_VALUE,
+      method = RequestMethod.GET)
   public ResponseEntity<String> set(@RequestParam(value = "configuration") String configuration) {
 
     LOG.info(configuration);

@@ -44,7 +44,8 @@ out/
 /logs
 /backend/main/resources/static/*
 !/backend/main/resources/static/
-/application.properties
-/hosts.json
-/log4j2.xml
+/testruns/application.properties
+/testruns/hosts.json
+/testruns/log4j2.xml
 /Monitoring-*.jar
+/testruns/

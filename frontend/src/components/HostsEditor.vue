@@ -1,47 +1,49 @@
 <template>
-  <q-scroll-area class="full-height full-width hosts" ref="scrollArea">
+  <q-scroll-area ref="scrollArea" class="full-height full-width hosts">
     <div class="hosts">
       <div class="row wrap" style="margin-left: 10px;">
-        <q-page-sticky v-if="this.store.hosts.hosts.length > 0" position="left" :offset="[-10, 40]" style="z-index: 1000; margin-top: -80px;">
-          <q-btn dense round color="accent" icon="reply" class="rotate-90" @click="scroll('UP')"/>
+        <q-page-sticky v-if="this.store.hosts.hosts.length > 0" :offset="[-10, 40]" position="left"
+                       style="z-index: 1000; margin-top: -80px;">
+          <q-btn class="rotate-90" color="accent" dense icon="reply" round @click="scroll('UP')"/>
         </q-page-sticky>
-        <q-page-sticky v-if="this.store.hosts.hosts.length > 0" position="left" :offset="[-10, -58]" style="z-index: 1000; margin-bottom: -80px;">
-          <q-btn dense round color="accent" icon="reply" class="flipped" @click="scroll('DOWN')"/>
+        <q-page-sticky v-if="this.store.hosts.hosts.length > 0" :offset="[-10, -58]" position="left"
+                       style="z-index: 1000; margin-bottom: -80px;">
+          <q-btn class="flipped" color="accent" dense icon="reply" round @click="scroll('DOWN')"/>
         </q-page-sticky>
 
         <q-card-section
-          style="width: 380px;"
           v-for="(host, index) in this.store.hosts.hosts"
           v-bind:key="host"
+          style="width: 380px;"
         >
           <q-card
-            bordered
-            style="margin-right: -10px; margin-left: -10px; margin-bottom: -20px;"
             :class=
               "this.$q.dark.isActive ?
                 (index % 2 ? 'host-card-dark' : 'host-card-dark-alternative') :
                 (index % 2 ? 'host-card' : 'host-card-alternative')"
+            bordered
+            style="margin-right: -10px; margin-left: -10px; margin-bottom: -20px;"
           >
             <q-badge
               :label="index + 1"
+              align="top"
+              class="q-mr-lg"
               floating
               style="font-size: 20px;"
-              class="q-mr-lg"
-              align="top"
             />
             <q-card-section class="text-weight-bolder text-h5 no-wrap host-name roboto-mono-bold">
-              {{ host.name.length > 22 ? host.name.substring(0,19) + '...' : host.name }}
+              {{ host.name.length > 22 ? host.name.substring(0, 19) + '...' : host.name }}
             </q-card-section>
             <q-card-section>
 
               <q-input
-                label="Name"
-                type="text"
                 v-model="host.name"
                 :rules="[
                   val => !!val || 'NAME IS REQUIRED!'
                 ]"
+                label="Name"
                 label-slot
+                type="text"
               >
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
@@ -54,14 +56,14 @@
               </q-input>
 
               <q-input
-                label="Address"
-                type="text"
                 v-model="host.address"
                 :rules="[
                   val => !val.length === 0 && this.store.checks.ipRegEx.test(val) || this.store.checks.addressRegEx.test(val) || 'MUST BE IP, HOSTNAME, OR URL!'
                 ]"
+                label="Address"
                 label-slot
                 style="margin-top: -20px;"
+                type="text"
               >
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
@@ -74,14 +76,14 @@
               </q-input>
 
               <q-input
-                label="Ports"
-                type="text"
                 v-model="host.ports"
                 :rules="[
                   val => val === undefined || this.checkPorts(val) || 'NUMBER(S), SEPARATED BY COMMAS ONLY! MUST NOT END WITH A COMMA!'
                 ]"
+                label="Ports"
                 label-slot
                 style="margin-top: -20px;"
+                type="text"
               >
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
@@ -94,14 +96,14 @@
               </q-input>
 
               <q-input
-                label="Expected IP"
-                type="text"
                 v-model="host.expectedIp"
                 :rules="[
                   val => (val === undefined || val.length === 0) || this.store.checks.ipRegEx.test(val) || 'NOT A VALID IP!'
                 ]"
+                label="Expected IP"
                 label-slot
                 style="margin-top: -20px;"
+                type="text"
               >
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
@@ -115,11 +117,11 @@
 
               <div class="row no-wrap" style="margin-top: -10px; margin-left: -10px;">
                 <q-toggle
-                  label="Notifications Disabled"
                   v-model="host.notificationsDisabled"
-                  color="green"
                   checked-icon="checked"
+                  color="green"
                   indeterminate-icon="notifications"
+                  label="Notifications Disabled"
                   unchecked-icon="clear"
                 >
                   <q-tooltip v-if="!this.$q.platform.is.mobile">
@@ -128,8 +130,8 @@
                 </q-toggle>
 
                 <q-btn
-                  color="negative"
                   class="right"
+                  color="negative"
                   label="Delete Host"
                   @click="this.store.hosts.hosts.splice(index,1)"
                 />
@@ -139,34 +141,37 @@
         </q-card-section>
 
         <q-card-section style="width: 380px;">
-          <q-card bordered :class="this.$q.dark.isActive ? 'host-card-dark' : 'host-card-alternative'" style="height: 328px; margin-right: -10px; margin-left: -10px; margin-bottom: -20px;">
-            <q-badge label="n" floating style="font-size: 20px;" class="q-mr-lg" align="top" />
-            <q-card-section class="text-weight-bolder text-h4 no-wrap" style="margin-bottom: -40px; margin-top: -10px;">
+          <q-card :class="this.$q.dark.isActive ? 'host-card-dark' : 'host-card-alternative'"
+                  bordered
+                  style="height: 328px; margin-right: -10px; margin-left: -10px; margin-bottom: -20px;">
+            <q-badge align="top" class="q-mr-lg" floating label="n" style="font-size: 20px;"/>
+            <q-card-section class="text-weight-bolder text-h4 no-wrap"
+                            style="margin-bottom: -40px; margin-top: -10px;">
               Add a new host
             </q-card-section>
             <q-card-section>
-              <q-input label="Name" type="text" disable readonly label-slot model-value="">
+              <q-input disable label="Name" label-slot model-value="" readonly type="text">
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
                     Name
                   </div>
                 </template>
               </q-input>
-              <q-input label="Address" type="text" disable readonly label-slot model-value="">
+              <q-input disable label="Address" label-slot model-value="" readonly type="text">
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
                     Address
                   </div>
                 </template>
               </q-input>
-              <q-input label="Ports" type="text" disable readonly label-slot model-value="">
+              <q-input disable label="Ports" label-slot model-value="" readonly type="text">
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
                     Ports
                   </div>
                 </template>
               </q-input>
-              <q-input label="Expected IP" type="text" disable readonly label-slot model-value="">
+              <q-input disable label="Expected IP" label-slot model-value="" readonly type="text">
                 <template v-slot:label>
                   <div class="row items-center all-pointer-events text-weight-bolder text-h6">
                     Expected IP
@@ -174,10 +179,13 @@
                 </template>
               </q-input>
               <div class="row no-wrap" style="margin-top: 10px;margin-left: -10px;">
-                <q-toggle label="Notifications Disabled" disable color="green" checked-icon="checked" indeterminate-icon="notifications" unchecked-icon="clear" model-value=""/>
-                <q-btn color="negative" class="right" label="Delete Host" disable/>
+                <q-toggle checked-icon="checked" color="green" disable
+                          indeterminate-icon="notifications" label="Notifications Disabled"
+                          model-value="" unchecked-icon="clear"/>
+                <q-btn class="right" color="negative" disable label="Delete Host"/>
               </div>
-              <q-btn icon="add" round dense color="positive" size="50px" style="margin-left: 110px; margin-top: -320px;" @click="addHost"/>
+              <q-btn color="positive" dense icon="add" round size="50px"
+                     style="margin-left: 110px; margin-top: -320px;" @click="addHost"/>
             </q-card-section>
           </q-card>
         </q-card-section>
@@ -188,7 +196,7 @@
 </template>
 
 <script>
-import { defineComponent, inject, ref} from "vue";
+import {defineComponent, inject, ref} from "vue";
 
 export default defineComponent({
   name: "HostsEditor",
@@ -203,9 +211,9 @@ export default defineComponent({
       scrollArea,
       scroll(direction) {
         if (direction === 'UP') {
-          scrollArea.value.setScrollPercentage('vertical', 0.0,300)
+          scrollArea.value.setScrollPercentage('vertical', 0.0, 300)
         } else if (direction === 'DOWN') {
-          scrollArea.value.setScrollPercentage('vertical', 1.0,300)
+          scrollArea.value.setScrollPercentage('vertical', 1.0, 300)
         }
       }
     }
@@ -229,9 +237,8 @@ export default defineComponent({
           }
 
         } else if (parseInt(ports) > 65535) {
-            passed = false;
+          passed = false;
         }
-
 
       } else {
         passed = false;
@@ -242,7 +249,7 @@ export default defineComponent({
     addHost() {
       this.store.hosts.hosts.push(JSON.parse(
         "{\"name\": \"\",\"address\": \"\"}"
-        ));
+      ));
     }
   },
   mounted() {

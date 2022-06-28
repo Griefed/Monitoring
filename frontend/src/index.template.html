@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= productName %></title>
+<head>
+  <title><%= productName %></title>
 
-    <meta charset="utf-8">
-    <meta name="description" content="<%= productDescription %>">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>">
+  <meta charset="utf-8">
+  <meta content="<%= productDescription %>" name="description">
+  <meta content="telephone=no" name="format-detection">
+  <meta content="no" name="msapplication-tap-highlight">
+  <meta
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
+    name="viewport">
 
-    <link rel="icon" type="image/gif" sizes="512x512" href="icons/favicon-512x512.gif">
-    <link rel="icon" type="image/gif" sizes="384x384" href="icons/favicon-384x384.gif">
-    <link rel="icon" type="image/gif" sizes="256x256" href="icons/favicon-256x256.gif">
-    <link rel="icon" type="image/gif" sizes="192x192" href="icons/favicon-192x192.gif">
-    <link rel="icon" type="image/gif" sizes="128x128" href="icons/favicon-128x128.gif">
-    <link rel="icon" type="image/gif" sizes="96x96"   href="icons/favicon-96x96.gif">
-    <link rel="icon" type="image/gif" sizes="32x32"   href="icons/favicon-32x32.gif">
-    <link rel="icon" type="image/gif" sizes="16x16"   href="icons/favicon-16x16.gif">
-    <link rel="icon" type="image/gif" href="favicon.gif">
-    <!--<link rel="icon" type="image/ico" href="favicon.ico">-->
-  </head>
-  <body>
-    <!-- DO NOT touch the following DIV -->
-    <div id="q-app"></div>
-  </body>
+  <link href="icons/favicon-512x512.gif" rel="icon" sizes="512x512" type="image/gif">
+  <link href="icons/favicon-384x384.gif" rel="icon" sizes="384x384" type="image/gif">
+  <link href="icons/favicon-256x256.gif" rel="icon" sizes="256x256" type="image/gif">
+  <link href="icons/favicon-192x192.gif" rel="icon" sizes="192x192" type="image/gif">
+  <link href="icons/favicon-128x128.gif" rel="icon" sizes="128x128" type="image/gif">
+  <link href="icons/favicon-96x96.gif" rel="icon" sizes="96x96" type="image/gif">
+  <link href="icons/favicon-32x32.gif" rel="icon" sizes="32x32" type="image/gif">
+  <link href="icons/favicon-16x16.gif" rel="icon" sizes="16x16" type="image/gif">
+  <link href="favicon.gif" rel="icon" type="image/gif">
+  <!--<link rel="icon" type="image/ico" href="favicon.ico">-->
+</head>
+<body>
+<!-- DO NOT touch the following DIV -->
+<div id="q-app"></div>
+</body>
 </html>

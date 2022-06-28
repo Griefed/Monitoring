@@ -1,8 +1,8 @@
 <template>
   <q-card
-    bordered
     :class="this.store.state.blink ? (getCssColor(host.status) === '#ad1e1f' ? 'card-ok blink' : 'card-ok') : 'card-ok'"
     :style="'background: ' + getCssColor(host.status) + ';'"
+    bordered
   >
     <q-list>
 
@@ -12,24 +12,24 @@
       >
         <q-badge
           v-if="host.code !== 418"
-          class="q-mr-xs"
-          style="font-size: 16px;"
-          floating
           :label="host.code"
+          class="q-mr-xs"
+          floating
+          style="font-size: 16px;"
         />
         <span>
-        {{ host.name.length > 35 ? host.name.substring(0,32) + '...' : host.name }}
+        {{ host.name.length > 35 ? host.name.substring(0, 32) + '...' : host.name }}
         <q-tooltip v-if="host.name.length > 35 && !this.$q.platform.is.mobile">
           {{ host.name }}
         </q-tooltip>
       </span>
         <br>
         <q-chip
-          outline
-          dense
           v-ripple
-          clickable
           :label="host.address.length > 47 ? host.address.substring(0, 44) + '...' : host.address"
+          clickable
+          dense
+          outline
           @click="this.store.methods.openInTab(host.address)"
         >
           <q-tooltip v-if="host.address.length > 47 && !this.$q.platform.is.mobile">
@@ -46,61 +46,66 @@
       <q-item>
         <q-item-section top>
           <q-item-label lines="2">
-                    <span class="text-weight-bolder right" style="padding-top: 11px; font-size: 17px;">
+                    <span class="text-weight-bolder right"
+                          style="padding-top: 11px; font-size: 17px;">
                       {{ host.status }}
                     </span>
             <q-chip
               v-if="host.hostAvailable && host.ip !== 'null' && host.status !== 'DNS MISMATCH'"
-              class="text-weight-bolder"
-              size="lg"
-              dense
-              square
-              flat
-              unelevated
-              color="green"
               :label="host.ip"
+              class="text-weight-bolder"
+              color="green"
+              dense
+              flat
+              size="lg"
+              square
+              unelevated
             />
             <q-chip
               v-if="!host.hostAvailable && host.ip !== 'null' && host.status !== 'DNS MISMATCH'"
-              class="text-weight-bolder"
-              size="lg"
-              dense
-              square
-              flat
-              unelevated
-              color="red"
               :label="host.ip"
+              class="text-weight-bolder"
+              color="red"
+              dense
+              flat
+              size="lg"
+              square
+              unelevated
             />
             <q-chip
               v-if="host.hostAvailable && host.expectedIp !== 'null' && host.status === 'DNS MISMATCH'"
-              class="text-weight-bolder"
-              size="lg"
-              dense
-              square
-              flat
-              unelevated
-              color="green"
               :label="host.expectedIp"
+              class="text-weight-bolder"
+              color="green"
+              dense
+              flat
+              size="lg"
+              square
+              unelevated
             >
-              <q-tooltip style="font-size: 15px;" v-if="!this.$q.platform.is.mobile">
+              <q-tooltip v-if="!this.$q.platform.is.mobile" style="font-size: 15px;">
                 <strong style="color: lawngreen;">Expected:&#160;</strong>{{ host.expectedIp }}<br>
-                <strong style="color: red;">Actual:&#160;&#160;&#160;&#160;&#160;&#160;</strong>{{ host.ip }}
+                <strong style="color: red;">Actual:&#160;&#160;&#160;&#160;&#160;&#160;</strong>{{
+                  host.ip
+                }}
               </q-tooltip>
             </q-chip>
             <q-chip
               v-if="!host.hostAvailable && host.expectedIp !== 'null' && host.status === 'DNS MISMATCH'"
-              class="text-weight-bolder"
-              size="lg"
-              dense
-              square
-              flat
-              unelevated
-              color="red"
               :label="host.expectedIp"
+              class="text-weight-bolder"
+              color="red"
+              dense
+              flat
+              size="lg"
+              square
+              unelevated
             >
-              <q-tooltip style="font-size: 15px;" v-if="!this.$q.platform.is.mobile">
+              <q-tooltip v-if="!this.$q.platform.is.mobile" style="font-size: 15px;">
                 <strong style="color: lawngreen;">Expected:&#160;</strong>{{ host.expectedIp }}<br>
-                <strong style="color: red;">Actual:&#160;&#160;&#160;&#160;&#160;&#160;</strong>{{ host.ip }}
+                <strong style="color: red;">Actual:&#160;&#160;&#160;&#160;&#160;&#160;</strong>{{
+                  host.ip
+                }}
               </q-tooltip>
             </q-chip>
           </q-item-label>
@@ -112,8 +117,8 @@
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue';
-import {getCssVar, openURL } from 'quasar';
+import {defineComponent, inject} from 'vue';
+import {getCssVar} from 'quasar';
 
 export default defineComponent({
   name: 'HostDown',

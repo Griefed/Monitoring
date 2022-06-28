@@ -1,5 +1,5 @@
-import { reactive, ref } from 'vue';
-import { openURL } from "quasar";
+import {reactive, ref} from 'vue';
+import {openURL} from "quasar";
 
 const state = reactive({
   autorefresh: true,
@@ -15,7 +15,8 @@ const state = reactive({
 
 const checks = reactive({
   ipRegEx: new RegExp('^\\d+\\.\\d+\\.\\d+\\.\\d+$'),
-  addressRegEx: new RegExp('^(https?:\\/\\/)?([0-9a-zA-Z]+[\\-_]?[0-9a-zA-Z]*\\.?)+(\\/\\w+)*|\\d{1,3}.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$'),
+  addressRegEx: new RegExp(
+    '^(https?:\\/\\/)?([0-9a-zA-Z]+[\\-_]?[0-9a-zA-Z]*\\.?)+(\\/\\w+)*|\\d{1,3}.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$'),
   portsRegEx: new RegExp('^\\d{1,5}(,\\d{1,5})*$'),
   numberRegEx: new RegExp('^\\d+$'),
   securityRegEx: new RegExp('^ALL|SETTINGS|DEACTIVATE$'),

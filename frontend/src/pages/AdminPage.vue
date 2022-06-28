@@ -6,11 +6,11 @@
       <!-- TODO log cards or whatever they can best be wrapped im -->
       <q-splitter
         v-model="splitterModel"
-        style="height: 100%; width: 100%; position: absolute; right: 0; margin-right: -5px;"
-        before-class=""
         :after-class="this.$q.dark.isActive ? 'background-dark' : 'background'"
         :limits="[0, 100]"
+        before-class=""
         separator-style="background: #c0ffee;"
+        style="height: 100%; width: 100%; position: absolute; right: 0; margin-right: -5px;"
       >
         <template v-slot:before>
           <div class="column full-height">
@@ -18,39 +18,40 @@
             <q-card class="monitoring">
 
               <q-card-section class="text-center">
-                <b class="text-weight-bolder text-h4" >Monitoring</b>
+                <b class="text-weight-bolder text-h4">Monitoring</b>
               </q-card-section>
 
               <q-card-section class="text-left">
                 <b>Current version: </b>{{ this.store.state.version }}<br>
-                <b>Latest version:  </b>{{ this.store.state.updateVersion }}
+                <b>Latest version: </b>{{ this.store.state.updateVersion }}
               </q-card-section>
 
               <q-card-section class="card align-bottom">
                 <SettingsEditor/>
 
-                <q-separator inset style="margin-bottom: 10px; margin-top: 10px;" color="secondary"/>
+                <q-separator color="secondary" inset
+                             style="margin-bottom: 10px; margin-top: 10px;"/>
 
                 <div class="row no-wrap">
                   <q-btn
+                    color="primary"
                     label="Save"
                     style="width: 50%; margin-right: 10px;"
-                    color="primary"
                     @click="saveSettings"
                   />
 
                   <q-btn
+                    color="accent"
                     label="Reload"
                     style="width: 50%; margin-left: 10px;"
-                    color="accent"
                     @click="loadSettings"
                   />
                 </div>
                 <div class="row no-wrap">
                   <q-btn
+                    color="accent"
                     label="Export"
                     style="width: 100%; margin-top: 10px;"
-                    color="accent"
                   />
                 </div>
               </q-card-section>
@@ -62,13 +63,13 @@
 
         <template v-slot:separator>
           <q-btn
-            color="primary"
-            text-color="white"
-            size="20px"
-            icon="drag_indicator"
             class="flex-center"
-            round
+            color="primary"
             dense
+            icon="drag_indicator"
+            round
+            size="20px"
+            text-color="white"
           />
         </template>
 
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-import { defineComponent, inject, ref } from 'vue';
+import {defineComponent, inject, ref} from 'vue';
 import SettingsEditor from "components/SettingsEditor";
 import HostsEditor from "components/HostsEditor";
 import axios from 'axios';
@@ -137,13 +138,15 @@ export default defineComponent({
         let errorMessage = "<span class='headline text-weight-bolder'>Your configuration has errors:</span>";
         if (settingsResults.length > 0) {
 
-          errorMessage = errorMessage + "<br><span class='sub-headline text-weight-bolder'>Settings:</span><br><ol>";
+          errorMessage = errorMessage
+            + "<br><span class='sub-headline text-weight-bolder'>Settings:</span><br><ol>";
 
           settingsResults.forEach(error => {
 
             let errorObject = JSON.parse(error);
 
-            errorMessage = errorMessage + "<li>" + errorObject.setting + ":" + errorObject.erroringField + "<br>Reason: " + errorObject.reason + '</li>';
+            errorMessage = errorMessage + "<li>" + errorObject.setting + ":"
+              + errorObject.erroringField + "<br>Reason: " + errorObject.reason + '</li>';
           });
 
           errorMessage = errorMessage + '</ol>';
@@ -151,17 +154,20 @@ export default defineComponent({
 
         if (hostsResults.length > 0) {
 
-          errorMessage = errorMessage + "<br><span class='sub-headline text-weight-bolder'>Hosts:</span><ul>";
+          errorMessage = errorMessage
+            + "<br><span class='sub-headline text-weight-bolder'>Hosts:</span><ul>";
 
           hostsResults.forEach(error => {
 
             let errorObject = JSON.parse(error);
 
-            errorMessage = errorMessage + '<li><span class=\'text-weight-bolder\'>Host: ' + errorObject.hostIndex + '</span><ol>';
+            errorMessage = errorMessage + '<li><span class=\'text-weight-bolder\'>Host: '
+              + errorObject.hostIndex + '</span><ol>';
 
             errorObject.errors.forEach(hostError => {
 
-              errorMessage = errorMessage + "<li>" + hostError.setting + ": " + hostError.erroringField + "</br>" + hostError.reason + '</li>';
+              errorMessage = errorMessage + "<li>" + hostError.setting + ": "
+                + hostError.erroringField + "</br>" + hostError.reason + '</li>';
             });
 
             errorMessage = errorMessage + '</ol></li>';
@@ -172,7 +178,7 @@ export default defineComponent({
 
         }
 
-        this.$q.notify( {
+        this.$q.notify({
           position: 'center',
           caption: 'You must fix these before continuing.',
           color: 'negative',
@@ -184,70 +190,86 @@ export default defineComponent({
 
         //console.log('{"settings": ' + JSON.stringify(this.store.settings, null, 2) + ',"hosts": ' + JSON.stringify(this.store.hosts.hosts,null,2) + '}');
 
+        var postData = {
+          settings: JSON.stringify(this.store.settings, null, 0)
+        };
+
+        let axiosConfig = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: 'Bearer ' + this.$q.cookies.get('JSESSIONID')
+          }
+        }
+
         let request = encodeURIComponent('{"settings":' +
           JSON.stringify(this.store.settings, null, 0) +
           ',"hosts":' +
-          JSON.stringify(this.store.hosts.hosts,null,0) +
+          JSON.stringify(this.store.hosts.hosts, null, 0) +
           '}');
 
-        this.$admin.post('/api/v1/admin/save',
-          {
-            settings: JSON.stringify(this.store.settings, null, 0)
-          }
-          ).then(response => {
-            console.log('axios');
-            console.log(response);
-          }).catch(error => {
-            console.log(error);
-            this.$q.notify({
-              position: 'center',
-              message: 'Error saving configuration. ' + error,
-              color: 'negative',
-              timeout: 5000
-            });
+        this.$admin.post('/save',postData,axiosConfig
+        ).then(response => {
+          console.log('axios');
+          console.log(response);
+        }).catch(error => {
+          console.log(error);
+          this.$q.notify({
+            position: 'center',
+            message: 'Error saving configuration. ' + error,
+            color: 'negative',
+            timeout: 5000
+          });
         });
 
         this.$admin.get('/set?configuration=' + request
-          ).then(response => {
-            console.log(response);
-            this.$q.notify({
-              position: 'center',
-              message: 'Settings saved.',
-              color: 'positive',
-              timeout: 1000
-            });
-          }).catch(error => {
-            console.log(error);
-            this.$q.notify({
-              position: 'center',
-              message: 'Error saving configuration. ' + error,
-              color: 'negative',
-              timeout: 5000
-            });
+        ).then(response => {
+          console.log(response);
+          this.$q.notify({
+            position: 'center',
+            message: 'Settings saved.',
+            color: 'positive',
+            timeout: 1000
           });
+        }).catch(error => {
+          console.log(error);
+          this.$q.notify({
+            position: 'center',
+            message: 'Error saving configuration. ' + error,
+            color: 'negative',
+            timeout: 5000
+          });
+        });
 
       }
     },
     validateSettings(settings) {
       let result = [];
 
-      if (!this.store.checks.portsRegEx.test(settings.defaultPorts) || !this.checkPorts(settings.defaultPorts)) {
-        result.push('{"setting": "Default Ports","erroringField": "' + settings.defaultPorts + '","reason": "Ports must be numbers, separated by a comma, only. Each port must not be greater than 65535."}');
+      if (!this.store.checks.portsRegEx.test(settings.defaultPorts) || !this.checkPorts(
+        settings.defaultPorts)) {
+        result.push('{"setting": "Default Ports","erroringField": "' + settings.defaultPorts
+          + '","reason": "Ports must be numbers, separated by a comma, only. Each port must not be greater than 65535."}');
       }
       if (!this.store.checks.numberRegEx.test(settings.particlesCount)) {
-        result.push('{"setting": "Particles Amount","erroringField": "' + settings.particlesCount + '","reason": "Numbers only."}');
+        result.push('{"setting": "Particles Amount","erroringField": "' + settings.particlesCount
+          + '","reason": "Numbers only."}');
       }
       if (!this.store.checks.numberRegEx.test(settings.timeoutConnect)) {
-        result.push('{"setting": "Connection Timout","erroringField": "' + settings.timeoutConnect + '","reason": "Numbers only."}');
+        result.push('{"setting": "Connection Timout","erroringField": "' + settings.timeoutConnect
+          + '","reason": "Numbers only."}');
       }
       if (!this.store.checks.numberRegEx.test(settings.timeoutAvailability)) {
-        result.push('{"setting": "Availability Timout","erroringField": "' + settings.timeoutAvailability + '","reason": "Numbers only."}');
+        result.push(
+          '{"setting": "Availability Timout","erroringField": "' + settings.timeoutAvailability
+          + '","reason": "Numbers only."}');
       }
       if (!this.store.checks.numberRegEx.test(settings.threadCount)) {
-        result.push('{"setting": "Thread Count","erroringField": "' + settings.threadCount + '","reason": "Numbers only."}');
+        result.push('{"setting": "Thread Count","erroringField": "' + settings.threadCount
+          + '","reason": "Numbers only."}');
       }
       if (!this.store.checks.securityRegEx.test(settings.securitySetting)) {
-        result.push('{"setting": "Security Setting","erroringField": "' + settings.securitySetting + '","reason": "Must be either ALL, SETTINGS or DEACTIVATE."}');
+        result.push('{"setting": "Security Setting","erroringField": "' + settings.securitySetting
+          + '","reason": "Must be either ALL, SETTINGS or DEACTIVATE."}');
       }
 
       return result;
@@ -259,28 +281,36 @@ export default defineComponent({
         let hostResult = [];
 
         if (hosts[i].name.length === 0) {
-          hostResult.push('{"setting": "Name","erroringField": "' + hosts[i].name + '","reason": "Name is required."}');
+          hostResult.push('{"setting": "Name","erroringField": "' + hosts[i].name
+            + '","reason": "Name is required."}');
         }
-        if (hosts[i].address.length === 0 || !this.store.checks.ipRegEx.test(hosts[i].address) && !this.store.checks.addressRegEx.test(hosts[i].address)) {
-          hostResult.push('{"setting": "Address","erroringField": "' + hosts[i].address + '","reason": "Must be IP, hostname or URL"}');
+        if (hosts[i].address.length === 0 || !this.store.checks.ipRegEx.test(hosts[i].address)
+          && !this.store.checks.addressRegEx.test(hosts[i].address)) {
+          hostResult.push('{"setting": "Address","erroringField": "' + hosts[i].address
+            + '","reason": "Must be IP, hostname or URL"}');
         }
         try {
-          if (hosts[i].expectedIp.length > 0 && !this.store.checks.ipRegEx.test(hosts[i].expectedIp)) {
-            hostResult.push('{"setting": "Expected IP","erroringField": "' + hosts[i].expectedIp + '","reason": "Must be a valid IP."}');
+          if (hosts[i].expectedIp.length > 0 && !this.store.checks.ipRegEx.test(
+            hosts[i].expectedIp)) {
+            hostResult.push('{"setting": "Expected IP","erroringField": "' + hosts[i].expectedIp
+              + '","reason": "Must be a valid IP."}');
           }
         } catch (e) {
 
         }
         try {
           if (hosts[i].ports.length > 0 && !this.checkPorts(hosts[i].ports)) {
-            hostResult.push('{"setting": "Ports","erroringField": "' + hosts[i].ports + '","reason": "Ports must be numbers, separated by a comma, only. Each port must not be greater than 65535."}');
+            hostResult.push('{"setting": "Ports","erroringField": "' + hosts[i].ports
+              + '","reason": "Ports must be numbers, separated by a comma, only. Each port must not be greater than 65535."}');
           }
         } catch (e) {
 
         }
         try {
-          if (hosts[i].notificationsDisabled.toString.length > 0 && !this.store.checks.booleanRegEx.test(hosts[i].notificationsDisabled.toString)) {
-            hostResult.push('{"setting": "Notifications Disabled","erroringField": "' + hosts[i].notificationsDisabled + '","reason": "Must be true or false."}');
+          if (hosts[i].notificationsDisabled.toString.length > 0
+            && !this.store.checks.booleanRegEx.test(hosts[i].notificationsDisabled.toString)) {
+            hostResult.push('{"setting": "Notifications Disabled","erroringField": "'
+              + hosts[i].notificationsDisabled + '","reason": "Must be true or false."}');
           }
         } catch (e) {
 
@@ -309,7 +339,6 @@ export default defineComponent({
         } else if (parseInt(ports) > 65535) {
           passed = false;
         }
-
 
       } else {
         passed = false;

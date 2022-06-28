@@ -3,24 +3,24 @@
     <div class="fullscreen">
       <q-splitter
         v-model="splitterModel"
-        style="height: 100%"
-        horizontal
-        before-class=""
         :after-class="this.$q.dark.isActive ? 'background-dark' : 'background'"
         :limits="[50, 100]"
+        before-class=""
+        horizontal
         separator-style="background: #c0ffee;"
+        style="height: 100%"
       >
 
         <!-- HOSTS WHICH ARE UP -->
         <template v-slot:before>
           <q-scroll-area
-            class="full-height q-pa-xs"
-            :thumb-style="downThumbStyle"
             :bar-style="downBarStyle"
+            :thumb-style="downThumbStyle"
+            class="full-height q-pa-xs"
           >
             <div
-              class="row wrap flex-center"
               v-if="hostsDown.length > 0"
+              class="row wrap flex-center"
             >
               <HostDown
                 v-for="host in hostsDown"
@@ -29,28 +29,28 @@
               />
             </div>
             <div
-              class="absolute-center"
               v-else
+              class="absolute-center"
             >
               <q-spinner-rings
                 :color="this.$q.dark.isActive ? 'primary' : 'secondary'"
-                size="10em"
                 :thickness="10"
+                size="10em"
               />
             </div>
           </q-scroll-area>
         </template>
 
         <template v-slot:separator>
-          <q-avatar color="primary" text-color="white" size="40px" icon="drag_indicator"/>
+          <q-avatar color="primary" icon="drag_indicator" size="40px" text-color="white"/>
         </template>
 
         <!-- HOSTS WHICH ARE DOWN -->
         <template v-slot:after>
           <q-scroll-area
-            class="full-height"
-            :thumb-style="okThumbStyle"
             :bar-style="okBarStyle"
+            :thumb-style="okThumbStyle"
+            class="full-height"
           >
             <div
               v-if="hostsOk.length > 0"
@@ -63,13 +63,13 @@
               />
             </div>
             <div
-              class="absolute-center"
               v-else
+              class="absolute-center"
             >
               <q-spinner-rings
                 :color="this.$q.dark.isActive ? 'primary' : 'secondary'"
-                size="5em"
                 :thickness="10"
+                size="5em"
               />
             </div>
           </q-scroll-area>
@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import { hosts } from "boot/axios";
-import { defineComponent, inject, ref } from 'vue';
+import {hosts} from "boot/axios";
+import {defineComponent, inject, ref} from 'vue';
 import HostDown from "components/HostDown";
 import HostOk from "components/HostOk";
 

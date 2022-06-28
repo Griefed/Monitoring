@@ -1,24 +1,24 @@
 <template>
   <q-chip
-    outline
     v-ripple
     class="chip-down"
     clickable
+    outline
     @click="this.store.methods.openInTab(host.address)"
   >
     <q-item-section>
       <q-item-label class="text-center text-weight-bolder">
         <q-badge
-          rounded
           :color="getQuasarColor(host.status)"
           floating
+          rounded
         >
           {{ host.status }}
         </q-badge>
-        {{ host.name.length > 25 ? host.name.substring(0,22) + '...' : host.name }}
+        {{ host.name.length > 25 ? host.name.substring(0, 22) + '...' : host.name }}
       </q-item-label>
     </q-item-section>
-    <q-tooltip class="text-center" v-if="host.name.length > 25 && !this.$q.platform.is.mobile">
+    <q-tooltip v-if="host.name.length > 25 && !this.$q.platform.is.mobile" class="text-center">
       {{ host.name }}<br>
       {{ host.address }}
     </q-tooltip>
@@ -29,8 +29,7 @@
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue';
-import { openURL } from 'quasar';
+import {defineComponent, inject} from 'vue';
 
 export default defineComponent({
   name: 'HostOk',
