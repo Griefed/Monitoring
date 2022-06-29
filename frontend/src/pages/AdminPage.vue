@@ -188,11 +188,11 @@ export default defineComponent({
 
       } else {
 
-        //console.log('{"settings": ' + JSON.stringify(this.store.settings, null, 2) + ',"hosts": ' + JSON.stringify(this.store.hosts.hosts,null,2) + '}');
+       var configuration = {
+          settings: this.store.settings,
+          hosts: this.store.hosts.hosts
+        }
 
-        var postData = {
-          settings: JSON.stringify(this.store.settings, null, 0)
-        };
 
         let axiosConfig = {
           headers: {
@@ -201,13 +201,9 @@ export default defineComponent({
           }
         }
 
-        let request = encodeURIComponent('{"settings":' +
-          JSON.stringify(this.store.settings, null, 0) +
-          ',"hosts":' +
-          JSON.stringify(this.store.hosts.hosts, null, 0) +
-          '}');
+        console.log(configuration);
 
-        this.$admin.post('/save',postData,axiosConfig
+        this.$admin.put('/',configuration,axiosConfig
         ).then(response => {
           console.log('axios');
           console.log(response);
@@ -220,26 +216,6 @@ export default defineComponent({
             timeout: 5000
           });
         });
-
-        this.$admin.get('/set?configuration=' + request
-        ).then(response => {
-          console.log(response);
-          this.$q.notify({
-            position: 'center',
-            message: 'Settings saved.',
-            color: 'positive',
-            timeout: 1000
-          });
-        }).catch(error => {
-          console.log(error);
-          this.$q.notify({
-            position: 'center',
-            message: 'Error saving configuration. ' + error,
-            color: 'negative',
-            timeout: 5000
-          });
-        });
-
       }
     },
     validateSettings(settings) {

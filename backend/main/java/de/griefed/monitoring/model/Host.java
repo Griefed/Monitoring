@@ -80,4 +80,15 @@ public class Host {
   public void setNotificationsDisabled(boolean notificationsDisabled) {
     this.notificationsDisabled = notificationsDisabled;
   }
+
+  @Override
+  public String toString() {
+    return "Host{" +
+            "name='" + name + '\'' +
+            ", address='" + address + '\'' +
+            ", ports='" + ports + '\'' +
+            ", expectedIp='" + expectedIp + '\'' +
+            ", notificationsDisabled=" + notificationsDisabled +
+            '}';
+  }
 }

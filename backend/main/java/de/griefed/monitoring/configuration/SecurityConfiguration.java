@@ -50,7 +50,7 @@ public class SecurityConfiguration {
   SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
     switch (APPLICATIONPROPERTIES.getSecuritySetting()) {
       case ALL:
-        httpSecurity.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll();
+        httpSecurity.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll().and().csrf().disable();
         break;
 
       case SETTINGS:
@@ -90,17 +90,17 @@ public class SecurityConfiguration {
             .authenticated()
             .and()
             .formLogin()
-            .permitAll();
+            .permitAll().and().csrf().disable();
         break;
 
       case DEACTIVATE:
-        httpSecurity.authorizeRequests().antMatchers("/**").permitAll();
+        httpSecurity.authorizeRequests().antMatchers("/**").permitAll().and().csrf().disable();
         break;
 
       default:
         LOG.error(
             "Security setting invalid. Defaulting to ALL. Setting must be either ALL, SETTINGS, or DEACTIVATE.");
-        httpSecurity.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll();
+        httpSecurity.authorizeRequests().anyRequest().authenticated().and().formLogin().permitAll().and().csrf().disable();
         break;
     }
 

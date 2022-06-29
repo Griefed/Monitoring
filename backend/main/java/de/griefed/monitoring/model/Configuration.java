@@ -27,4 +27,17 @@ public class Configuration {
   public void setHosts(List<Host> hosts) {
     this.hosts = hosts;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    for (Host host : hosts) {
+      builder.append(host.toString());
+    }
+
+    return "Configuration{" +
+            "settings=" + settings.toString() +
+            ", hosts=" + builder.toString() +
+            '}';
+  }
 }

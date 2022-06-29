@@ -108,4 +108,19 @@ public class Settings {
   public void setSecuritySetting(SecurityEnums securitySetting) {
     this.securitySetting = securitySetting;
   }
+
+  @Override
+  public String toString() {
+    return "Settings{" +
+            "defaultPorts='" + defaultPorts + '\'' +
+            ", additivePorts=" + additivePorts +
+            ", notificationsEnabled=" + notificationsEnabled +
+            ", particlesCount=" + particlesCount +
+            ", pollingRate=" + pollingRate +
+            ", timeoutConnect=" + timeoutConnect +
+            ", timeoutAvailability=" + timeoutAvailability +
+            ", threadCount=" + threadCount +
+            ", securitySetting=" + securitySetting +
+            '}';
+  }
 }

@@ -2,21 +2,17 @@ package de.griefed.monitoring.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.ApplicationProperties;
-import de.griefed.monitoring.model.Settings;
+import de.griefed.monitoring.model.Configuration;
 import de.griefed.monitoring.utilities.JsonUtilities;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @CrossOrigin(origins = {"*"})
@@ -49,31 +45,16 @@ public class AdminController {
   }
 
   @CrossOrigin(origins = {"*"})
-  @RequestMapping(
-      value = "/save",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      method = RequestMethod.POST)
-  public String save(@RequestBody Settings settings) {
+  @PutMapping("/")
+  public String save(@RequestBody Configuration configuration) {
 
-    LOG.info(settings.toString());
-
-    /*try {
-        JsonNode confJson = JSON_UTILITIES.getJson(configuration);
-        LOG.info(confJson.get("settings"));
-        LOG.info(confJson.get("hosts"));
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).build();
-    } catch (Exception ex) {
-        return ResponseEntity.badRequest().build();
-    }*/
+    LOG.info(configuration.toString());
 
     return "ok";
   }
 
   @CrossOrigin(origins = {"*"})
-  @RequestMapping(
-      path = "/set",
-      produces = MediaType.APPLICATION_JSON_VALUE,
-      method = RequestMethod.GET)
+  @GetMapping
   public ResponseEntity<String> set(@RequestParam(value = "configuration") String configuration) {
 
     LOG.info(configuration);
