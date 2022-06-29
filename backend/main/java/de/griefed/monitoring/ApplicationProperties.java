@@ -25,11 +25,14 @@ package de.griefed.monitoring;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.configuration.SecurityEnums;
+import de.griefed.monitoring.model.Settings;
 import de.griefed.monitoring.utilities.JsonUtilities;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,13 +59,12 @@ public class ApplicationProperties extends Properties {
    * SecurityEnums#DEACTIVATE}. Changing this at runtime requires a restart in order for changes to
    * take effect.
    */
-  public final SecurityEnums SECURITY_SETTING;
+  public SecurityEnums securitySetting;
   private final File HOSTS_FILE = new File("hosts.json");
   private final JsonUtilities JSON_UTILITIES;
   private final String VERSION;
   /** Default ports with which to check for host availability if a regular ping failed. */
-  private List<Integer> defaultPorts =
-      new ArrayList<>(Arrays.asList(20, 21, 22, 80, 443, 8080, 8443));
+  private List<Integer> defaultPorts;
   /** Whether default ports should be added to host-configured ports. */
   private boolean additivePorts = false;
   /** Whether notifications should be globally enabled or disabled. */
@@ -115,7 +117,7 @@ public class ApplicationProperties extends Properties {
      * but has the advantage of always providing default values if any property in the applications.properties
      * on the filesystem should be commented out.
      */
-    try (InputStream inputStream = new FileInputStream("application.properties")) {
+    try (InputStream inputStream = Files.newInputStream(Paths.get("application.properties"))) {
       load(inputStream);
     } catch (IOException ex) {
       LOG.error("Couldn't read properties file.", ex);
@@ -211,19 +213,51 @@ public class ApplicationProperties extends Properties {
 
     switch (getProperty("de.griefed.monitoring.configuration.security")) {
       case "ALL":
-        this.SECURITY_SETTING = SecurityEnums.ALL;
+        this.securitySetting = SecurityEnums.ALL;
         break;
       case "SETTINGS":
-        this.SECURITY_SETTING = SecurityEnums.SETTINGS;
+        this.securitySetting = SecurityEnums.SETTINGS;
         break;
       case "DEACTIVATE":
-        this.SECURITY_SETTING = SecurityEnums.DEACTIVATE;
+        this.securitySetting = SecurityEnums.DEACTIVATE;
         break;
       default:
         LOG.error(
             "Security setting invalid. Defaulting to ALL. Setting must be either ALL, SETTINGS, or DEACTIVATE.");
-        this.SECURITY_SETTING = SecurityEnums.ALL;
+        this.securitySetting = SecurityEnums.ALL;
         break;
+    }
+  }
+
+  public void saveSettings(Settings settings) {
+    Arrays.asList(settings.getDefaultPorts().split(",")).forEach(port -> {
+      if (!defaultPorts.contains(Integer.valueOf(port))) {
+        defaultPorts.add(Integer.valueOf(port));
+      }
+    });
+    setAdditivePorts(settings.isAdditivePorts());
+    setNotificationsEnabled(settings.isNotificationsEnabled());
+    setParticlesCount(settings.getParticlesCount());
+    setPollingRate(settings.getPollingRate());
+    setTimeoutConnect(settings.getTimeoutConnect());
+    setTimeoutAvailability(settings.getTimeoutAvailability());
+    setThreadCount(settings.getThreadCount());
+    setSecuritySettings(settings.getSecuritySetting());
+
+    setProperty("de.griefed.monitoring.host.ports",defaultPorts.toString());
+    setProperty("de.griefed.ports.additive", String.valueOf(additivePorts));
+    setProperty("de.griefed.monitoring.timeout.connect", String.valueOf(timeoutConnect));
+    setProperty("de.griefed.monitoring.timeout.availability", String.valueOf(timeoutAvailability));
+    setProperty("de.griefed.monitoring.thread.count", String.valueOf(threadCount));
+    setProperty("de.griefed.monitoring.polling", String.valueOf(pollingRate));
+    setProperty("de.griefed.monitoring.notifications", String.valueOf(notificationsEnabled));
+    setProperty("de.griefed.monitoring.particles.count", String.valueOf(particlesCount));
+    setProperty("de.griefed.monitoring.configuration.security", securitySetting.setting);
+
+    try (OutputStream outputStream = Files.newOutputStream(Paths.get("application.properties"))) {
+      store(outputStream,null);
+    } catch (IOException ex) {
+      LOG.error("Error savind properties.",ex);
     }
   }
 
@@ -416,7 +450,11 @@ public class ApplicationProperties extends Properties {
    * @return {@link SecurityEnums} The security setting for this Monitoring instance.
    */
   public SecurityEnums getSecuritySetting() {
-    return SECURITY_SETTING;
+    return securitySetting;
+  }
+
+  protected void setSecuritySettings(SecurityEnums secuEnum) {
+    this.securitySetting = secuEnum;
   }
 
   /**
@@ -485,5 +523,9 @@ public class ApplicationProperties extends Properties {
             + "\""
             + "}"
             + "}");
+  }
+
+  public File getHostsFile() {
+    return HOSTS_FILE;
   }
 }

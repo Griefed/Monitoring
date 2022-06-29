@@ -119,9 +119,9 @@
                 <q-toggle
                   v-model="host.notificationsDisabled"
                   checked-icon="checked"
-                  color="green"
+                  color="red"
                   indeterminate-icon="notifications"
-                  label="Notifications Disabled"
+                  :label="host.notificationsDisabled ? 'Notifications Disabled' : 'Notifications Enabled'"
                   unchecked-icon="clear"
                 >
                   <q-tooltip v-if="!this.$q.platform.is.mobile">

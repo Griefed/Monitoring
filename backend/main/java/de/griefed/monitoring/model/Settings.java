@@ -14,29 +14,6 @@ public class Settings {
   private int threadCount;
   private SecurityEnums securitySetting;
 
-  public Settings() {}
-
-  public Settings(
-      String defaultPorts,
-      boolean additivePorts,
-      boolean notificationsEnabled,
-      int particlesCount,
-      int pollingRate,
-      int timeoutConnect,
-      int timeoutAvailability,
-      int threadCount,
-      SecurityEnums securitySetting) {
-    this.defaultPorts = defaultPorts;
-    this.additivePorts = additivePorts;
-    this.notificationsEnabled = notificationsEnabled;
-    this.particlesCount = particlesCount;
-    this.pollingRate = pollingRate;
-    this.timeoutConnect = timeoutConnect;
-    this.timeoutAvailability = timeoutAvailability;
-    this.threadCount = threadCount;
-    this.securitySetting = securitySetting;
-  }
-
   public String getDefaultPorts() {
     return defaultPorts;
   }
@@ -107,20 +84,5 @@ public class Settings {
 
   public void setSecuritySetting(SecurityEnums securitySetting) {
     this.securitySetting = securitySetting;
-  }
-
-  @Override
-  public String toString() {
-    return "Settings{" +
-            "defaultPorts='" + defaultPorts + '\'' +
-            ", additivePorts=" + additivePorts +
-            ", notificationsEnabled=" + notificationsEnabled +
-            ", particlesCount=" + particlesCount +
-            ", pollingRate=" + pollingRate +
-            ", timeoutConnect=" + timeoutConnect +
-            ", timeoutAvailability=" + timeoutAvailability +
-            ", threadCount=" + threadCount +
-            ", securitySetting=" + securitySetting +
-            '}';
   }
 }

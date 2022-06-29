@@ -7,11 +7,6 @@ public class Configuration {
   private Settings settings;
   private List<Host> hosts;
 
-  public Configuration(Settings settings, List<Host> hosts) {
-    this.settings = settings;
-    this.hosts = hosts;
-  }
-
   public Settings getSettings() {
     return settings;
   }
@@ -30,14 +25,9 @@ public class Configuration {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder();
-    for (Host host : hosts) {
-      builder.append(host.toString());
-    }
-
     return "Configuration{" +
-            "settings=" + settings.toString() +
-            ", hosts=" + builder.toString() +
-            '}';
+        "settings=" + settings +
+        ", hosts=" + hosts +
+        '}';
   }
 }

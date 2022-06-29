@@ -188,11 +188,14 @@ export default defineComponent({
 
       } else {
 
-       var configuration = {
+
+
+        var config = {
           settings: this.store.settings,
           hosts: this.store.hosts.hosts
         }
 
+        console.log(config)
 
         let axiosConfig = {
           headers: {
@@ -201,9 +204,8 @@ export default defineComponent({
           }
         }
 
-        console.log(configuration);
 
-        this.$admin.put('/',configuration,axiosConfig
+        this.$admin.put('/', config
         ).then(response => {
           console.log('axios');
           console.log(response);

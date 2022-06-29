@@ -10,6 +10,7 @@
                   val => this.checkPorts(val) || 'NUMBER(S), SEPARATED BY COMMAS ONLY! MUST NOT END WITH A COMMA!'
                 ]"
       label="Default Ports"
+      type="text"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         Default ports with which to check for host availability if a regular ping failed.
@@ -52,6 +53,7 @@
                   val => this.store.checks.numberRegEx.test(val) || 'NUMBER(S) ONLY!'
                 ]"
       label="Particles Amount"
+      type="number"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         The amount of particles to display in the webfrontend.
@@ -64,6 +66,7 @@
                   val => this.store.checks.numberRegEx.test(val) || 'NUMBER(S) ONLY!'
                 ]"
       label="Polling Rate"
+      type="number"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         The rate in milliseconds at which the webfrontend should refresh.
@@ -76,6 +79,7 @@
                   val => this.store.checks.numberRegEx.test(val) || 'NUMBER(S) ONLY!'
                 ]"
       label="Connection Timeout"
+      type="number"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         Seconds to wait until a connection timeout is triggered for getting information from hosts.
@@ -88,6 +92,7 @@
                   val => this.store.checks.numberRegEx.test(val) || 'NUMBER(S) ONLY!'
                 ]"
       label="Availability Timeout"
+      type="number"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         Seconds to wait until a read timeout is triggered for getting information from hosts.
@@ -100,6 +105,7 @@
                   val => this.store.checks.numberRegEx.test(val) || 'NUMBER(S) ONLY!'
                 ]"
       label="Thread Count"
+      type="number"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         Number of threads used for updating host information.<br>
@@ -113,6 +119,7 @@
                   val => this.store.checks.securityRegEx.test(val) || 'EITHER ALL, SETTINGS OR DEACTIVATE!'
                 ]"
       label="Security Setting"
+      type="text"
     >
       <q-tooltip :disable="this.$q.platform.is.mobile" anchor="bottom right">
         Security setting. Either ALL,SETTINGS or DEACTIVATE.<br>

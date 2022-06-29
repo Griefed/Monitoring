@@ -8,39 +8,6 @@ public class Host {
   private String expectedIp;
   private boolean notificationsDisabled;
 
-  public Host() {}
-
-  public Host(String name) {
-    this.name = name;
-  }
-
-  public Host(String name, String address) {
-    this.name = name;
-    this.address = address;
-  }
-
-  public Host(String name, String address, String ports) {
-    this.name = name;
-    this.address = address;
-    this.ports = ports;
-  }
-
-  public Host(String name, String address, String ports, String expectedIp) {
-    this.name = name;
-    this.address = address;
-    this.ports = ports;
-    this.expectedIp = expectedIp;
-  }
-
-  public Host(
-      String name, String address, String ports, String expectedIp, boolean notificationsDisabled) {
-    this.name = name;
-    this.address = address;
-    this.ports = ports;
-    this.expectedIp = expectedIp;
-    this.notificationsDisabled = notificationsDisabled;
-  }
-
   public String getName() {
     return name;
   }
@@ -79,16 +46,5 @@ public class Host {
 
   public void setNotificationsDisabled(boolean notificationsDisabled) {
     this.notificationsDisabled = notificationsDisabled;
-  }
-
-  @Override
-  public String toString() {
-    return "Host{" +
-            "name='" + name + '\'' +
-            ", address='" + address + '\'' +
-            ", ports='" + ports + '\'' +
-            ", expectedIp='" + expectedIp + '\'' +
-            ", notificationsDisabled=" + notificationsDisabled +
-            '}';
   }
 }
