@@ -25,6 +25,8 @@ package de.griefed.monitoring.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.ApplicationProperties;
+import de.griefed.monitoring.model.response.Host;
+import de.griefed.monitoring.model.response.Hosts;
 import de.griefed.monitoring.utilities.JsonUtilities;
 import de.griefed.monitoring.utilities.MailNotification;
 import de.griefed.monitoring.utilities.WebUtilities;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -58,6 +61,7 @@ public class InformationService {
   private final JsonUtilities JSON_UTILITIES;
   private final ForkJoinPool FORKJOINPOOL;
   private JsonNode hostsInformation = null;
+  private Hosts responseHosts = new Hosts();
 
   /**
    * Constructor responsible for DI.
@@ -152,6 +156,43 @@ public class InformationService {
         } catch (Exception ex) {
           LOG.error("Error joining host information.", ex);
         }
+
+        List<CompletableFuture<Host>> hostsFutures = new ArrayList<>(1000);
+
+        for (JsonNode host : hosts) {
+
+          hostsFutures.add(CompletableFuture.supplyAsync(() -> checkNGetHost(host), FORKJOINPOOL));
+        }
+
+        CompletableFuture<List<Host>> allDone = allOf(hostsFutures);
+        try {
+          allDone.get();
+        } catch (ExecutionException e) {
+          throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+
+        List<Host> ok = new ArrayList<>(100);
+        List<Host> down = new ArrayList<>(100);
+
+        hostsFutures.forEach(
+            future -> {
+              try {
+                if (future.get().getStatus().equals("OK")) {
+                  ok.add(future.get());
+                } else {
+                  down.add(future.get());
+                }
+              } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+              } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+              }
+            });
+
+        responseHosts.setHostsOk(ok);
+        responseHosts.setHostsDown(down);
 
         // Retrieve information for host if only one is configured
       } else {
@@ -299,6 +340,99 @@ public class InformationService {
         + "\"code\":"
         + code
         + "}";
+  }
+
+  private Host checkNGetHost(JsonNode host) {
+
+    Host responseHost = new Host();
+    responseHost.setName(host.get("name").asText());
+    responseHost.setAddress(host.get("address").asText());
+    responseHost.setExpectedIp(null);
+
+    List<Integer> ports = new ArrayList<>(100);
+
+    try {
+      for (String port : host.get("ports").asText().split(",")) {
+        try {
+          ports.add(Integer.parseInt(port));
+        } catch (NumberFormatException ex) {
+          LOG.error("Couldn't parse String to Integer: " + port);
+        }
+      }
+    } catch (Exception ignored) {
+    }
+    responseHost.setPorts(ports);
+
+    boolean hostAvailable;
+
+    if (responseHost.getAddress().matches("\\d+\\.\\d+\\.\\d+\\.\\d+")) {
+
+      responseHost.setIp(responseHost.getAddress());
+      responseHost.setCode(418);
+      hostAvailable = WEB_UTILITIES.ping(responseHost.getIp(), ports);
+
+      if (hostAvailable) {
+        responseHost.setStatus("OK");
+        responseHost.setCode(200);
+      } else {
+        responseHost.setStatus("DOWN");
+      }
+
+    } else {
+
+      responseHost.setIp(WEB_UTILITIES.getIpOfHost(responseHost.getAddress()));
+      responseHost.setCode(WEB_UTILITIES.getHostCode(responseHost.getAddress()));
+      responseHost.setStatus(WEB_UTILITIES.getHostStatus(responseHost.getAddress()));
+
+      try {
+        responseHost.setExpectedIp(host.get("expectedIp").asText());
+        if (!responseHost.getExpectedIp().equals(responseHost.getIp())) {
+          responseHost.setStatus("DNS MISMATCH");
+          responseHost.setCode(418);
+        }
+      } catch (Exception ignored) {
+
+      }
+
+      if (responseHost.getExpectedIp() != null) {
+        hostAvailable =
+            WEB_UTILITIES.ping(responseHost.getAddress(), responseHost.getExpectedIp(), ports);
+      } else {
+        hostAvailable =
+            WEB_UTILITIES.ping(
+                responseHost.getAddress(), responseHost.getIp(), responseHost.getPorts());
+      }
+    }
+
+    if (!hostAvailable && responseHost.getExpectedIp() != null) {
+      responseHost.setStatus("OFFLINE");
+    } else if (!hostAvailable && responseHost.getIp() != null) {
+      responseHost.setStatus("OFFLINE");
+    }
+
+    try {
+      if (APPLICATION_PROPERTIES.getNotificationsEnabled()
+          && !host.get("notificationsDisabled").asBoolean()) {
+
+        if (responseHost.getCode() != 200
+            && responseHost.getCode() != 301
+            && !responseHost.getStatus().matches("^(OK|REDIRECT)$")) {
+          sendNotification(
+              responseHost.getName() + " (" + responseHost.getAddress() + ") ",
+              responseHost.getStatus());
+        }
+      }
+    } catch (Exception ignored) {
+
+    }
+
+    return responseHost;
+  }
+
+  public <T> CompletableFuture<List<T>> allOf(List<CompletableFuture<T>> futuresList) {
+    return CompletableFuture.allOf(futuresList.toArray(new CompletableFuture<?>[0]))
+        .thenApply(
+            v -> futuresList.stream().map(CompletableFuture::join).collect(Collectors.<T>toList()));
   }
 
   /**

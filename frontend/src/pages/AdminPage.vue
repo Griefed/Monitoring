@@ -188,22 +188,10 @@ export default defineComponent({
 
       } else {
 
-
-
         var config = {
           settings: this.store.settings,
           hosts: this.store.hosts.hosts
         }
-
-        console.log(config)
-
-        let axiosConfig = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: 'Bearer ' + this.$q.cookies.get('JSESSIONID')
-          }
-        }
-
 
         this.$admin.put('/', config
         ).then(response => {

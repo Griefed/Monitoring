@@ -1,4 +1,4 @@
-package de.griefed.monitoring.model;
+package de.griefed.monitoring.model.request;
 
 import de.griefed.monitoring.configuration.SecurityEnums;
 

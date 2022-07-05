@@ -23,7 +23,6 @@
 package de.griefed.monitoring.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import de.griefed.monitoring.ApplicationProperties;
 import de.griefed.monitoring.services.InformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -46,21 +45,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class InformationController {
 
   private final InformationService INFORMATION_SERVICE;
-  private final ApplicationProperties PROPERTIES;
 
   /**
    * Constructor responsible for DI.
    *
    * @author Griefed
    * @param injectedInformationService Instance of {@link InformationService}.
-   * @param injectedApplicationProperties Instance of {@link ApplicationProperties}.
    */
   @Autowired
   public InformationController(
-      InformationService injectedInformationService,
-      ApplicationProperties injectedApplicationProperties) {
+      InformationService injectedInformationService) {
     this.INFORMATION_SERVICE = injectedInformationService;
-    this.PROPERTIES = injectedApplicationProperties;
   }
 
   /**

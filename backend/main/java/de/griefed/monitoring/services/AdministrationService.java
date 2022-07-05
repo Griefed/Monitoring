@@ -1,13 +1,13 @@
 package de.griefed.monitoring.services;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import de.griefed.monitoring.ApplicationProperties;
-import de.griefed.monitoring.model.Configuration;
-import de.griefed.monitoring.model.Hosts;
-import java.io.File;
+import de.griefed.monitoring.model.request.Configuration;
+import de.griefed.monitoring.model.request.Hosts;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +28,7 @@ public class AdministrationService {
 
     OBJECT_WRITER = new ObjectMapper()
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        .setSerializationInclusion(Include.NON_NULL)
         .writer(new DefaultPrettyPrinter());
   }
 

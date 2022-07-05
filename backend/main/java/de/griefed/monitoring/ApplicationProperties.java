@@ -25,7 +25,7 @@ package de.griefed.monitoring;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.configuration.SecurityEnums;
-import de.griefed.monitoring.model.Settings;
+import de.griefed.monitoring.model.request.Settings;
 import de.griefed.monitoring.utilities.JsonUtilities;
 import java.io.File;
 import java.io.IOException;
@@ -54,15 +54,15 @@ import org.springframework.stereotype.Component;
 public class ApplicationProperties extends Properties {
 
   private static final Logger LOG = LogManager.getLogger(ApplicationProperties.class);
+  private final File HOSTS_FILE = new File("hosts.json");
+  private final JsonUtilities JSON_UTILITIES;
+  private final String VERSION;
   /**
    * Security setting. Either {@link SecurityEnums#ALL},{@link SecurityEnums#SETTINGS}, or {@link
    * SecurityEnums#DEACTIVATE}. Changing this at runtime requires a restart in order for changes to
    * take effect.
    */
   public SecurityEnums securitySetting;
-  private final File HOSTS_FILE = new File("hosts.json");
-  private final JsonUtilities JSON_UTILITIES;
-  private final String VERSION;
   /** Default ports with which to check for host availability if a regular ping failed. */
   private List<Integer> defaultPorts;
   /** Whether default ports should be added to host-configured ports. */
@@ -230,11 +230,13 @@ public class ApplicationProperties extends Properties {
   }
 
   public void saveSettings(Settings settings) {
-    Arrays.asList(settings.getDefaultPorts().split(",")).forEach(port -> {
-      if (!defaultPorts.contains(Integer.valueOf(port))) {
-        defaultPorts.add(Integer.valueOf(port));
-      }
-    });
+    Arrays.asList(settings.getDefaultPorts().split(","))
+        .forEach(
+            port -> {
+              if (!defaultPorts.contains(Integer.valueOf(port))) {
+                defaultPorts.add(Integer.valueOf(port));
+              }
+            });
     setAdditivePorts(settings.isAdditivePorts());
     setNotificationsEnabled(settings.isNotificationsEnabled());
     setParticlesCount(settings.getParticlesCount());
@@ -244,7 +246,9 @@ public class ApplicationProperties extends Properties {
     setThreadCount(settings.getThreadCount());
     setSecuritySettings(settings.getSecuritySetting());
 
-    setProperty("de.griefed.monitoring.host.ports",defaultPorts.toString());
+    setProperty(
+        "de.griefed.monitoring.host.ports",
+        defaultPorts.toString().replace("[", "").replace("]", "").replace(" ", ""));
     setProperty("de.griefed.ports.additive", String.valueOf(additivePorts));
     setProperty("de.griefed.monitoring.timeout.connect", String.valueOf(timeoutConnect));
     setProperty("de.griefed.monitoring.timeout.availability", String.valueOf(timeoutAvailability));
@@ -255,9 +259,9 @@ public class ApplicationProperties extends Properties {
     setProperty("de.griefed.monitoring.configuration.security", securitySetting.setting);
 
     try (OutputStream outputStream = Files.newOutputStream(Paths.get("application.properties"))) {
-      store(outputStream,null);
+      store(outputStream, null);
     } catch (IOException ex) {
-      LOG.error("Error savind properties.",ex);
+      LOG.error("Error savind properties.", ex);
     }
   }
 

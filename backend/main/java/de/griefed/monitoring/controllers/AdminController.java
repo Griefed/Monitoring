@@ -2,7 +2,7 @@ package de.griefed.monitoring.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.griefed.monitoring.ApplicationProperties;
-import de.griefed.monitoring.model.Configuration;
+import de.griefed.monitoring.model.request.Configuration;
 import de.griefed.monitoring.services.AdministrationService;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
