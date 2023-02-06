@@ -133,7 +133,7 @@ secret_detection:
     - rm "$CI_COMMIT_SHA"_commit_list.txt
 
 Gradle Test:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.17
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.18
   stage: Tests
   before_script:
     - echo "**** Running in $CI_JOB_ID ****"
@@ -168,7 +168,7 @@ Docker Test:
     - if: '$CI_SERVER_HOST == "git.griefed.de"' # Remove once GitLab no longer throws javax.net.ssl.SSLHandshakeException: Remote host terminated the handshake
 
 Gradle Dependency-Checks:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.17
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.18
   stage: Other
   allow_failure: true
   before_script:
@@ -211,7 +211,7 @@ Generate Release:
     - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TITLE !~ /^RELEASE:.+$/ && $CI_SERVER_HOST == "git.griefed.de"'
 
 Build Release:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.17
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.18
   stage: Build Release
   before_script:
     - echo "**** Running in $CI_JOB_ID ****"
@@ -304,7 +304,7 @@ coverage:
         path: build/cobertura.xml
 
 pages:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.17
+  image: griefed/baseimage-ubuntu-jdk-8:2.0.18
   stage: Documentation
   variables:
     project_name: $CI_PROJECT_NAME
