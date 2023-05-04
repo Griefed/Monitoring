@@ -252,7 +252,7 @@ Build Release:
 
 Build Docker Release:
   stage: Build Release
-  image: griefed/gitlab-ci-cd:1.0.4
+  image: griefed/gitlab-ci-cd:1.1.0
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN" docker.io
     - docker login -u "$DOCKERHUB_USER" -p "$GITHUB_TOKEN" ghcr.io
@@ -273,7 +273,7 @@ Build Docker Release:
 
 Build Docker PreRelease:
   stage: Build Release
-  image: griefed/gitlab-ci-cd:1.0.4
+  image: griefed/gitlab-ci-cd:1.1.0
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN" docker.io
     - docker login -u "$DOCKERHUB_USER" -p "$GITHUB_TOKEN" ghcr.io
