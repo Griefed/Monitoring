@@ -9,13 +9,13 @@ plugins {
 
     id 'jacoco'
 
-    id "com.github.ben-manes.versions" version '0.42.0'
+    id "com.github.ben-manes.versions" version '0.46.0'
 
     id 'edu.sc.seis.launch4j' version '2.5.4'
     id 'org.siouan.frontend-jdk8' version '6.0.0'
 
     id 'org.springframework.boot' version '2.6.3'
-    id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'de.griefed'
@@ -66,12 +66,12 @@ dependencies {
     embed 'org.springframework.boot:spring-boot-starter-log4j2:2.6.4'
     embed 'commons-io:commons-io:2.11.0'
 
-    implementation 'org.jetbrains:annotations:23.0.0'
+    implementation 'org.jetbrains:annotations:23.1.0'
 
     embed 'org.apache.logging.log4j:log4j-api:2.17.2'
     embed 'org.apache.logging.log4j:log4j-core:2.17.2'
-    embed 'org.apache.logging.log4j:log4j-web:2.17.1'
     embed 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
+    embed 'org.apache.logging.log4j:log4j-web:2.20.0'
     embed 'org.apache.logging.log4j:log4j-jul:2.17.2'
 
     // Dev dependencies
@@ -79,9 +79,9 @@ dependencies {
 
     // Testing dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.4'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testImplementation 'org.junit.platform:junit-platform-commons:1.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    testImplementation 'org.junit.platform:junit-platform-commons:1.9.3'
 }
 
 // Configure frontend plugin. See documentation at https://siouan.github.io/frontend-gradle-plugin/.
@@ -155,7 +155,7 @@ jacocoTestReport {
 }
 
 jacoco {
-    toolVersion = "0.8.9"
+    toolVersion = "0.8.10"
     reportsDirectory = layout.buildDirectory.dir('jacoco')
 }
 
