@@ -1,3 +1,40 @@
+## [1.5.2](https://git.griefed.de/Griefed/Monitoring/compare/1.5.1...1.5.2) (2023-05-06)
+
+
+### 🛠 Fixes
+
+* **deps:** update dependency jacoco to v0.8.10 ([973d07c](https://git.griefed.de/Griefed/Monitoring/commit/973d07cd4a1ae93771aac99370bca883d4f98094))
+* **deps:** update dependency org.apache.logging.log4j:log4j-jul to v2.20.0 ([3926c69](https://git.griefed.de/Griefed/Monitoring/commit/3926c69f6f859b9582cf10a1176d17453d29ddf1))
+* **deps:** update dependency org.apache.logging.log4j:log4j-web to v2.20.0 ([3f7df97](https://git.griefed.de/Griefed/Monitoring/commit/3f7df97ccb96eddc1df0b9fdafa31d7edcb23db7))
+* **deps:** update dependency org.jetbrains:annotations to v23.1.0 ([c3d3cda](https://git.griefed.de/Griefed/Monitoring/commit/c3d3cda2bf66561827b17a52aad37ab76e24fcd2))
+* **deps:** update dependency org.jetbrains:annotations to v24 ([66970d4](https://git.griefed.de/Griefed/Monitoring/commit/66970d4e311a583e66216c694658e71c2b253a0b))
+* **deps:** update junit5 monorepo ([d02dc63](https://git.griefed.de/Griefed/Monitoring/commit/d02dc6327023275ee672c8d595a9f496f499a321))
+
+
+### Other
+
+* **deps:** update actions/checkout action to v3 ([9cd15b6](https://git.griefed.de/Griefed/Monitoring/commit/9cd15b61bd135db75f2634110e970c58bb402b27))
+* **deps:** update actions/setup-java action to v3 ([7a48dfb](https://git.griefed.de/Griefed/Monitoring/commit/7a48dfbf23e810895c45c949ec6e91a28eaac585))
+* **deps:** update actions/upload-artifact action to v3 ([ef2c397](https://git.griefed.de/Griefed/Monitoring/commit/ef2c3972152a07bc466e212d01836b1766881a2f))
+* **deps:** update dependency @babel/eslint-parser to v7.21.8 ([8866089](https://git.griefed.de/Griefed/Monitoring/commit/8866089c89e490b88eaa027e30d5a84b3e250d69))
+* **deps:** update dependency axios to v0.27.2 ([9af5430](https://git.griefed.de/Griefed/Monitoring/commit/9af54300da35b12561d12b2e83dd93cc1ebd5bb6))
+* **deps:** update dependency eslint-config-prettier to v8.8.0 ([348e692](https://git.griefed.de/Griefed/Monitoring/commit/348e69269329ae8b2ec74d5f71d788e6394c33f8))
+* **deps:** update dependency eslint-webpack-plugin to v3.2.0 ([e13e461](https://git.griefed.de/Griefed/Monitoring/commit/e13e461235a123ce3598946a5bfad3232a037198))
+* **deps:** update dependency gradle to v7.6.1 ([1a1d5ea](https://git.griefed.de/Griefed/Monitoring/commit/1a1d5ea5c3ffa66fe7487e4686750bb403e9dc74))
+* **deps:** update dependency quasar to v2.11.10 ([37bfe36](https://git.griefed.de/Griefed/Monitoring/commit/37bfe36cdf6060ed8ba4b96cfe3e1a4ce30eb51a))
+* **deps:** update docker/build-push-action action to v4 ([664162e](https://git.griefed.de/Griefed/Monitoring/commit/664162e979208a6f7655f399069a0186c9d79aec))
+* **deps:** update docker/setup-buildx-action action to v2 ([497ed90](https://git.griefed.de/Griefed/Monitoring/commit/497ed90dccdf103d8dd3c45cb3d47841738a28d6))
+* **deps:** update docker/setup-qemu-action action to v2 ([92d470f](https://git.griefed.de/Griefed/Monitoring/commit/92d470f7072713f123816d0740b89b83363e4f6c))
+* **deps:** update ghcr.io/griefed/gitlab-ci-cd docker tag to v2.2.10 ([1a066ec](https://git.griefed.de/Griefed/Monitoring/commit/1a066ec404465aafe30113dd5e185b2270d257aa))
+* **deps:** update griefed/baseimage-ubuntu-jdk-8 docker tag to v2.0.20 ([d020018](https://git.griefed.de/Griefed/Monitoring/commit/d0200189893859341a81202f21f448c832a4fb1d))
+* **deps:** update griefed/gitlab-ci-cd docker tag to v1.1.0 ([87b9718](https://git.griefed.de/Griefed/Monitoring/commit/87b9718777b3f8cd2dc7856171722a29b163e0a8))
+* **deps:** update griefed/gitlab-ci-cd docker tag to v2.2.10 ([997b593](https://git.griefed.de/Griefed/Monitoring/commit/997b59380d0df6392f261674e5ab0e0dd4f5d009))
+* **deps:** update jamesives/github-pages-deploy-action action to v4.4.1 ([06de144](https://git.griefed.de/Griefed/Monitoring/commit/06de144b95f1eb51a2a1918cfc4b1d0a9d47be98))
+* **deps:** update node.js to v18 ([910b5c4](https://git.griefed.de/Griefed/Monitoring/commit/910b5c491e10911d755f976b377106806927b2d2))
+* **deps:** update plugin com.github.ben-manes.versions to v0.46.0 ([a08548f](https://git.griefed.de/Griefed/Monitoring/commit/a08548f08f4167450f4b8f0f2e8ac9d745e5de3a))
+* **deps:** update plugin io.spring.dependency-management to v1.1.0 ([478f0d1](https://git.griefed.de/Griefed/Monitoring/commit/478f0d1bd8354afcbf14a60c1b2ba68307d37fd7))
+* **deps:** update tj-actions/branch-names action to v6 ([8ce3559](https://git.griefed.de/Griefed/Monitoring/commit/8ce3559b6d225161316b11deb7d5654cb718c739))
+
 ## [1.5.1](https://git.griefed.de/Griefed/Monitoring/compare/1.5.0...1.5.1) (2023-04-04)
 
 
