@@ -1,4 +1,4 @@
-FROM griefed/baseimage-ubuntu-jdk-8:2.0.19 AS builder
+FROM griefed/baseimage-ubuntu-jdk-8:2.0.21 AS builder
 
 ARG BRANCH_OR_TAG=main
 ARG HOSTER=git.griefed.de
@@ -20,7 +20,7 @@ RUN \
     ./build/libs/monitoring-$VERSION.jar \
     ./build/libs/monitoring.jar
 
-FROM griefed/baseimage-ubuntu-jdk-8:2.0.19
+FROM griefed/baseimage-ubuntu-jdk-8:2.0.21
 
 LABEL maintainer="Griefed <griefed@griefed.de>"
 LABEL description="Simple monitoring app."
