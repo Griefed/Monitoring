@@ -78,17 +78,10 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.11'
 
     // Testing dependencies
-<<<<<<< build.gradle
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.11'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testImplementation 'org.junit.platform:junit-platform-commons:1.8.2'
-=======
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.4'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
     testImplementation 'org.junit.platform:junit-platform-commons:1.9.3'
->>>>>>> build.gradle
 }
 
 // Configure frontend plugin. See documentation at https://siouan.github.io/frontend-gradle-plugin/.
