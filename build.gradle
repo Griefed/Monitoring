@@ -11,7 +11,7 @@ plugins {
 
     id "com.github.ben-manes.versions" version '0.46.0'
 
-    id 'edu.sc.seis.launch4j' version '2.5.4'
+    id 'edu.sc.seis.launch4j' version '3.0.1'
     id 'org.siouan.frontend-jdk8' version '6.0.0'
 
     id 'org.springframework.boot' version '2.6.3'
@@ -64,15 +64,15 @@ dependencies {
     embed 'org.springframework.boot:spring-boot-starter-quartz:2.6.4'
     embed 'org.springframework.boot:spring-boot-starter-web:2.6.4'
     embed 'org.springframework.boot:spring-boot-starter-log4j2:2.6.4'
-    embed 'commons-io:commons-io:2.11.0'
+    embed 'commons-io:commons-io:2.12.0'
 
-    implementation 'org.jetbrains:annotations:23.1.0'
+    implementation 'org.jetbrains:annotations:24.0.1'
 
     embed 'org.apache.logging.log4j:log4j-api:2.17.2'
     embed 'org.apache.logging.log4j:log4j-core:2.17.2'
     embed 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
     embed 'org.apache.logging.log4j:log4j-web:2.20.0'
-    embed 'org.apache.logging.log4j:log4j-jul:2.17.2'
+    embed 'org.apache.logging.log4j:log4j-jul:2.20.0'
 
     // Dev dependencies
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.4'
