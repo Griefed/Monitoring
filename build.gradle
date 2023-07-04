@@ -64,7 +64,7 @@ dependencies {
     embed 'org.springframework.boot:spring-boot-starter-quartz:2.6.4'
     embed 'org.springframework.boot:spring-boot-starter-web:2.6.4'
     embed 'org.springframework.boot:spring-boot-starter-log4j2:2.6.4'
-    embed 'commons-io:commons-io:2.12.0'
+    embed 'commons-io:commons-io:2.13.0'
 
     implementation 'org.jetbrains:annotations:24.0.1'
 
