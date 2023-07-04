@@ -59,7 +59,7 @@ configurations {
 
 dependencies {
     // Production dependencies
-    embed 'de.griefed:versionchecker:1.1.5'
+    embed 'de.griefed:versionchecker:1.1.9'
     embed 'org.springframework.boot:spring-boot-starter-mail:2.6.4'
     embed 'org.springframework.boot:spring-boot-starter-quartz:2.6.4'
     embed 'org.springframework.boot:spring-boot-starter-web:2.6.4'
