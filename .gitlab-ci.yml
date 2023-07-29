@@ -16,7 +16,7 @@ variables:
   SECRET_DETECTION_EXCLUDED_PATHS: ""
 
 services:
-  - name: ghcr.io/griefed/gitlab-ci-cd:2.0.8
+  - name: docker.griefed.dev/griefed/gitlab-ci-cd:2.2.9
     alias: docker
 
 workflow:
@@ -27,113 +27,8 @@ workflow:
       when: never
     - when: always
 
-sast:
-  stage: Tests
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-  rules:
-    - when: never
-  variables:
-    SEARCH_MAX_DEPTH: 4
-  script:
-    - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
-    - exit 1
-
-.sast-analyzer:
-  extends: sast
-  allow_failure: true
-  # `rules` must be overridden explicitly by each child job
-  # see https://gitlab.com/gitlab-org/gitlab/-/issues/218444
-  script:
-    - /analyzer run
-
-eslint-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/eslint:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /eslint/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.html'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-
-nodejs-scan-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/nodejs-scan:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /nodejs-scan/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/package.json'
-
-semgrep-sast:
-  extends: .sast-analyzer
-  image:
-    name: "$SAST_ANALYZER_IMAGE"
-  variables:
-    SAST_ANALYZER_IMAGE_TAG: 2
-    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG"
-  rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
-      when: never
-    - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.py'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-        - '**/*.c'
-        - '**/*.go'
-
-.secret-analyzer:
-  stage: Tests
-  image: "$SECURE_ANALYZERS_PREFIX/secrets:$SECRETS_ANALYZER_VERSION"
-  services: []
-  allow_failure: true
-  # `rules` must be overridden explicitly by each child job
-  # see https://gitlab.com/gitlab-org/gitlab/-/issues/218444
-  artifacts:
-    reports:
-      secret_detection: gl-secret-detection-report.json
-
-secret_detection:
-  extends: .secret-analyzer
-  rules:
-    - if: $SECRET_DETECTION_DISABLED
-      when: never
-    - if: $CI_COMMIT_BRANCH
-  script:
-    - if [ -n "$CI_COMMIT_TAG" ]; then echo "Skipping Secret Detection for tags. No code changes have occurred."; exit 0; fi
-    - if [ "$CI_COMMIT_BRANCH" = "$CI_DEFAULT_BRANCH" ]; then echo "Running Secret Detection on default branch."; /analyzer run; exit 0; fi
-    - git fetch origin $CI_DEFAULT_BRANCH $CI_COMMIT_REF_NAME
-    - git log --left-right --cherry-pick --pretty=format:"%H" refs/remotes/origin/$CI_DEFAULT_BRANCH...refs/remotes/origin/$CI_COMMIT_REF_NAME > "$CI_COMMIT_SHA"_commit_list.txt
-    - export SECRET_DETECTION_COMMITS_FILE="$CI_COMMIT_SHA"_commit_list.txt
-    - /analyzer run
-    - rm "$CI_COMMIT_SHA"_commit_list.txt
-
 Gradle Test:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.11
+  image: docker.griefed.dev/griefed/baseimage-ubuntu-jdk-8:2.0.11
   stage: Tests
   before_script:
     - echo "**** Running in $CI_JOB_ID ****"
@@ -155,7 +50,7 @@ Gradle Test:
 
 Docker Test:
   stage: Tests
-  image: ghcr.io/griefed/gitlab-ci-cd:2.0.8
+  image: docker.griefed.dev/griefed/gitlab-ci-cd:2.2.9
   before_script:
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - docker buildx create --use --name grfdbuilder
@@ -168,7 +63,7 @@ Docker Test:
     - if: '$CI_SERVER_HOST == "git.griefed.de"' # Remove once GitLab no longer throws javax.net.ssl.SSLHandshakeException: Remote host terminated the handshake
 
 Gradle Dependency-Checks:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.11
+  image: docker.griefed.dev/griefed/baseimage-ubuntu-jdk-8:2.0.11
   stage: Other
   allow_failure: true
   before_script:
@@ -188,6 +83,7 @@ Gradle Dependency-Checks:
     expire_in: 1 week
 
 Generate Release:
+  image: docker.griefed.dev/griefed/gitlab-ci-cd:2.2.9
   stage: Release
   needs:
     - job: Gradle Test
@@ -202,7 +98,6 @@ Generate Release:
       artifacts: false
     - job: secret_detection
       artifacts: false
-  image: ghcr.io/griefed/gitlab-ci-cd:2.0.8
   script:
     - npx semantic-release
   rules:
@@ -211,7 +106,7 @@ Generate Release:
     - if: '$CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TITLE !~ /^RELEASE:.+$/ && $CI_SERVER_HOST == "git.griefed.de"'
 
 Build Release:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.11
+  image: docker.griefed.dev/griefed/baseimage-ubuntu-jdk-8:2.0.11
   stage: Build Release
   before_script:
     - echo "**** Running in $CI_JOB_ID ****"
@@ -252,7 +147,7 @@ Build Release:
 
 Build Docker Release:
   stage: Build Release
-  image: ghcr.io/griefed/gitlab-ci-cd:2.0.8
+  image: docker.griefed.dev/griefed/gitlab-ci-cd:2.2.9
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN" docker.io
     - docker login -u "$DOCKERHUB_USER" -p "$GITHUB_TOKEN" ghcr.io
@@ -273,7 +168,7 @@ Build Docker Release:
 
 Build Docker PreRelease:
   stage: Build Release
-  image: ghcr.io/griefed/gitlab-ci-cd:2.0.8
+  image: docker.griefed.dev/griefed/gitlab-ci-cd:2.2.9
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN" docker.io
     - docker login -u "$DOCKERHUB_USER" -p "$GITHUB_TOKEN" ghcr.io
@@ -304,7 +199,7 @@ coverage:
         path: build/cobertura.xml
 
 pages:
-  image: griefed/baseimage-ubuntu-jdk-8:2.0.11
+  image: docker.griefed.dev/griefed/baseimage-ubuntu-jdk-8:2.0.11
   stage: Documentation
   variables:
     project_name: $CI_PROJECT_NAME
@@ -338,7 +233,7 @@ pages:
 #       if [[ "$(git config --list | grep user.email)" != "user.email=$GIT_MAIL" ]];then
 #         git config --global user.email $GIT_MAIL
 #       fi
-# 
+#
 #       # Clean system of potentially interrupting images
 #       docker image rm -f $DOCKERHUB_USER/$DOCKERHUB_REPO:latest
 #       docker image rm -f $DOCKERHUB_REPO
@@ -351,77 +246,77 @@ pages:
 #       # Clone the repository
 #       git clone $CI_PROJECT_URL.git /tmp/$CI_PROJECT_PATH && \
 #       cd /tmp/$CI_PROJECT_PATH && \
-# 
+#
 #       if [ ! -s "package_versions.txt" ];then
 #         echo "No package_versions.txt available..." && \
-# 
+#
 #         # Gather package information from latest build
 #         docker run --rm --entrypoint /bin/sh -v /tmp/$CI_PROJECT_PATH:/tmp $DOCKERHUB_USER/$DOCKERHUB_REPO:latest -c '\
 #           apk info -v > /tmp/package_versions.txt && \
 #           sort -o /tmp/package_versions.txt  /tmp/package_versions.txt && \
 #           chmod 777 /tmp/package_versions.txt' && \
-# 
+#
 #         # Checkout our branch
 #         git checkout -f $CI_DEFAULT_BRANCH && \
-# 
+#
 #         wait && \
-# 
+#
 #         # Add and commit new file to repository
 #         git add package_versions.txt && \
 #         git commit -m 'chore: Add list of package versions.' && \
-# 
+#
 #         # Push the changes to the remote
 #         git push "https://$GIT_USER:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git" --all && \
-# 
+#
 #         # Nice
 #         echo "package_versions.txt added."
-# 
+#
 #       elif [ -s "package_versions.txt" ];then
 #         echo "Local package_versions.txt available..." && \
-# 
+#
 #         # Build local image for new package versions list
 #         docker build --no-cache --tag $DOCKERHUB_REPO . && \
-# 
+#
 #         # Get packages from newly build local image
 #         docker run --rm --entrypoint /bin/sh -v /tmp/$CI_PROJECT_PATH:/tmp $DOCKERHUB_REPO -c '\
 #           apk info -v > /tmp/package_versions_new.txt && \
 #           sort -o /tmp/package_versions_new.txt  /tmp/package_versions_new.txt && \
 #           chmod 777 /tmp/package_versions_new.txt' && \
-# 
+#
 #         # Get checksum of old packages
 #         OLD_CHECKSUM=$(md5sum package_versions.txt | cut -f1 -d" ") && \
-# 
+#
 #         # Get checksum of new packages
 #         NEW_CHECKSUM=$(md5sum package_versions_new.txt | cut -f1 -d" ")
-# 
-# 
-# 
+#
+#
+#
 #         # If new checksum is not the same as old checksum, we have new versions
 #         if [ "${OLD_CHECKSUM}" != "${NEW_CHECKSUM}" ]; then
-# 
+#
 #           echo "Checksums differ. Updating..." && \
-# 
+#
 #           # Checkout our branch
 #           git checkout -f $CI_DEFAULT_BRANCH && \
-# 
+#
 #           # Copy the new package versions list to repository
 #           mv -f package_versions_new.txt package_versions.txt && \
-# 
+#
 #           wait && \
-# 
+#
 #           # Add and commit new file to repository
 #           git add package_versions.txt && \
 #           git commit -m 'build: Update installed packages in Docker container.' && \
-# 
+#
 #           # Push the changes to the remote
 #           git push "https://$GIT_USER:$GITLAB_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git" --all && \
-# 
+#
 #           # Nice
 #           echo "Packages updated."
 #         else
 #           echo "No package updates available."
 #         fi
-# 
+#
 #       fi
 #       echo "Comparison complete."
 #   after_script:
